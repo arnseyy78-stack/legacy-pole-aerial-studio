@@ -1,1 +1,0 @@
-# legacy-pole-aerial-studio
