@@ -45,6 +45,27 @@ if (page === "calendar") {
     </div>
   );
 }
+  if (page === "calendar") {
+  return (
+    <div style={pageStyle}>
+      <div style={{ ...cardStyle, width: "900px", maxWidth: "95%" }}>
+        <h1 style={titleStyle}>Class Calendar</h1>
+
+        <div style={calendarGrid}>
+          {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map((day) => (
+            <div style={dayCard} key={day}>
+              <h2>{day}</h2>
+              <p>10:00 AM - Static Pole</p>
+              <p>1:00 PM - Spinny Heels Pole</p>
+              <p>4:00 PM - Static Pole</p>
+              <p>7:00 PM - Spinny Heels Pole</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
   if (page === "waiver") {
     return (
       <div style={pageStyle}>
@@ -215,4 +236,18 @@ const securityText = {
   color: "#999",
   marginTop: "22px",
   fontSize: "14px"
+};
+
+const calendarGrid = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+  gap: "16px"
+};
+
+const dayCard = {
+  background: "#1c1c1c",
+  border: "1px solid rgba(255,255,255,0.08)",
+  borderRadius: "18px",
+  padding: "20px",
+  lineHeight: "1.7"
 };
