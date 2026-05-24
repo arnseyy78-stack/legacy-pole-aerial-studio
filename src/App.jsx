@@ -24,27 +24,47 @@ export default function App() {
     setPage("waiver");
   }
 
-  if (page === "calendar") {
-    return (
-      <div style={pageStyle}>
-        <div style={{ ...cardStyle, width: "900px", maxWidth: "95%" }}>
-          <h1 style={titleStyle}>Class Calendar</h1>
-          <div style={calendarGrid}>
-            {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map((day) => (
-              <div style={dayCard} key={day}>
-                <h2>{day}</h2>
-                <p>10:00 AM - Static Pole</p>
-                <p>1:00 PM - Spinny Heels Pole</p>
-                <p>4:00 PM - Static Pole</p>
-                <p>7:00 PM - Spinny Heels Pole</p>
-              </div>
-            ))}
-          </div>
+if (page === "calendar") {
+  const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+  return (
+    <div style={pageStyle}>
+      <div style={{ ...cardStyle, width: "1000px", maxWidth: "95%" }}>
+        <h1 style={titleStyle}>Class Calendar</h1>
+
+        <div style={calendarGrid}>
+          {days.map((day) => (
+            <div style={calendarDay} key={day}>
+              <h2>{day}</h2>
+
+              <div style={classBox}>10:00 AM<br />Static Pole</div>
+              <div style={classBox}>1:00 PM<br />Spinny Heels Pole</div>
+              <div style={classBox}>4:00 PM<br />Static Pole</div>
+              <div style={classBox}>7:00 PM<br />Spinny Heels Pole</div>
+            </div>
+          ))}
         </div>
       </div>
-    );
-  }
+    </div>
+  );
+}
+const calendarDay = {
+  background: "#1c1c1c",
+  border: "1px solid rgba(255,255,255,0.08)",
+  borderRadius: "18px",
+  padding: "16px",
+  minHeight: "360px"
+};
 
+const classBox = {
+  background: "#ec4899",
+  borderRadius: "12px",
+  padding: "12px",
+  marginTop: "12px",
+  color: "white",
+  fontWeight: "700",
+  fontSize: "14px"
+};
   if (page === "waiver") {
     return (
       <div style={pageStyle}>
