@@ -1,8 +1,5 @@
 import { useState } from "react";
 
-const PAYMONGO_LINK =
-  "https://pm.link/org-VizvF8g1Lq5cvJviJRNCMyTe/geUY4Ih";
-
 export default function App() {
   const [page, setPage] = useState("signup");
   const [agreed, setAgreed] = useState(false);
@@ -32,22 +29,26 @@ export default function App() {
     {
       name: "Single Pass",
       price: "₱850.00",
-      note: "One class access"
+      note: "One class access",
+      link: "https://pm.link/org-VizvF8g1Lq5cvJviJRNCMyTe/geUY4Ih"
     },
     {
       name: "Class Card of 5",
       price: "₱4,000.00",
-      note: "Consumable within 30 days"
+      note: "Consumable within 30 days",
+      link: "https://pm.link/org-VizvF8g1Lq5cvJviJRNCMyTe/P9RbNrW"
     },
     {
       name: "Practice Session",
       price: "₱550.00",
-      note: "Open practice access"
+      note: "Open practice access",
+      link: "https://pm.link/org-VizvF8g1Lq5cvJviJRNCMyTe/ueZSEI4"
     },
     {
       name: "Private Class",
       price: "₱3,000.00",
-      note: "Can be up to 3 students"
+      note: "Can be up to 3 students",
+      link: "https://pm.link/org-VizvF8g1Lq5cvJviJRNCMyTe/8FmRI3q"
     }
   ];
 
@@ -68,7 +69,7 @@ export default function App() {
 
   function choosePackage(item) {
     localStorage.setItem("legacySelectedPackage", JSON.stringify(item));
-    window.location.href = PAYMONGO_LINK;
+    window.location.href = item.link;
   }
 
   if (page === "packages") {
@@ -97,7 +98,6 @@ export default function App() {
                 <h2 style={{ margin: 0 }}>{item.name}</h2>
                 <p style={priceText}>{item.price}</p>
                 <p style={noteText}>{item.note}</p>
-                <p style={checkoutText}>Proceed to secure checkout →</p>
               </button>
             ))}
           </div>
@@ -324,10 +324,4 @@ const backButton = {
   fontSize: "16px",
   cursor: "pointer",
   marginBottom: "20px"
-};
-
-const checkoutText = {
-  color: "#ec4899",
-  marginTop: "18px",
-  fontWeight: "700"
 };
