@@ -15,6 +15,15 @@ export default function App() {
 
   const isFormValid = Object.values(form).every(Boolean);
 
+  const classes = [
+    { day: "Monday", time: "6:00 PM", name: "Pole Fitness" },
+    { day: "Tuesday", time: "6:00 PM", name: "Pole Flow" },
+    { day: "Wednesday", time: "6:00 PM", name: "Spinny Pole" },
+    { day: "Thursday", time: "6:00 PM", name: "Mat Flexibility" },
+    { day: "Friday", time: "6:00 PM", name: "Heels and Steel" },
+    { day: "Saturday", time: "6:00 PM", name: "Floor Work" }
+  ];
+
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
@@ -25,22 +34,18 @@ export default function App() {
   }
 
   if (page === "calendar") {
-    const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
     return (
       <div style={pageStyle}>
-        <div style={{ ...cardStyle, width: "1000px", maxWidth: "95%" }}>
-          <h1 style={titleStyle}>Class Calendar</h1>
+        <div style={{ ...cardStyle, width: "900px", maxWidth: "95%" }}>
+          <h1 style={titleStyle}>Classes</h1>
 
-          <div style={calendarGrid}>
-            {days.map((day) => (
-              <div style={calendarDay} key={day}>
-                <h2>{day}</h2>
-                <div style={classBox}>10:00 AM<br />Static Pole</div>
-                <div style={classBox}>1:00 PM<br />Spinny Heels Pole</div>
-                <div style={classBox}>4:00 PM<br />Static Pole</div>
-                <div style={classBox}>7:00 PM<br />Spinny Heels Pole</div>
-              </div>
+          <div style={classList}>
+            {classes.map((item) => (
+              <button key={item.day} style={classRow}>
+                <span style={dayText}>{item.day}</span>{" "}
+                <span>{item.time}</span>{" "}
+                <span>{item.name}</span>
+              </button>
             ))}
           </div>
         </div>
@@ -64,11 +69,7 @@ export default function App() {
           </div>
 
           <label style={{ display: "flex", gap: "10px", marginTop: "20px" }}>
-            <input
-              type="checkbox"
-              checked={agreed}
-              onChange={(e) => setAgreed(e.target.checked)}
-            />
+            <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} />
             <span>I have read and agree to the waiver.</span>
           </label>
 
@@ -140,10 +141,10 @@ const cardStyle = {
 };
 
 const titleStyle = {
-  textAlign: "center",
+  textAlign: "left",
   marginBottom: "30px",
-  fontSize: "36px",
-  fontWeight: "700"
+  fontSize: "42px",
+  fontWeight: "800"
 };
 
 const inputStyle = {
@@ -184,26 +185,22 @@ const securityText = {
   fontSize: "14px"
 };
 
-const calendarGrid = {
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
+const classList = {
+  display: "flex",
+  flexDirection: "column",
   gap: "14px"
 };
 
-const calendarDay = {
-  background: "#1c1c1c",
-  border: "1px solid rgba(255,255,255,0.08)",
-  borderRadius: "18px",
-  padding: "16px",
-  minHeight: "360px"
+const classRow = {
+  background: "transparent",
+  border: "none",
+  color: "white",
+  textAlign: "left",
+  fontSize: "24px",
+  cursor: "pointer",
+  textDecoration: "underline"
 };
 
-const classBox = {
-  background: "#ec4899",
-  borderRadius: "12px",
-  padding: "12px",
-  marginTop: "12px",
-  color: "white",
-  fontWeight: "700",
-  fontSize: "14px"
+const dayText = {
+  fontWeight: "700"
 };
