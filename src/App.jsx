@@ -102,6 +102,7 @@ if (page === "calendar") {
 
           <button
             disabled={!agreed}
+onClick={() => setPage("calendar")}
             style={{
               ...buttonStyle,
               background: agreed ? "#ec4899" : "#555",
