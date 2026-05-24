@@ -60,10 +60,10 @@ export default function App() {
   function choosePayment(method) {
     setSelectedPayment(method);
     localStorage.setItem("legacyPaymentMethod", method);
-    setPage("paymentDetails");
+    setPage("bankTransfer");
   }
 
-  if (page === "paymentDetails") {
+  if (page === "bankTransfer") {
     return (
       <div style={pageStyle}>
         <div style={{ ...cardStyle, width: "760px", maxWidth: "95%" }}>
@@ -71,17 +71,18 @@ export default function App() {
             ← Back to Payment Methods
           </button>
 
-          <h1 style={titleStyle}>{selectedPayment} Payment</h1>
+          <h1 style={titleStyle}>Bank Transfer</h1>
 
           <div style={summaryBox}>
+            <p><b>Payment Method:</b> {selectedPayment}</p>
             <p><b>Class:</b> {selectedClass?.day} {selectedClass?.time} — {selectedClass?.name}</p>
             <p><b>Package:</b> {selectedPackage?.name}</p>
             <p><b>Total:</b> <span style={{ color: "#ec4899", fontWeight: "800" }}>{selectedPackage?.price}</span></p>
           </div>
 
           <div style={paymentBox}>
-            <h2>Send payment to:</h2>
-            <p><b>Bank:</b> Chinabank Corp</p>
+            <h2>Send Payment To:</h2>
+            <p><b>Bank:</b> Chinabank Corp / Chinabank</p>
             <p><b>Account Number:</b> 168302020459</p>
             <p><b>Account Name:</b> Legacy</p>
           </div>
@@ -89,21 +90,16 @@ export default function App() {
           <button
             style={buttonStyle}
             onClick={() => {
-              if (selectedPayment === "GCash") {
-                window.location.href = "gcash://";
-              } else if (selectedPayment === "Maya") {
-                window.location.href = "paymaya://";
-              } else {
-                alert("Please open your banking app and transfer to the Chinabank details shown.");
-              }
+              navigator.clipboard.writeText(
+                "Bank: Chinabank Corp / Chinabank\nAccount: 168302020459\nName: Legacy"
+              );
+              alert("Bank details copied. Open your payment app and choose Bank Transfer.");
             }}
           >
-            Open {selectedPayment} App
+            Copy Bank Details
           </button>
 
-          <p style={securityText}>
-            After payment, please screenshot your proof of payment.
-          </p>
+          <p style={securityText}>After payment, screenshot your proof of payment.</p>
         </div>
       </div>
     );
@@ -129,7 +125,7 @@ export default function App() {
             {paymentMethods.map((method) => (
               <button key={method} style={packageCard} onClick={() => choosePayment(method)}>
                 <h2>{method}</h2>
-                <p style={noteText}>Pay using {method}</p>
+                <p style={noteText}>Continue to bank transfer details</p>
               </button>
             ))}
           </div>
@@ -165,6 +161,7 @@ export default function App() {
       <div style={pageStyle}>
         <div style={{ ...cardStyle, width: "900px", maxWidth: "95%" }}>
           <h1 style={titleStyle}>Classes</h1>
+
           <div style={classList}>
             {classes.map((item) => (
               <button key={item.day} style={classRow} onClick={() => chooseClass(item)}>
@@ -182,6 +179,7 @@ export default function App() {
       <div style={pageStyle}>
         <div style={{ ...cardStyle, width: "700px", maxWidth: "90%" }}>
           <h1 style={titleStyle}>Student Waiver & Release</h1>
+
           <div style={waiverBox}>
             <p><b>Legacy Pole & Aerial Studio Waiver</b></p>
             <p>I understand that pole dance, aerial fitness, flexibility training, conditioning, and related activities involve physical exertion and risk of injury.</p>
@@ -197,7 +195,11 @@ export default function App() {
           <button
             disabled={!agreed}
             onClick={() => setPage("calendar")}
-            style={{ ...buttonStyle, background: agreed ? "#ec4899" : "#555" }}
+            style={{
+              ...buttonStyle,
+              background: agreed ? "#ec4899" : "#555",
+              cursor: agreed ? "pointer" : "not-allowed"
+            }}
           >
             Accept Waiver
           </button>
@@ -210,6 +212,7 @@ export default function App() {
     <div style={pageStyle}>
       <div style={cardStyle}>
         <h1 style={titleStyle}>Student Information</h1>
+
         <input name="fullName" placeholder="Full Name" style={inputStyle} onChange={handleChange} />
         <input name="email" placeholder="Email Address" style={inputStyle} onChange={handleChange} />
         <input name="phone" placeholder="Phone Number" style={inputStyle} onChange={handleChange} />
@@ -220,7 +223,11 @@ export default function App() {
         <button
           disabled={!isFormValid}
           onClick={saveAndContinue}
-          style={{ ...buttonStyle, background: isFormValid ? "#ec4899" : "#555" }}
+          style={{
+            ...buttonStyle,
+            background: isFormValid ? "#ec4899" : "#555",
+            cursor: isFormValid ? "pointer" : "not-allowed"
+          }}
         >
           Continue
         </button>
@@ -233,7 +240,7 @@ const pageStyle = { minHeight: "100vh", background: "#050505", color: "white", d
 const cardStyle = { width: "380px", background: "#111", borderRadius: "24px", padding: "40px", border: "1px solid rgba(255,255,255,0.08)" };
 const titleStyle = { textAlign: "left", marginBottom: "30px", fontSize: "42px", fontWeight: "800" };
 const inputStyle = { width: "100%", padding: "16px", marginBottom: "16px", borderRadius: "14px", border: "1px solid rgba(255,255,255,0.08)", background: "#1c1c1c", color: "white", boxSizing: "border-box" };
-const buttonStyle = { width: "100%", padding: "16px", borderRadius: "16px", border: "none", color: "white", fontWeight: "700", marginTop: "16px", cursor: "pointer" };
+const buttonStyle = { width: "100%", padding: "16px", borderRadius: "16px", border: "none", color: "white", fontWeight: "700", marginTop: "16px" };
 const waiverBox = { maxHeight: "360px", overflowY: "auto", background: "#1c1c1c", padding: "20px", borderRadius: "16px", lineHeight: "1.6", color: "#ddd" };
 const classList = { display: "flex", flexDirection: "column", gap: "14px" };
 const classRow = { background: "transparent", border: "none", color: "white", textAlign: "left", fontSize: "24px", cursor: "pointer", textDecoration: "underline" };
