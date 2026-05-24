@@ -24,30 +24,29 @@ export default function App() {
     setPage("waiver");
   }
 
-if (page === "calendar") {
-  const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  if (page === "calendar") {
+    const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-  return (
-    <div style={pageStyle}>
-      <div style={{ ...cardStyle, width: "1000px", maxWidth: "95%" }}>
-        <h1 style={titleStyle}>Class Calendar</h1>
+    return (
+      <div style={pageStyle}>
+        <div style={{ ...cardStyle, width: "1000px", maxWidth: "95%" }}>
+          <h1 style={titleStyle}>Class Calendar</h1>
 
-        <div style={calendarGrid}>
-          {days.map((day) => (
-            <div style={calendarDay} key={day}>
-              <h2>{day}</h2>
-
-              <div style={classBox}>10:00 AM<br />Static Pole</div>
-              <div style={classBox}>1:00 PM<br />Spinny Heels Pole</div>
-              <div style={classBox}>4:00 PM<br />Static Pole</div>
-              <div style={classBox}>7:00 PM<br />Spinny Heels Pole</div>
-            </div>
-          ))}
+          <div style={calendarGrid}>
+            {days.map((day) => (
+              <div style={calendarDay} key={day}>
+                <h2>{day}</h2>
+                <div style={classBox}>10:00 AM<br />Static Pole</div>
+                <div style={classBox}>1:00 PM<br />Spinny Heels Pole</div>
+                <div style={classBox}>4:00 PM<br />Static Pole</div>
+                <div style={classBox}>7:00 PM<br />Spinny Heels Pole</div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
 
   if (page === "waiver") {
     return (
@@ -65,7 +64,11 @@ if (page === "calendar") {
           </div>
 
           <label style={{ display: "flex", gap: "10px", marginTop: "20px" }}>
-            <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} />
+            <input
+              type="checkbox"
+              checked={agreed}
+              onChange={(e) => setAgreed(e.target.checked)}
+            />
             <span>I have read and agree to the waiver.</span>
           </label>
 
@@ -183,17 +186,10 @@ const securityText = {
 
 const calendarGrid = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-  gap: "16px"
+  gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
+  gap: "14px"
 };
 
-const dayCard = {
-  background: "#1c1c1c",
-  border: "1px solid rgba(255,255,255,0.08)",
-  borderRadius: "18px",
-  padding: "20px",
-  lineHeight: "1.7"
-};
 const calendarDay = {
   background: "#1c1c1c",
   border: "1px solid rgba(255,255,255,0.08)",
