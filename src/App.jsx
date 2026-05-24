@@ -3,9 +3,10 @@ import { useState } from "react";
 export default function App() {
   const [page, setPage] = useState("signup");
   const [agreed, setAgreed] = useState(false);
-
   const [selectedClass, setSelectedClass] = useState(null);
   const [selectedPackage, setSelectedPackage] = useState(null);
+
+  const paymongoMerchantId = "org_VizvF8g1Lq5cvJviJRNCMyTe";
 
   const [form, setForm] = useState({
     fullName: "",
@@ -31,22 +32,41 @@ export default function App() {
     {
       name: "Single Pass",
       price: "₱850.00",
+      amount: 850,
       note: "One class access"
     },
     {
       name: "Class Card of 5",
       price: "₱4,000.00",
+      amount: 4000,
       note: "Consumable within 30 days"
     },
     {
       name: "Practice Session",
       price: "₱550.00",
+      amount: 550,
       note: "Open practice access"
     },
     {
       name: "Private Class",
       price: "₱3,000.00",
+      amount: 3000,
       note: "Can be up to 3 students"
+    }
+  ];
+
+  const paymentMethods = [
+    {
+      name: "GCash",
+      detail: "Pay using GCash via PayMongo"
+    },
+    {
+      name: "Maya",
+      detail: "Pay using Maya via PayMongo"
+    },
+    {
+      name: "Bank Transfer",
+      detail: "Transfer using your bank via PayMongo"
     }
   ];
 
@@ -61,15 +81,23 @@ export default function App() {
 
   function chooseClass(item) {
     setSelectedClass(item);
+    localStorage.setItem("legacySelectedClass", JSON.stringify(item));
     setPage("packages");
   }
 
   function choosePackage(item) {
     setSelectedPackage(item);
+    localStorage.setItem("legacySelectedPackage", JSON.stringify(item));
     setPage("payment");
   }
 
-  // PAYMENT PAGE
+  function choosePayment(method) {
+    localStorage.setItem("legacyPaymentMethod", JSON.stringify(method));
+    alert(
+      `Payment selected: ${method.name}\nMerchant ID: ${paymongoMerchantId}\nAmount: ${selectedPackage?.price}`
+    );
+  }
+
   if (page === "payment") {
     return (
       <div style={pageStyle}>
@@ -81,34 +109,34 @@ export default function App() {
           <h1 style={titleStyle}>Payment Method</h1>
 
           <p style={selectedText}>
-            <b>{selectedPackage?.name}</b> — {selectedPackage?.price}
+            Class: <b>{selectedClass?.day} {selectedClass?.time}</b> — {selectedClass?.name}
           </p>
 
-          <div style={paymentGrid}>
-            <button style={paymentCard}>
-              <h2>GCash</h2>
-              <p style={paymentSub}>Secure mobile payment</p>
-              <p style={orgText}>org_VizvF8g1Lq5cvJviJRNCMyTe</p>
-            </button>
+          <p style={selectedText}>
+            Package: <b>{selectedPackage?.name}</b> — {selectedPackage?.price}
+          </p>
 
-            <button style={paymentCard}>
-              <h2>Maya</h2>
-              <p style={paymentSub}>Fast digital checkout</p>
-              <p style={orgText}>org_VizvF8g1Lq5cvJviJRNCMyTe</p>
-            </button>
+          <p style={merchantText}>
+            PayMongo Merchant ID: <b>{paymongoMerchantId}</b>
+          </p>
 
-            <button style={paymentCard}>
-              <h2>Bank Transfer</h2>
-              <p style={paymentSub}>Direct bank payment</p>
-              <p style={orgText}>org_VizvF8g1Lq5cvJviJRNCMyTe</p>
-            </button>
+          <div style={packageGrid}>
+            {paymentMethods.map((method) => (
+              <button
+                key={method.name}
+                style={packageCard}
+                onClick={() => choosePayment(method)}
+              >
+                <h2 style={{ margin: 0 }}>{method.name}</h2>
+                <p style={noteText}>{method.detail}</p>
+              </button>
+            ))}
           </div>
         </div>
       </div>
     );
   }
 
-  // PACKAGE PAGE
   if (page === "packages") {
     return (
       <div style={pageStyle}>
@@ -119,9 +147,11 @@ export default function App() {
 
           <h1 style={titleStyle}>Choose Package</h1>
 
-          <p style={selectedText}>
-            Selected: <b>{selectedClass.day} {selectedClass.time}</b> — {selectedClass.name}
-          </p>
+          {selectedClass && (
+            <p style={selectedText}>
+              Selected: <b>{selectedClass.day} {selectedClass.time}</b> — {selectedClass.name}
+            </p>
+          )}
 
           <div style={packageGrid}>
             {packages.map((item) => (
@@ -141,7 +171,6 @@ export default function App() {
     );
   }
 
-  // CALENDAR PAGE
   if (page === "calendar") {
     return (
       <div style={pageStyle}>
@@ -166,7 +195,6 @@ export default function App() {
     );
   }
 
-  // WAIVER PAGE
   if (page === "waiver") {
     return (
       <div style={pageStyle}>
@@ -174,18 +202,16 @@ export default function App() {
           <h1 style={titleStyle}>Student Waiver & Release</h1>
 
           <div style={waiverBox}>
-            <p>I understand that participation involves physical activity and risk of injury.</p>
-            <p>I voluntarily participate and agree to follow all safety instructions and studio rules.</p>
-            <p>I release Legacy Pole & Aerial Studio and staff from liability except where prohibited by law.</p>
-            <p>I confirm that I have read and understood this waiver.</p>
+            <p><b>Legacy Pole & Aerial Studio Waiver</b></p>
+            <p>I understand that pole dance, aerial fitness, flexibility training, conditioning, and related activities involve physical exertion and risk of injury.</p>
+            <p>I confirm that I am voluntarily participating and that I am physically fit to join. I agree to follow all instructor instructions, safety rules, and studio policies.</p>
+            <p>I release and hold harmless Legacy Pole & Aerial Studio, its owners, instructors, staff, representatives, and venue partners from claims arising from my participation, except where prohibited by law.</p>
+            <p>I understand that I must disclose any medical condition, injury, pregnancy, medication, or limitation that may affect my ability to participate safely.</p>
+            <p>By checking the box below, I confirm that I have read, understood, and voluntarily agree to this waiver.</p>
           </div>
 
           <label style={{ display: "flex", gap: "10px", marginTop: "20px" }}>
-            <input
-              type="checkbox"
-              checked={agreed}
-              onChange={(e) => setAgreed(e.target.checked)}
-            />
+            <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} />
             <span>I have read and agree to the waiver.</span>
           </label>
 
@@ -195,7 +221,8 @@ export default function App() {
             style={{
               ...buttonStyle,
               background: agreed ? "#ec4899" : "#555",
-              cursor: agreed ? "pointer" : "not-allowed"
+              cursor: agreed ? "pointer" : "not-allowed",
+              opacity: agreed ? 1 : 0.7
             }}
           >
             Accept Waiver
@@ -205,7 +232,6 @@ export default function App() {
     );
   }
 
-  // SIGNUP PAGE
   return (
     <div style={pageStyle}>
       <div style={cardStyle}>
@@ -224,7 +250,8 @@ export default function App() {
           style={{
             ...buttonStyle,
             background: isFormValid ? "#ec4899" : "#555",
-            cursor: isFormValid ? "pointer" : "not-allowed"
+            cursor: isFormValid ? "pointer" : "not-allowed",
+            opacity: isFormValid ? 1 : 0.7
           }}
         >
           Continue
@@ -256,6 +283,7 @@ const cardStyle = {
 };
 
 const titleStyle = {
+  textAlign: "left",
   marginBottom: "30px",
   fontSize: "42px",
   fontWeight: "800"
@@ -283,7 +311,7 @@ const buttonStyle = {
 };
 
 const waiverBox = {
-  maxHeight: "300px",
+  maxHeight: "360px",
   overflowY: "auto",
   background: "#1c1c1c",
   padding: "20px",
@@ -344,13 +372,20 @@ const priceText = {
 
 const noteText = {
   color: "#bbb",
-  fontSize: "15px"
+  fontSize: "15px",
+  lineHeight: "1.5"
 };
 
 const selectedText = {
   color: "#ccc",
-  marginBottom: "24px",
+  marginBottom: "14px",
   fontSize: "17px"
+};
+
+const merchantText = {
+  color: "#ec4899",
+  marginBottom: "24px",
+  fontSize: "15px"
 };
 
 const backButton = {
@@ -360,32 +395,4 @@ const backButton = {
   fontSize: "16px",
   cursor: "pointer",
   marginBottom: "20px"
-};
-
-const paymentGrid = {
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-  gap: "20px"
-};
-
-const paymentCard = {
-  background: "#1c1c1c",
-  border: "1px solid rgba(255,255,255,0.08)",
-  borderRadius: "20px",
-  padding: "30px",
-  color: "white",
-  textAlign: "left",
-  cursor: "pointer"
-};
-
-const paymentSub = {
-  color: "#aaa",
-  marginTop: "10px"
-};
-
-const orgText = {
-  marginTop: "20px",
-  color: "#ec4899",
-  fontWeight: "700",
-  wordBreak: "break-word"
 };
