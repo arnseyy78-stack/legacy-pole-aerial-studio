@@ -4,6 +4,7 @@ export default function App() {
   const [page, setPage] = useState("signup");
   const [agreed, setAgreed] = useState(false);
   const [selectedClass, setSelectedClass] = useState(null);
+  const [selectedPackage, setSelectedPackage] = useState(null);
 
   const [form, setForm] = useState({
     fullName: "",
@@ -26,26 +27,16 @@ export default function App() {
   ];
 
   const packages = [
-    {
-      name: "Single Pass",
-      price: "₱850.00",
-      note: "One class access"
-    },
-    {
-      name: "Class Card of 5",
-      price: "₱4,000.00",
-      note: "Consumable within 30 days"
-    },
-    {
-      name: "Practice Session",
-      price: "₱550.00",
-      note: "Open practice access"
-    },
-    {
-      name: "Private Class",
-      price: "₱3,000.00",
-      note: "Can be up to 3 students"
-    }
+    { name: "Single Pass", price: "₱850.00", note: "One class access" },
+    { name: "Class Card of 5", price: "₱4,000.00", note: "Consumable within 30 days" },
+    { name: "Practice Session", price: "₱550.00", note: "Open practice access" },
+    { name: "Private Class", price: "₱3,000.00", note: "Can be up to 3 students" }
+  ];
+
+  const paymentMethods = [
+    { name: "GCash", note: "Send payment using your GCash wallet" },
+    { name: "Maya", note: "Send payment using your Maya wallet" },
+    { name: "Bank Transfer", note: "Send payment through online banking" }
   ];
 
   function handleChange(e) {
@@ -61,6 +52,50 @@ export default function App() {
     setSelectedClass(item);
     localStorage.setItem("legacySelectedClass", JSON.stringify(item));
     setPage("packages");
+  }
+
+  function choosePackage(item) {
+    setSelectedPackage(item);
+    localStorage.setItem("legacySelectedPackage", JSON.stringify(item));
+    setPage("payment");
+  }
+
+  if (page === "payment") {
+    return (
+      <div style={pageStyle}>
+        <div style={{ ...cardStyle, width: "900px", maxWidth: "95%" }}>
+          <button style={backButton} onClick={() => setPage("packages")}>
+            ← Back to Packages
+          </button>
+
+          <h1 style={titleStyle}>Payment Method</h1>
+
+          {selectedClass && selectedPackage && (
+            <div style={summaryBox}>
+              <p><b>Class:</b> {selectedClass.day} {selectedClass.time} — {selectedClass.name}</p>
+              <p><b>Package:</b> {selectedPackage.name}</p>
+              <p><b>Total:</b> <span style={{ color: "#ec4899", fontWeight: "800" }}>{selectedPackage.price}</span></p>
+            </div>
+          )}
+
+          <div style={packageGrid}>
+            {paymentMethods.map((item) => (
+              <button
+                key={item.name}
+                style={packageCard}
+                onClick={() => {
+                  localStorage.setItem("legacyPaymentMethod", JSON.stringify(item));
+                  alert(`Payment method selected: ${item.name}`);
+                }}
+              >
+                <h2 style={{ margin: 0 }}>{item.name}</h2>
+                <p style={noteText}>{item.note}</p>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (page === "packages") {
@@ -84,10 +119,7 @@ export default function App() {
               <button
                 key={item.name}
                 style={packageCard}
-                onClick={() => {
-                  localStorage.setItem("legacySelectedPackage", JSON.stringify(item));
-                  alert(`Selected ${item.name} - ${item.price}`);
-                }}
+                onClick={() => choosePackage(item)}
               >
                 <h2 style={{ margin: 0 }}>{item.name}</h2>
                 <p style={priceText}>{item.price}</p>
@@ -318,4 +350,14 @@ const backButton = {
   fontSize: "16px",
   cursor: "pointer",
   marginBottom: "20px"
+};
+
+const summaryBox = {
+  background: "#1c1c1c",
+  border: "1px solid rgba(255,255,255,0.08)",
+  borderRadius: "16px",
+  padding: "18px",
+  marginBottom: "24px",
+  color: "#ddd",
+  lineHeight: "1.6"
 };
