@@ -3,6 +3,7 @@ import { useState } from "react";
 export default function App() {
   const [page, setPage] = useState("signup");
   const [agreed, setAgreed] = useState(false);
+  const [selectedClass, setSelectedClass] = useState(null);
 
   const [form, setForm] = useState({
     fullName: "",
@@ -24,6 +25,29 @@ export default function App() {
     { day: "Saturday", time: "6:00 PM", name: "Floor Work" }
   ];
 
+  const packages = [
+    {
+      name: "Single Pass",
+      price: "₱850.00",
+      note: "One class access"
+    },
+    {
+      name: "Class Card of 5",
+      price: "₱4,000.00",
+      note: "Consumable within 30 days"
+    },
+    {
+      name: "Practice Session",
+      price: "₱550.00",
+      note: "Open practice access"
+    },
+    {
+      name: "Private Class",
+      price: "₱3,000.00",
+      note: "Can be up to 3 students"
+    }
+  ];
+
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
@@ -31,6 +55,49 @@ export default function App() {
   function saveAndContinue() {
     localStorage.setItem("legacyStudentRecord", JSON.stringify(form));
     setPage("waiver");
+  }
+
+  function chooseClass(item) {
+    setSelectedClass(item);
+    localStorage.setItem("legacySelectedClass", JSON.stringify(item));
+    setPage("packages");
+  }
+
+  if (page === "packages") {
+    return (
+      <div style={pageStyle}>
+        <div style={{ ...cardStyle, width: "900px", maxWidth: "95%" }}>
+          <button style={backButton} onClick={() => setPage("calendar")}>
+            ← Back to Classes
+          </button>
+
+          <h1 style={titleStyle}>Choose Package</h1>
+
+          {selectedClass && (
+            <p style={selectedText}>
+              Selected: <b>{selectedClass.day} {selectedClass.time}</b> — {selectedClass.name}
+            </p>
+          )}
+
+          <div style={packageGrid}>
+            {packages.map((item) => (
+              <button
+                key={item.name}
+                style={packageCard}
+                onClick={() => {
+                  localStorage.setItem("legacySelectedPackage", JSON.stringify(item));
+                  alert(`Selected ${item.name} - ${item.price}`);
+                }}
+              >
+                <h2 style={{ margin: 0 }}>{item.name}</h2>
+                <p style={priceText}>{item.price}</p>
+                <p style={noteText}>{item.note}</p>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (page === "calendar") {
@@ -41,7 +108,11 @@ export default function App() {
 
           <div style={classList}>
             {classes.map((item) => (
-              <button key={item.day} style={classRow}>
+              <button
+                key={item.day}
+                style={classRow}
+                onClick={() => chooseClass(item)}
+              >
                 <span style={dayText}>{item.day}</span>{" "}
                 <span>{item.time}</span>{" "}
                 <span>{item.name}</span>
@@ -203,4 +274,48 @@ const classRow = {
 
 const dayText = {
   fontWeight: "700"
+};
+
+const packageGrid = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+  gap: "18px"
+};
+
+const packageCard = {
+  background: "#1c1c1c",
+  border: "1px solid rgba(255,255,255,0.1)",
+  borderRadius: "20px",
+  padding: "24px",
+  color: "white",
+  textAlign: "left",
+  cursor: "pointer"
+};
+
+const priceText = {
+  fontSize: "28px",
+  fontWeight: "800",
+  color: "#ec4899",
+  margin: "18px 0 8px"
+};
+
+const noteText = {
+  color: "#bbb",
+  fontSize: "15px",
+  lineHeight: "1.5"
+};
+
+const selectedText = {
+  color: "#ccc",
+  marginBottom: "24px",
+  fontSize: "17px"
+};
+
+const backButton = {
+  background: "transparent",
+  border: "none",
+  color: "#ec4899",
+  fontSize: "16px",
+  cursor: "pointer",
+  marginBottom: "20px"
 };
