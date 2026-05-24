@@ -131,6 +131,10 @@ if (page === "calendar") {
         <button
           disabled={!isFormValid}
           onClick={saveAndContinue}
+          <button
+  disabled={!agreed}
+  onClick={() => setPage("calendar")}
+  style={{
           style={{
             ...buttonStyle,
             background: isFormValid ? "#ec4899" : "#555",
