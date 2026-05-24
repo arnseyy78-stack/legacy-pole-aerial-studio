@@ -5,6 +5,7 @@ export default function App() {
   const [agreed, setAgreed] = useState(false);
   const [selectedClass, setSelectedClass] = useState(null);
   const [selectedPackage, setSelectedPackage] = useState(null);
+  const [selectedPayment, setSelectedPayment] = useState(null);
 
   const [form, setForm] = useState({
     fullName: "",
@@ -33,11 +34,7 @@ export default function App() {
     { name: "Private Class", price: "₱3,000.00", note: "Can be up to 3 students" }
   ];
 
-  const paymentMethods = [
-    { name: "GCash", note: "Send payment using your GCash wallet" },
-    { name: "Maya", note: "Send payment using your Maya wallet" },
-    { name: "Bank Transfer", note: "Send payment through online banking" }
-  ];
+  const paymentMethods = ["GCash", "Maya", "Bank Transfer"];
 
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -60,6 +57,58 @@ export default function App() {
     setPage("payment");
   }
 
+  function choosePayment(method) {
+    setSelectedPayment(method);
+    localStorage.setItem("legacyPaymentMethod", method);
+    setPage("paymentDetails");
+  }
+
+  if (page === "paymentDetails") {
+    return (
+      <div style={pageStyle}>
+        <div style={{ ...cardStyle, width: "760px", maxWidth: "95%" }}>
+          <button style={backButton} onClick={() => setPage("payment")}>
+            ← Back to Payment Methods
+          </button>
+
+          <h1 style={titleStyle}>{selectedPayment} Payment</h1>
+
+          <div style={summaryBox}>
+            <p><b>Class:</b> {selectedClass?.day} {selectedClass?.time} — {selectedClass?.name}</p>
+            <p><b>Package:</b> {selectedPackage?.name}</p>
+            <p><b>Total:</b> <span style={{ color: "#ec4899", fontWeight: "800" }}>{selectedPackage?.price}</span></p>
+          </div>
+
+          <div style={paymentBox}>
+            <h2>Send payment to:</h2>
+            <p><b>Bank:</b> Chinabank Corp</p>
+            <p><b>Account Number:</b> 168302020459</p>
+            <p><b>Account Name:</b> Legacy</p>
+          </div>
+
+          <button
+            style={buttonStyle}
+            onClick={() => {
+              if (selectedPayment === "GCash") {
+                window.location.href = "gcash://";
+              } else if (selectedPayment === "Maya") {
+                window.location.href = "paymaya://";
+              } else {
+                alert("Please open your banking app and transfer to the Chinabank details shown.");
+              }
+            }}
+          >
+            Open {selectedPayment} App
+          </button>
+
+          <p style={securityText}>
+            After payment, please screenshot your proof of payment.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   if (page === "payment") {
     return (
       <div style={pageStyle}>
@@ -70,26 +119,17 @@ export default function App() {
 
           <h1 style={titleStyle}>Payment Method</h1>
 
-          {selectedClass && selectedPackage && (
-            <div style={summaryBox}>
-              <p><b>Class:</b> {selectedClass.day} {selectedClass.time} — {selectedClass.name}</p>
-              <p><b>Package:</b> {selectedPackage.name}</p>
-              <p><b>Total:</b> <span style={{ color: "#ec4899", fontWeight: "800" }}>{selectedPackage.price}</span></p>
-            </div>
-          )}
+          <div style={summaryBox}>
+            <p><b>Class:</b> {selectedClass?.day} {selectedClass?.time} — {selectedClass?.name}</p>
+            <p><b>Package:</b> {selectedPackage?.name}</p>
+            <p><b>Total:</b> <span style={{ color: "#ec4899", fontWeight: "800" }}>{selectedPackage?.price}</span></p>
+          </div>
 
           <div style={packageGrid}>
-            {paymentMethods.map((item) => (
-              <button
-                key={item.name}
-                style={packageCard}
-                onClick={() => {
-                  localStorage.setItem("legacyPaymentMethod", JSON.stringify(item));
-                  alert(`Payment method selected: ${item.name}`);
-                }}
-              >
-                <h2 style={{ margin: 0 }}>{item.name}</h2>
-                <p style={noteText}>{item.note}</p>
+            {paymentMethods.map((method) => (
+              <button key={method} style={packageCard} onClick={() => choosePayment(method)}>
+                <h2>{method}</h2>
+                <p style={noteText}>Pay using {method}</p>
               </button>
             ))}
           </div>
@@ -102,26 +142,14 @@ export default function App() {
     return (
       <div style={pageStyle}>
         <div style={{ ...cardStyle, width: "900px", maxWidth: "95%" }}>
-          <button style={backButton} onClick={() => setPage("calendar")}>
-            ← Back to Classes
-          </button>
-
+          <button style={backButton} onClick={() => setPage("calendar")}>← Back to Classes</button>
           <h1 style={titleStyle}>Choose Package</h1>
-
-          {selectedClass && (
-            <p style={selectedText}>
-              Selected: <b>{selectedClass.day} {selectedClass.time}</b> — {selectedClass.name}
-            </p>
-          )}
+          <p style={selectedText}>Selected: <b>{selectedClass?.day} {selectedClass?.time}</b> — {selectedClass?.name}</p>
 
           <div style={packageGrid}>
             {packages.map((item) => (
-              <button
-                key={item.name}
-                style={packageCard}
-                onClick={() => choosePackage(item)}
-              >
-                <h2 style={{ margin: 0 }}>{item.name}</h2>
+              <button key={item.name} style={packageCard} onClick={() => choosePackage(item)}>
+                <h2>{item.name}</h2>
                 <p style={priceText}>{item.price}</p>
                 <p style={noteText}>{item.note}</p>
               </button>
@@ -137,17 +165,10 @@ export default function App() {
       <div style={pageStyle}>
         <div style={{ ...cardStyle, width: "900px", maxWidth: "95%" }}>
           <h1 style={titleStyle}>Classes</h1>
-
           <div style={classList}>
             {classes.map((item) => (
-              <button
-                key={item.day}
-                style={classRow}
-                onClick={() => chooseClass(item)}
-              >
-                <span style={dayText}>{item.day}</span>{" "}
-                <span>{item.time}</span>{" "}
-                <span>{item.name}</span>
+              <button key={item.day} style={classRow} onClick={() => chooseClass(item)}>
+                <span style={dayText}>{item.day}</span> {item.time} {item.name}
               </button>
             ))}
           </div>
@@ -161,14 +182,11 @@ export default function App() {
       <div style={pageStyle}>
         <div style={{ ...cardStyle, width: "700px", maxWidth: "90%" }}>
           <h1 style={titleStyle}>Student Waiver & Release</h1>
-
           <div style={waiverBox}>
             <p><b>Legacy Pole & Aerial Studio Waiver</b></p>
             <p>I understand that pole dance, aerial fitness, flexibility training, conditioning, and related activities involve physical exertion and risk of injury.</p>
-            <p>I confirm that I am voluntarily participating and that I am physically fit to join. I agree to follow all instructor instructions, safety rules, and studio policies.</p>
-            <p>I release and hold harmless Legacy Pole & Aerial Studio, its owners, instructors, staff, representatives, and venue partners from claims arising from my participation, except where prohibited by law.</p>
-            <p>I understand that I must disclose any medical condition, injury, pregnancy, medication, or limitation that may affect my ability to participate safely.</p>
-            <p>By checking the box below, I confirm that I have read, understood, and voluntarily agree to this waiver.</p>
+            <p>I confirm that I am voluntarily participating and that I am physically fit to join.</p>
+            <p>I release and hold harmless Legacy Pole & Aerial Studio, its owners, instructors, staff, and representatives from claims arising from my participation, except where prohibited by law.</p>
           </div>
 
           <label style={{ display: "flex", gap: "10px", marginTop: "20px" }}>
@@ -179,12 +197,7 @@ export default function App() {
           <button
             disabled={!agreed}
             onClick={() => setPage("calendar")}
-            style={{
-              ...buttonStyle,
-              background: agreed ? "#ec4899" : "#555",
-              cursor: agreed ? "pointer" : "not-allowed",
-              opacity: agreed ? 1 : 0.7
-            }}
+            style={{ ...buttonStyle, background: agreed ? "#ec4899" : "#555" }}
           >
             Accept Waiver
           </button>
@@ -197,7 +210,6 @@ export default function App() {
     <div style={pageStyle}>
       <div style={cardStyle}>
         <h1 style={titleStyle}>Student Information</h1>
-
         <input name="fullName" placeholder="Full Name" style={inputStyle} onChange={handleChange} />
         <input name="email" placeholder="Email Address" style={inputStyle} onChange={handleChange} />
         <input name="phone" placeholder="Phone Number" style={inputStyle} onChange={handleChange} />
@@ -208,156 +220,30 @@ export default function App() {
         <button
           disabled={!isFormValid}
           onClick={saveAndContinue}
-          style={{
-            ...buttonStyle,
-            background: isFormValid ? "#ec4899" : "#555",
-            cursor: isFormValid ? "pointer" : "not-allowed",
-            opacity: isFormValid ? 1 : 0.7
-          }}
+          style={{ ...buttonStyle, background: isFormValid ? "#ec4899" : "#555" }}
         >
           Continue
         </button>
-
-        <p style={securityText}>🔒 Your information is safe and secure.</p>
       </div>
     </div>
   );
 }
 
-const pageStyle = {
-  minHeight: "100vh",
-  background: "#050505",
-  color: "white",
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  fontFamily: "Arial",
-  padding: "20px"
-};
-
-const cardStyle = {
-  width: "380px",
-  background: "#111",
-  borderRadius: "24px",
-  padding: "40px",
-  border: "1px solid rgba(255,255,255,0.08)"
-};
-
-const titleStyle = {
-  textAlign: "left",
-  marginBottom: "30px",
-  fontSize: "42px",
-  fontWeight: "800"
-};
-
-const inputStyle = {
-  width: "100%",
-  padding: "16px",
-  marginBottom: "16px",
-  borderRadius: "14px",
-  border: "1px solid rgba(255,255,255,0.08)",
-  background: "#1c1c1c",
-  color: "white",
-  boxSizing: "border-box"
-};
-
-const buttonStyle = {
-  width: "100%",
-  padding: "16px",
-  borderRadius: "16px",
-  border: "none",
-  color: "white",
-  fontWeight: "700",
-  marginTop: "16px"
-};
-
-const waiverBox = {
-  maxHeight: "360px",
-  overflowY: "auto",
-  background: "#1c1c1c",
-  padding: "20px",
-  borderRadius: "16px",
-  lineHeight: "1.6",
-  color: "#ddd"
-};
-
-const securityText = {
-  textAlign: "center",
-  color: "#999",
-  marginTop: "22px",
-  fontSize: "14px"
-};
-
-const classList = {
-  display: "flex",
-  flexDirection: "column",
-  gap: "14px"
-};
-
-const classRow = {
-  background: "transparent",
-  border: "none",
-  color: "white",
-  textAlign: "left",
-  fontSize: "24px",
-  cursor: "pointer",
-  textDecoration: "underline"
-};
-
-const dayText = {
-  fontWeight: "700"
-};
-
-const packageGrid = {
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-  gap: "18px"
-};
-
-const packageCard = {
-  background: "#1c1c1c",
-  border: "1px solid rgba(255,255,255,0.1)",
-  borderRadius: "20px",
-  padding: "24px",
-  color: "white",
-  textAlign: "left",
-  cursor: "pointer"
-};
-
-const priceText = {
-  fontSize: "28px",
-  fontWeight: "800",
-  color: "#ec4899",
-  margin: "18px 0 8px"
-};
-
-const noteText = {
-  color: "#bbb",
-  fontSize: "15px",
-  lineHeight: "1.5"
-};
-
-const selectedText = {
-  color: "#ccc",
-  marginBottom: "24px",
-  fontSize: "17px"
-};
-
-const backButton = {
-  background: "transparent",
-  border: "none",
-  color: "#ec4899",
-  fontSize: "16px",
-  cursor: "pointer",
-  marginBottom: "20px"
-};
-
-const summaryBox = {
-  background: "#1c1c1c",
-  border: "1px solid rgba(255,255,255,0.08)",
-  borderRadius: "16px",
-  padding: "18px",
-  marginBottom: "24px",
-  color: "#ddd",
-  lineHeight: "1.6"
-};
+const pageStyle = { minHeight: "100vh", background: "#050505", color: "white", display: "flex", justifyContent: "center", alignItems: "center", fontFamily: "Arial", padding: "20px" };
+const cardStyle = { width: "380px", background: "#111", borderRadius: "24px", padding: "40px", border: "1px solid rgba(255,255,255,0.08)" };
+const titleStyle = { textAlign: "left", marginBottom: "30px", fontSize: "42px", fontWeight: "800" };
+const inputStyle = { width: "100%", padding: "16px", marginBottom: "16px", borderRadius: "14px", border: "1px solid rgba(255,255,255,0.08)", background: "#1c1c1c", color: "white", boxSizing: "border-box" };
+const buttonStyle = { width: "100%", padding: "16px", borderRadius: "16px", border: "none", color: "white", fontWeight: "700", marginTop: "16px", cursor: "pointer" };
+const waiverBox = { maxHeight: "360px", overflowY: "auto", background: "#1c1c1c", padding: "20px", borderRadius: "16px", lineHeight: "1.6", color: "#ddd" };
+const classList = { display: "flex", flexDirection: "column", gap: "14px" };
+const classRow = { background: "transparent", border: "none", color: "white", textAlign: "left", fontSize: "24px", cursor: "pointer", textDecoration: "underline" };
+const dayText = { fontWeight: "700" };
+const packageGrid = { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "18px" };
+const packageCard = { background: "#1c1c1c", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "20px", padding: "24px", color: "white", textAlign: "left", cursor: "pointer" };
+const priceText = { fontSize: "28px", fontWeight: "800", color: "#ec4899", margin: "18px 0 8px" };
+const noteText = { color: "#bbb", fontSize: "15px", lineHeight: "1.5" };
+const selectedText = { color: "#ccc", marginBottom: "24px", fontSize: "17px" };
+const backButton = { background: "transparent", border: "none", color: "#ec4899", fontSize: "16px", cursor: "pointer", marginBottom: "20px" };
+const summaryBox = { background: "#1c1c1c", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "16px", padding: "18px", marginBottom: "24px", color: "#ddd", lineHeight: "1.6" };
+const paymentBox = { background: "#1c1c1c", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "16px", padding: "24px", color: "#ddd", lineHeight: "1.8" };
+const securityText = { textAlign: "center", color: "#999", marginTop: "22px", fontSize: "14px" };
