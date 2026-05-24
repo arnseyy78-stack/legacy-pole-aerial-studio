@@ -6,7 +6,7 @@ export default function App() {
   const [selectedClass, setSelectedClass] = useState(null);
   const [selectedPackage, setSelectedPackage] = useState(null);
 
-  const paymongoMerchantId = "org_VizvF8g1Lq5cvJviJRNCMyTe";
+  const merchantId = "org_VizvF8g1Lq5cvJviJRNCMyTe";
 
   const [form, setForm] = useState({
     fullName: "",
@@ -29,45 +29,10 @@ export default function App() {
   ];
 
   const packages = [
-    {
-      name: "Single Pass",
-      price: "₱850.00",
-      amount: 850,
-      note: "One class access"
-    },
-    {
-      name: "Class Card of 5",
-      price: "₱4,000.00",
-      amount: 4000,
-      note: "Consumable within 30 days"
-    },
-    {
-      name: "Practice Session",
-      price: "₱550.00",
-      amount: 550,
-      note: "Open practice access"
-    },
-    {
-      name: "Private Class",
-      price: "₱3,000.00",
-      amount: 3000,
-      note: "Can be up to 3 students"
-    }
-  ];
-
-  const paymentMethods = [
-    {
-      name: "GCash",
-      detail: "Pay using GCash via PayMongo"
-    },
-    {
-      name: "Maya",
-      detail: "Pay using Maya via PayMongo"
-    },
-    {
-      name: "Bank Transfer",
-      detail: "Transfer using your bank via PayMongo"
-    }
+    { name: "Single Pass", price: "₱850.00", amount: 850, note: "One class access" },
+    { name: "Class Card of 5", price: "₱4,000.00", amount: 4000, note: "Consumable within 30 days" },
+    { name: "Practice Session", price: "₱550.00", amount: 550, note: "Open practice access" },
+    { name: "Private Class", price: "₱3,000.00", amount: 3000, note: "Can be up to 3 students" }
   ];
 
   function handleChange(e) {
@@ -91,47 +56,34 @@ export default function App() {
     setPage("payment");
   }
 
-  function choosePayment(method) {
-    localStorage.setItem("legacyPaymentMethod", JSON.stringify(method));
-    alert(
-      `Payment selected: ${method.name}\nMerchant ID: ${paymongoMerchantId}\nAmount: ${selectedPackage?.price}`
-    );
-  }
-
   if (page === "payment") {
     return (
       <div style={pageStyle}>
-        <div style={{ ...cardStyle, width: "900px", maxWidth: "95%" }}>
+        <div style={{ ...cardStyle, width: "700px", maxWidth: "95%" }}>
           <button style={backButton} onClick={() => setPage("packages")}>
             ← Back to Packages
           </button>
 
           <h1 style={titleStyle}>Payment Method</h1>
 
-          <p style={selectedText}>
-            Class: <b>{selectedClass?.day} {selectedClass?.time}</b> — {selectedClass?.name}
-          </p>
-
-          <p style={selectedText}>
-            Package: <b>{selectedPackage?.name}</b> — {selectedPackage?.price}
-          </p>
-
-          <p style={merchantText}>
-            PayMongo Merchant ID: <b>{paymongoMerchantId}</b>
-          </p>
-
-          <div style={packageGrid}>
-            {paymentMethods.map((method) => (
-              <button
-                key={method.name}
-                style={packageCard}
-                onClick={() => choosePayment(method)}
-              >
-                <h2 style={{ margin: 0 }}>{method.name}</h2>
-                <p style={noteText}>{method.detail}</p>
-              </button>
-            ))}
+          <div style={summaryBox}>
+            <p><b>Class:</b> {selectedClass?.day} {selectedClass?.time} — {selectedClass?.name}</p>
+            <p><b>Package:</b> {selectedPackage?.name}</p>
+            <p><b>Amount:</b> {selectedPackage?.price}</p>
+            <p><b>Merchant ID:</b> {merchantId}</p>
           </div>
+
+          <button style={payButton} onClick={() => alert("Open GCash app and pay using Merchant ID: " + merchantId)}>
+            Pay with GCash App
+          </button>
+
+          <button style={{ ...payButton, background: "#7c3aed" }} onClick={() => alert("Open Maya app and pay using Merchant ID: " + merchantId)}>
+            Pay with Maya App
+          </button>
+
+          <p style={securityText}>
+            After payment, please save your payment screenshot as proof.
+          </p>
         </div>
       </div>
     );
@@ -147,19 +99,13 @@ export default function App() {
 
           <h1 style={titleStyle}>Choose Package</h1>
 
-          {selectedClass && (
-            <p style={selectedText}>
-              Selected: <b>{selectedClass.day} {selectedClass.time}</b> — {selectedClass.name}
-            </p>
-          )}
+          <p style={selectedText}>
+            Selected: <b>{selectedClass?.day} {selectedClass?.time}</b> — {selectedClass?.name}
+          </p>
 
           <div style={packageGrid}>
             {packages.map((item) => (
-              <button
-                key={item.name}
-                style={packageCard}
-                onClick={() => choosePackage(item)}
-              >
+              <button key={item.name} style={packageCard} onClick={() => choosePackage(item)}>
                 <h2 style={{ margin: 0 }}>{item.name}</h2>
                 <p style={priceText}>{item.price}</p>
                 <p style={noteText}>{item.note}</p>
@@ -179,11 +125,7 @@ export default function App() {
 
           <div style={classList}>
             {classes.map((item) => (
-              <button
-                key={item.day}
-                style={classRow}
-                onClick={() => chooseClass(item)}
-              >
+              <button key={item.day} style={classRow} onClick={() => chooseClass(item)}>
                 <span style={dayText}>{item.day}</span>{" "}
                 <span>{item.time}</span>{" "}
                 <span>{item.name}</span>
@@ -204,7 +146,7 @@ export default function App() {
           <div style={waiverBox}>
             <p><b>Legacy Pole & Aerial Studio Waiver</b></p>
             <p>I understand that pole dance, aerial fitness, flexibility training, conditioning, and related activities involve physical exertion and risk of injury.</p>
-            <p>I confirm that I am voluntarily participating and that I am physically fit to join. I agree to follow all instructor instructions, safety rules, and studio policies.</p>
+            <p>I confirm that I am voluntarily participating and physically fit to join. I agree to follow instructor instructions, safety rules, and studio policies.</p>
             <p>I release and hold harmless Legacy Pole & Aerial Studio, its owners, instructors, staff, representatives, and venue partners from claims arising from my participation, except where prohibited by law.</p>
             <p>I understand that I must disclose any medical condition, injury, pregnancy, medication, or limitation that may affect my ability to participate safely.</p>
             <p>By checking the box below, I confirm that I have read, understood, and voluntarily agree to this waiver.</p>
@@ -378,14 +320,8 @@ const noteText = {
 
 const selectedText = {
   color: "#ccc",
-  marginBottom: "14px",
-  fontSize: "17px"
-};
-
-const merchantText = {
-  color: "#ec4899",
   marginBottom: "24px",
-  fontSize: "15px"
+  fontSize: "17px"
 };
 
 const backButton = {
@@ -395,4 +331,25 @@ const backButton = {
   fontSize: "16px",
   cursor: "pointer",
   marginBottom: "20px"
+};
+
+const summaryBox = {
+  background: "#1c1c1c",
+  borderRadius: "18px",
+  padding: "20px",
+  marginBottom: "24px",
+  lineHeight: "1.7"
+};
+
+const payButton = {
+  width: "100%",
+  padding: "18px",
+  borderRadius: "18px",
+  border: "none",
+  background: "#ec4899",
+  color: "white",
+  fontSize: "18px",
+  fontWeight: "800",
+  cursor: "pointer",
+  marginTop: "14px"
 };
