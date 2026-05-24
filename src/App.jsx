@@ -3,9 +3,9 @@ import { useState } from "react";
 export default function App() {
   const [page, setPage] = useState("signup");
   const [agreed, setAgreed] = useState(false);
+
   const [selectedClass, setSelectedClass] = useState(null);
   const [selectedPackage, setSelectedPackage] = useState(null);
-  const [selectedPayment, setSelectedPayment] = useState(null);
 
   const [form, setForm] = useState({
     fullName: "",
@@ -28,13 +28,27 @@ export default function App() {
   ];
 
   const packages = [
-    { name: "Single Pass", price: "₱850.00", note: "One class access" },
-    { name: "Class Card of 5", price: "₱4,000.00", note: "Consumable within 30 days" },
-    { name: "Practice Session", price: "₱550.00", note: "Open practice access" },
-    { name: "Private Class", price: "₱3,000.00", note: "Can be up to 3 students" }
+    {
+      name: "Single Pass",
+      price: "₱850.00",
+      note: "One class access"
+    },
+    {
+      name: "Class Card of 5",
+      price: "₱4,000.00",
+      note: "Consumable within 30 days"
+    },
+    {
+      name: "Practice Session",
+      price: "₱550.00",
+      note: "Open practice access"
+    },
+    {
+      name: "Private Class",
+      price: "₱3,000.00",
+      note: "Can be up to 3 students"
+    }
   ];
-
-  const paymentMethods = ["GCash", "Maya", "Bank Transfer"];
 
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -47,64 +61,15 @@ export default function App() {
 
   function chooseClass(item) {
     setSelectedClass(item);
-    localStorage.setItem("legacySelectedClass", JSON.stringify(item));
     setPage("packages");
   }
 
   function choosePackage(item) {
     setSelectedPackage(item);
-    localStorage.setItem("legacySelectedPackage", JSON.stringify(item));
     setPage("payment");
   }
 
-  function choosePayment(method) {
-    setSelectedPayment(method);
-    localStorage.setItem("legacyPaymentMethod", method);
-    setPage("bankTransfer");
-  }
-
-  if (page === "bankTransfer") {
-    return (
-      <div style={pageStyle}>
-        <div style={{ ...cardStyle, width: "760px", maxWidth: "95%" }}>
-          <button style={backButton} onClick={() => setPage("payment")}>
-            ← Back to Payment Methods
-          </button>
-
-          <h1 style={titleStyle}>Bank Transfer</h1>
-
-          <div style={summaryBox}>
-            <p><b>Payment Method:</b> {selectedPayment}</p>
-            <p><b>Class:</b> {selectedClass?.day} {selectedClass?.time} — {selectedClass?.name}</p>
-            <p><b>Package:</b> {selectedPackage?.name}</p>
-            <p><b>Total:</b> <span style={{ color: "#ec4899", fontWeight: "800" }}>{selectedPackage?.price}</span></p>
-          </div>
-
-          <div style={paymentBox}>
-            <h2>Send Payment To:</h2>
-            <p><b>Bank:</b> Chinabank Corp / Chinabank</p>
-            <p><b>Account Number:</b> 168302020459</p>
-            <p><b>Account Name:</b> Legacy</p>
-          </div>
-
-          <button
-            style={buttonStyle}
-            onClick={() => {
-              navigator.clipboard.writeText(
-                "Bank: Chinabank Corp / Chinabank\nAccount: 168302020459\nName: Legacy"
-              );
-              alert("Bank details copied. Open your payment app and choose Bank Transfer.");
-            }}
-          >
-            Copy Bank Details
-          </button>
-
-          <p style={securityText}>After payment, screenshot your proof of payment.</p>
-        </div>
-      </div>
-    );
-  }
-
+  // PAYMENT PAGE
   if (page === "payment") {
     return (
       <div style={pageStyle}>
@@ -115,37 +80,57 @@ export default function App() {
 
           <h1 style={titleStyle}>Payment Method</h1>
 
-          <div style={summaryBox}>
-            <p><b>Class:</b> {selectedClass?.day} {selectedClass?.time} — {selectedClass?.name}</p>
-            <p><b>Package:</b> {selectedPackage?.name}</p>
-            <p><b>Total:</b> <span style={{ color: "#ec4899", fontWeight: "800" }}>{selectedPackage?.price}</span></p>
-          </div>
+          <p style={selectedText}>
+            <b>{selectedPackage?.name}</b> — {selectedPackage?.price}
+          </p>
 
-          <div style={packageGrid}>
-            {paymentMethods.map((method) => (
-              <button key={method} style={packageCard} onClick={() => choosePayment(method)}>
-                <h2>{method}</h2>
-                <p style={noteText}>Continue to bank transfer details</p>
-              </button>
-            ))}
+          <div style={paymentGrid}>
+            <button style={paymentCard}>
+              <h2>GCash</h2>
+              <p style={paymentSub}>Secure mobile payment</p>
+              <p style={orgText}>org_VizvF8g1Lq5cvJviJRNCMyTe</p>
+            </button>
+
+            <button style={paymentCard}>
+              <h2>Maya</h2>
+              <p style={paymentSub}>Fast digital checkout</p>
+              <p style={orgText}>org_VizvF8g1Lq5cvJviJRNCMyTe</p>
+            </button>
+
+            <button style={paymentCard}>
+              <h2>Bank Transfer</h2>
+              <p style={paymentSub}>Direct bank payment</p>
+              <p style={orgText}>org_VizvF8g1Lq5cvJviJRNCMyTe</p>
+            </button>
           </div>
         </div>
       </div>
     );
   }
 
+  // PACKAGE PAGE
   if (page === "packages") {
     return (
       <div style={pageStyle}>
         <div style={{ ...cardStyle, width: "900px", maxWidth: "95%" }}>
-          <button style={backButton} onClick={() => setPage("calendar")}>← Back to Classes</button>
+          <button style={backButton} onClick={() => setPage("calendar")}>
+            ← Back to Classes
+          </button>
+
           <h1 style={titleStyle}>Choose Package</h1>
-          <p style={selectedText}>Selected: <b>{selectedClass?.day} {selectedClass?.time}</b> — {selectedClass?.name}</p>
+
+          <p style={selectedText}>
+            Selected: <b>{selectedClass.day} {selectedClass.time}</b> — {selectedClass.name}
+          </p>
 
           <div style={packageGrid}>
             {packages.map((item) => (
-              <button key={item.name} style={packageCard} onClick={() => choosePackage(item)}>
-                <h2>{item.name}</h2>
+              <button
+                key={item.name}
+                style={packageCard}
+                onClick={() => choosePackage(item)}
+              >
+                <h2 style={{ margin: 0 }}>{item.name}</h2>
                 <p style={priceText}>{item.price}</p>
                 <p style={noteText}>{item.note}</p>
               </button>
@@ -156,6 +141,7 @@ export default function App() {
     );
   }
 
+  // CALENDAR PAGE
   if (page === "calendar") {
     return (
       <div style={pageStyle}>
@@ -164,8 +150,14 @@ export default function App() {
 
           <div style={classList}>
             {classes.map((item) => (
-              <button key={item.day} style={classRow} onClick={() => chooseClass(item)}>
-                <span style={dayText}>{item.day}</span> {item.time} {item.name}
+              <button
+                key={item.day}
+                style={classRow}
+                onClick={() => chooseClass(item)}
+              >
+                <span style={dayText}>{item.day}</span>{" "}
+                <span>{item.time}</span>{" "}
+                <span>{item.name}</span>
               </button>
             ))}
           </div>
@@ -174,6 +166,7 @@ export default function App() {
     );
   }
 
+  // WAIVER PAGE
   if (page === "waiver") {
     return (
       <div style={pageStyle}>
@@ -181,14 +174,18 @@ export default function App() {
           <h1 style={titleStyle}>Student Waiver & Release</h1>
 
           <div style={waiverBox}>
-            <p><b>Legacy Pole & Aerial Studio Waiver</b></p>
-            <p>I understand that pole dance, aerial fitness, flexibility training, conditioning, and related activities involve physical exertion and risk of injury.</p>
-            <p>I confirm that I am voluntarily participating and that I am physically fit to join.</p>
-            <p>I release and hold harmless Legacy Pole & Aerial Studio, its owners, instructors, staff, and representatives from claims arising from my participation, except where prohibited by law.</p>
+            <p>I understand that participation involves physical activity and risk of injury.</p>
+            <p>I voluntarily participate and agree to follow all safety instructions and studio rules.</p>
+            <p>I release Legacy Pole & Aerial Studio and staff from liability except where prohibited by law.</p>
+            <p>I confirm that I have read and understood this waiver.</p>
           </div>
 
           <label style={{ display: "flex", gap: "10px", marginTop: "20px" }}>
-            <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} />
+            <input
+              type="checkbox"
+              checked={agreed}
+              onChange={(e) => setAgreed(e.target.checked)}
+            />
             <span>I have read and agree to the waiver.</span>
           </label>
 
@@ -208,6 +205,7 @@ export default function App() {
     );
   }
 
+  // SIGNUP PAGE
   return (
     <div style={pageStyle}>
       <div style={cardStyle}>
@@ -231,26 +229,163 @@ export default function App() {
         >
           Continue
         </button>
+
+        <p style={securityText}>🔒 Your information is safe and secure.</p>
       </div>
     </div>
   );
 }
 
-const pageStyle = { minHeight: "100vh", background: "#050505", color: "white", display: "flex", justifyContent: "center", alignItems: "center", fontFamily: "Arial", padding: "20px" };
-const cardStyle = { width: "380px", background: "#111", borderRadius: "24px", padding: "40px", border: "1px solid rgba(255,255,255,0.08)" };
-const titleStyle = { textAlign: "left", marginBottom: "30px", fontSize: "42px", fontWeight: "800" };
-const inputStyle = { width: "100%", padding: "16px", marginBottom: "16px", borderRadius: "14px", border: "1px solid rgba(255,255,255,0.08)", background: "#1c1c1c", color: "white", boxSizing: "border-box" };
-const buttonStyle = { width: "100%", padding: "16px", borderRadius: "16px", border: "none", color: "white", fontWeight: "700", marginTop: "16px" };
-const waiverBox = { maxHeight: "360px", overflowY: "auto", background: "#1c1c1c", padding: "20px", borderRadius: "16px", lineHeight: "1.6", color: "#ddd" };
-const classList = { display: "flex", flexDirection: "column", gap: "14px" };
-const classRow = { background: "transparent", border: "none", color: "white", textAlign: "left", fontSize: "24px", cursor: "pointer", textDecoration: "underline" };
-const dayText = { fontWeight: "700" };
-const packageGrid = { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "18px" };
-const packageCard = { background: "#1c1c1c", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "20px", padding: "24px", color: "white", textAlign: "left", cursor: "pointer" };
-const priceText = { fontSize: "28px", fontWeight: "800", color: "#ec4899", margin: "18px 0 8px" };
-const noteText = { color: "#bbb", fontSize: "15px", lineHeight: "1.5" };
-const selectedText = { color: "#ccc", marginBottom: "24px", fontSize: "17px" };
-const backButton = { background: "transparent", border: "none", color: "#ec4899", fontSize: "16px", cursor: "pointer", marginBottom: "20px" };
-const summaryBox = { background: "#1c1c1c", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "16px", padding: "18px", marginBottom: "24px", color: "#ddd", lineHeight: "1.6" };
-const paymentBox = { background: "#1c1c1c", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "16px", padding: "24px", color: "#ddd", lineHeight: "1.8" };
-const securityText = { textAlign: "center", color: "#999", marginTop: "22px", fontSize: "14px" };
+const pageStyle = {
+  minHeight: "100vh",
+  background: "#050505",
+  color: "white",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  fontFamily: "Arial",
+  padding: "20px"
+};
+
+const cardStyle = {
+  width: "380px",
+  background: "#111",
+  borderRadius: "24px",
+  padding: "40px",
+  border: "1px solid rgba(255,255,255,0.08)"
+};
+
+const titleStyle = {
+  marginBottom: "30px",
+  fontSize: "42px",
+  fontWeight: "800"
+};
+
+const inputStyle = {
+  width: "100%",
+  padding: "16px",
+  marginBottom: "16px",
+  borderRadius: "14px",
+  border: "1px solid rgba(255,255,255,0.08)",
+  background: "#1c1c1c",
+  color: "white",
+  boxSizing: "border-box"
+};
+
+const buttonStyle = {
+  width: "100%",
+  padding: "16px",
+  borderRadius: "16px",
+  border: "none",
+  color: "white",
+  fontWeight: "700",
+  marginTop: "16px"
+};
+
+const waiverBox = {
+  maxHeight: "300px",
+  overflowY: "auto",
+  background: "#1c1c1c",
+  padding: "20px",
+  borderRadius: "16px",
+  lineHeight: "1.6",
+  color: "#ddd"
+};
+
+const securityText = {
+  textAlign: "center",
+  color: "#999",
+  marginTop: "22px",
+  fontSize: "14px"
+};
+
+const classList = {
+  display: "flex",
+  flexDirection: "column",
+  gap: "14px"
+};
+
+const classRow = {
+  background: "transparent",
+  border: "none",
+  color: "white",
+  textAlign: "left",
+  fontSize: "24px",
+  cursor: "pointer",
+  textDecoration: "underline"
+};
+
+const dayText = {
+  fontWeight: "700"
+};
+
+const packageGrid = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+  gap: "18px"
+};
+
+const packageCard = {
+  background: "#1c1c1c",
+  border: "1px solid rgba(255,255,255,0.1)",
+  borderRadius: "20px",
+  padding: "24px",
+  color: "white",
+  textAlign: "left",
+  cursor: "pointer"
+};
+
+const priceText = {
+  fontSize: "28px",
+  fontWeight: "800",
+  color: "#ec4899",
+  margin: "18px 0 8px"
+};
+
+const noteText = {
+  color: "#bbb",
+  fontSize: "15px"
+};
+
+const selectedText = {
+  color: "#ccc",
+  marginBottom: "24px",
+  fontSize: "17px"
+};
+
+const backButton = {
+  background: "transparent",
+  border: "none",
+  color: "#ec4899",
+  fontSize: "16px",
+  cursor: "pointer",
+  marginBottom: "20px"
+};
+
+const paymentGrid = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+  gap: "20px"
+};
+
+const paymentCard = {
+  background: "#1c1c1c",
+  border: "1px solid rgba(255,255,255,0.08)",
+  borderRadius: "20px",
+  padding: "30px",
+  color: "white",
+  textAlign: "left",
+  cursor: "pointer"
+};
+
+const paymentSub = {
+  color: "#aaa",
+  marginTop: "10px"
+};
+
+const orgText = {
+  marginTop: "20px",
+  color: "#ec4899",
+  fontWeight: "700",
+  wordBreak: "break-word"
+};
