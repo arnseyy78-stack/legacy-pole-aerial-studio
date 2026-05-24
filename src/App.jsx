@@ -56,6 +56,33 @@ export default function App() {
     setPage("payment");
   }
 
+  function openPaymentApp(method) {
+    const record = {
+      student: form,
+      class: selectedClass,
+      package: selectedPackage,
+      method,
+      merchantId,
+      createdAt: new Date().toISOString()
+    };
+
+    localStorage.setItem("legacyBookingRecord", JSON.stringify(record));
+
+    if (method === "gcash") {
+      window.location.href = "gcash://";
+      setTimeout(() => {
+        alert("If GCash did not open, please open your GCash app manually and pay using Merchant ID: " + merchantId);
+      }, 1200);
+    }
+
+    if (method === "maya") {
+      window.location.href = "paymaya://";
+      setTimeout(() => {
+        alert("If Maya did not open, please open your Maya app manually and pay using Merchant ID: " + merchantId);
+      }, 1200);
+    }
+  }
+
   if (page === "payment") {
     return (
       <div style={pageStyle}>
@@ -73,16 +100,16 @@ export default function App() {
             <p><b>Merchant ID:</b> {merchantId}</p>
           </div>
 
-          <button style={payButton} onClick={() => alert("Open GCash app and pay using Merchant ID: " + merchantId)}>
-            Pay with GCash App
+          <button style={payButton} onClick={() => openPaymentApp("gcash")}>
+            Open GCash App
           </button>
 
-          <button style={{ ...payButton, background: "#7c3aed" }} onClick={() => alert("Open Maya app and pay using Merchant ID: " + merchantId)}>
-            Pay with Maya App
+          <button style={{ ...payButton, background: "#7c3aed" }} onClick={() => openPaymentApp("maya")}>
+            Open Maya App
           </button>
 
           <p style={securityText}>
-            After payment, please save your payment screenshot as proof.
+            After payment, save your screenshot as proof.
           </p>
         </div>
       </div>
