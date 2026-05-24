@@ -6,7 +6,7 @@ export default function App() {
   const [selectedClass, setSelectedClass] = useState(null);
   const [selectedPackage, setSelectedPackage] = useState(null);
 
-  const merchantId = "org_VizvF8g1Lq5cvJviJRNCMyTe";
+  const paymongoLink = "https://pm.link/org-VizvF8g1Lq5cvJviJRNCMyTe/geUY4Ih";
 
   const [form, setForm] = useState({
     fullName: "",
@@ -56,31 +56,18 @@ export default function App() {
     setPage("payment");
   }
 
-  function openPaymentApp(method) {
+  function goToPayment(method) {
     const record = {
       student: form,
       class: selectedClass,
       package: selectedPackage,
-      method,
-      merchantId,
+      paymentMethod: method,
+      paymentLink: paymongoLink,
       createdAt: new Date().toISOString()
     };
 
     localStorage.setItem("legacyBookingRecord", JSON.stringify(record));
-
-    if (method === "gcash") {
-      window.location.href = "gcash://";
-      setTimeout(() => {
-        alert("If GCash did not open, please open your GCash app manually and pay using Merchant ID: " + merchantId);
-      }, 1200);
-    }
-
-    if (method === "maya") {
-      window.location.href = "paymaya://";
-      setTimeout(() => {
-        alert("If Maya did not open, please open your Maya app manually and pay using Merchant ID: " + merchantId);
-      }, 1200);
-    }
+    window.location.href = paymongoLink;
   }
 
   if (page === "payment") {
@@ -97,19 +84,18 @@ export default function App() {
             <p><b>Class:</b> {selectedClass?.day} {selectedClass?.time} — {selectedClass?.name}</p>
             <p><b>Package:</b> {selectedPackage?.name}</p>
             <p><b>Amount:</b> {selectedPackage?.price}</p>
-            <p><b>Merchant ID:</b> {merchantId}</p>
           </div>
 
-          <button style={payButton} onClick={() => openPaymentApp("gcash")}>
-            Open GCash App
+          <button style={payButton} onClick={() => goToPayment("GCash")}>
+            Pay with GCash
           </button>
 
-          <button style={{ ...payButton, background: "#7c3aed" }} onClick={() => openPaymentApp("maya")}>
-            Open Maya App
+          <button style={{ ...payButton, background: "#7c3aed" }} onClick={() => goToPayment("Maya")}>
+            Pay with Maya
           </button>
 
           <p style={securityText}>
-            After payment, save your screenshot as proof.
+            You will be redirected to PayMongo secure checkout.
           </p>
         </div>
       </div>
