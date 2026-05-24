@@ -2,6 +2,7 @@ import { useState } from "react";
 
 export default function App() {
   const [page, setPage] = useState("signup");
+  const [agreed, setAgreed] = useState(false);
 
   const [form, setForm] = useState({
     fullName: "",
@@ -11,8 +12,6 @@ export default function App() {
     emergencyName: "",
     emergencyPhone: ""
   });
-
-  const [agreed, setAgreed] = useState(false);
 
   const isFormValid = Object.values(form).every(Boolean);
 
@@ -24,48 +23,28 @@ export default function App() {
     localStorage.setItem("legacyStudentRecord", JSON.stringify(form));
     setPage("waiver");
   }
-if (page === "calendar") {
-  return (
-    <div style={pageStyle}>
-      <div style={{ ...cardStyle, width: "800px", maxWidth: "95%" }}>
-        <h1 style={titleStyle}>Class Calendar</h1>
 
-        <div style={calendarGrid}>
-          {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map((day) => (
-            <div style={dayCard} key={day}>
-              <h2>{day}</h2>
-              <p>10:00 AM - Static Pole</p>
-              <p>1:00 PM - Spinny Heels Pole</p>
-              <p>4:00 PM - Static Pole</p>
-              <p>7:00 PM - Spinny Heels Pole</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
   if (page === "calendar") {
-  return (
-    <div style={pageStyle}>
-      <div style={{ ...cardStyle, width: "900px", maxWidth: "95%" }}>
-        <h1 style={titleStyle}>Class Calendar</h1>
-
-        <div style={calendarGrid}>
-          {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map((day) => (
-            <div style={dayCard} key={day}>
-              <h2>{day}</h2>
-              <p>10:00 AM - Static Pole</p>
-              <p>1:00 PM - Spinny Heels Pole</p>
-              <p>4:00 PM - Static Pole</p>
-              <p>7:00 PM - Spinny Heels Pole</p>
-            </div>
-          ))}
+    return (
+      <div style={pageStyle}>
+        <div style={{ ...cardStyle, width: "900px", maxWidth: "95%" }}>
+          <h1 style={titleStyle}>Class Calendar</h1>
+          <div style={calendarGrid}>
+            {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map((day) => (
+              <div style={dayCard} key={day}>
+                <h2>{day}</h2>
+                <p>10:00 AM - Static Pole</p>
+                <p>1:00 PM - Spinny Heels Pole</p>
+                <p>4:00 PM - Static Pole</p>
+                <p>7:00 PM - Spinny Heels Pole</p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
+
   if (page === "waiver") {
     return (
       <div style={pageStyle}>
@@ -74,56 +53,21 @@ if (page === "calendar") {
 
           <div style={waiverBox}>
             <p><b>Legacy Pole & Aerial Studio Waiver</b></p>
-
-            <p>
-              I understand that pole dance, aerial fitness, flexibility training,
-              conditioning, and related activities involve physical exertion and
-              risk of injury, including but not limited to falls, bruises, sprains,
-              strains, dizziness, muscle injury, or other physical harm.
-            </p>
-
-            <p>
-              I confirm that I am voluntarily participating and that I am physically
-              fit to join. I agree to follow all instructor instructions, safety
-              rules, and studio policies at all times.
-            </p>
-
-            <p>
-              I release and hold harmless Legacy Pole & Aerial Studio, its owners,
-              instructors, staff, representatives, and venue partners from any
-              claims, injuries, losses, damages, expenses, or liabilities arising
-              from my participation, except where prohibited by law.
-            </p>
-
-            <p>
-              I understand that I must disclose any medical condition, injury,
-              pregnancy, medication, or limitation that may affect my ability to
-              participate safely.
-            </p>
-
-            <p>
-              I agree that bookings are required before attending. I understand
-              that visitors are not allowed without prior approval.
-            </p>
-
-            <p>
-              By checking the box below, I confirm that I have read, understood,
-              and voluntarily agree to this waiver.
-            </p>
+            <p>I understand that pole dance, aerial fitness, flexibility training, conditioning, and related activities involve physical exertion and risk of injury.</p>
+            <p>I confirm that I am voluntarily participating and that I am physically fit to join. I agree to follow all instructor instructions, safety rules, and studio policies.</p>
+            <p>I release and hold harmless Legacy Pole & Aerial Studio, its owners, instructors, staff, representatives, and venue partners from claims arising from my participation, except where prohibited by law.</p>
+            <p>I understand that I must disclose any medical condition, injury, pregnancy, medication, or limitation that may affect my ability to participate safely.</p>
+            <p>By checking the box below, I confirm that I have read, understood, and voluntarily agree to this waiver.</p>
           </div>
 
           <label style={{ display: "flex", gap: "10px", marginTop: "20px" }}>
-            <input
-              type="checkbox"
-              checked={agreed}
-              onChange={(e) => setAgreed(e.target.checked)}
-            />
+            <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} />
             <span>I have read and agree to the waiver.</span>
           </label>
 
           <button
             disabled={!agreed}
-onClick={() => setPage("calendar")}
+            onClick={() => setPage("calendar")}
             style={{
               ...buttonStyle,
               background: agreed ? "#ec4899" : "#555",
@@ -152,12 +96,7 @@ onClick={() => setPage("calendar")}
 
         <button
           disabled={!isFormValid}
-          onClick={() => {
-  saveAndContinue();
-  setPage("calendar");
-}}
-          
-  style={{
+          onClick={saveAndContinue}
           style={{
             ...buttonStyle,
             background: isFormValid ? "#ec4899" : "#555",
