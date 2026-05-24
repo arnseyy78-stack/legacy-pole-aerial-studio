@@ -3,65 +3,77 @@ import { useState } from "react";
 export default function App() {
   const [page, setPage] = useState("home");
 
-  if (page === "auth") {
+  // SIGN UP PAGE
+  if (page === "signup") {
     return (
-      <div style={{
-        minHeight: "100vh",
-        background: "#111",
-        color: "white",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        fontFamily: "Arial"
-      }}>
-        <div style={{
-          background: "#1a1a1a",
-          padding: "40px",
-          borderRadius: "20px",
-          width: "320px"
-        }}>
-          <h1 style={{ textAlign: "center" }}>LEGACY</h1>
+      <div style={pageStyle}>
+        <div style={cardStyle}>
+          <h1 style={{ textAlign: "center" }}>Student Information</h1>
 
-          <div style={{ marginTop: "30px" }}>
-            <input
-              placeholder="Email"
-              style={inputStyle}
-            />
+          <input placeholder="Full Name" style={inputStyle} />
+          <input placeholder="Email Address" style={inputStyle} />
+          <input placeholder="Phone Number" style={inputStyle} />
+          
+          <input
+            type="date"
+            style={inputStyle}
+          />
 
-            <input
-              placeholder="Password"
-              type="password"
-              style={inputStyle}
-            />
+          <input
+            placeholder="Emergency Contact Name"
+            style={inputStyle}
+          />
 
-            <button style={buttonStyle}>
-              Login
-            </button>
+          <input
+            placeholder="Emergency Contact Number"
+            style={inputStyle}
+          />
 
-            <button style={{
-              ...buttonStyle,
-              background: "#333",
-              marginTop: "10px"
-            }}>
-              Sign Up
-            </button>
-          </div>
+          <button style={buttonStyle}>
+            Continue
+          </button>
         </div>
       </div>
     );
   }
 
+  // LOGIN PAGE
+  if (page === "auth") {
+    return (
+      <div style={pageStyle}>
+        <div style={cardStyle}>
+          <h1 style={{ textAlign: "center" }}>LEGACY</h1>
+
+          <input placeholder="Email" style={inputStyle} />
+
+          <input
+            placeholder="Password"
+            type="password"
+            style={inputStyle}
+          />
+
+          <button style={buttonStyle}>
+            Login
+          </button>
+
+          <button
+            onClick={() => setPage("signup")}
+            style={{
+              ...buttonStyle,
+              background: "#333",
+              marginTop: "10px"
+            }}
+          >
+            Sign Up
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // HOME PAGE
   return (
-    <div style={{
-      minHeight: "100vh",
-      background: "#111",
-      color: "white",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      flexDirection: "column",
-      fontFamily: "Arial"
-    }}>
+    <div style={pageStyle}>
       <h1>LEGACY</h1>
       <p>Pole & Aerial Studio</p>
 
@@ -83,6 +95,24 @@ export default function App() {
     </div>
   );
 }
+
+const pageStyle = {
+  minHeight: "100vh",
+  background: "#111",
+  color: "white",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  flexDirection: "column",
+  fontFamily: "Arial"
+};
+
+const cardStyle = {
+  background: "#1a1a1a",
+  padding: "40px",
+  borderRadius: "20px",
+  width: "340px"
+};
 
 const inputStyle = {
   width: "100%",
