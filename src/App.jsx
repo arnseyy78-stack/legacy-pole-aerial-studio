@@ -210,3 +210,20 @@ const dayCard = {
   padding: "20px",
   lineHeight: "1.7"
 };
+const calendarDay = {
+  background: "#1c1c1c",
+  border: "1px solid rgba(255,255,255,0.08)",
+  borderRadius: "18px",
+  padding: "16px",
+  minHeight: "360px"
+};
+
+const classBox = {
+  background: "#ec4899",
+  borderRadius: "12px",
+  padding: "12px",
+  marginTop: "12px",
+  color: "white",
+  fontWeight: "700",
+  fontSize: "14px"
+};
