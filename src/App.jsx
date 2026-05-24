@@ -12,61 +12,84 @@ export default function App() {
     emergencyPhone: ""
   });
 
-  const [waiverAgreed, setWaiverAgreed] = useState(false);
+  const [agreed, setAgreed] = useState(false);
 
-  const isFormValid =
-    form.fullName &&
-    form.email &&
-    form.phone &&
-    form.dob &&
-    form.emergencyName &&
-    form.emergencyPhone;
+  const isFormValid = Object.values(form).every(Boolean);
 
-  const handleChange = (e) => {
+  function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  }
 
-  const saveAccountAndContinue = () => {
-    localStorage.setItem("legacyStudentAccount", JSON.stringify(form));
+  function saveAndContinue() {
+    localStorage.setItem("legacyStudentRecord", JSON.stringify(form));
     setPage("waiver");
-  };
+  }
 
   if (page === "waiver") {
     return (
       <div style={pageStyle}>
-        <div style={cardStyle}>
-          <h1 style={titleStyle}>Waiver Agreement</h1>
+        <div style={{ ...cardStyle, width: "700px", maxWidth: "90%" }}>
+          <h1 style={titleStyle}>Student Waiver & Release</h1>
 
-          <p style={waiverText}>
-            I understand that pole and aerial classes involve physical activity.
-            I confirm that I am fit to participate and I accept responsibility
-            for my own safety during class.
-          </p>
+          <div style={waiverBox}>
+            <p><b>Legacy Pole & Aerial Studio Waiver</b></p>
 
-          <p style={waiverText}>
-            I agree to follow all studio rules, instructor guidance, and safety
-            instructions at Legacy Pole & Aerial Studio.
-          </p>
+            <p>
+              I understand that pole dance, aerial fitness, flexibility training,
+              conditioning, and related activities involve physical exertion and
+              risk of injury, including but not limited to falls, bruises, sprains,
+              strains, dizziness, muscle injury, or other physical harm.
+            </p>
 
-          <label style={checkStyle}>
+            <p>
+              I confirm that I am voluntarily participating and that I am physically
+              fit to join. I agree to follow all instructor instructions, safety
+              rules, and studio policies at all times.
+            </p>
+
+            <p>
+              I release and hold harmless Legacy Pole & Aerial Studio, its owners,
+              instructors, staff, representatives, and venue partners from any
+              claims, injuries, losses, damages, expenses, or liabilities arising
+              from my participation, except where prohibited by law.
+            </p>
+
+            <p>
+              I understand that I must disclose any medical condition, injury,
+              pregnancy, medication, or limitation that may affect my ability to
+              participate safely.
+            </p>
+
+            <p>
+              I agree that bookings are required before attending. I understand
+              that visitors are not allowed without prior approval.
+            </p>
+
+            <p>
+              By checking the box below, I confirm that I have read, understood,
+              and voluntarily agree to this waiver.
+            </p>
+          </div>
+
+          <label style={{ display: "flex", gap: "10px", marginTop: "20px" }}>
             <input
               type="checkbox"
-              checked={waiverAgreed}
-              onChange={(e) => setWaiverAgreed(e.target.checked)}
+              checked={agreed}
+              onChange={(e) => setAgreed(e.target.checked)}
             />
-            I have read and agree to the waiver.
+            <span>I have read and agree to the waiver.</span>
           </label>
 
           <button
-            disabled={!waiverAgreed}
+            disabled={!agreed}
             style={{
               ...buttonStyle,
-              background: waiverAgreed ? "#ec4899" : "#555",
-              cursor: waiverAgreed ? "pointer" : "not-allowed",
-              opacity: waiverAgreed ? 1 : 0.7
+              background: agreed ? "#ec4899" : "#555",
+              cursor: agreed ? "pointer" : "not-allowed",
+              opacity: agreed ? 1 : 0.7
             }}
           >
-            Continue to Booking
+            Accept Waiver
           </button>
         </div>
       </div>
@@ -78,16 +101,16 @@ export default function App() {
       <div style={cardStyle}>
         <h1 style={titleStyle}>Student Information</h1>
 
-        <input name="fullName" placeholder="Full Name" style={inputStyle} value={form.fullName} onChange={handleChange} />
-        <input name="email" placeholder="Email Address" style={inputStyle} value={form.email} onChange={handleChange} />
-        <input name="phone" placeholder="Phone Number" style={inputStyle} value={form.phone} onChange={handleChange} />
-        <input type="date" name="dob" style={inputStyle} value={form.dob} onChange={handleChange} />
-        <input name="emergencyName" placeholder="Emergency Contact Name" style={inputStyle} value={form.emergencyName} onChange={handleChange} />
-        <input name="emergencyPhone" placeholder="Emergency Contact Number" style={inputStyle} value={form.emergencyPhone} onChange={handleChange} />
+        <input name="fullName" placeholder="Full Name" style={inputStyle} onChange={handleChange} />
+        <input name="email" placeholder="Email Address" style={inputStyle} onChange={handleChange} />
+        <input name="phone" placeholder="Phone Number" style={inputStyle} onChange={handleChange} />
+        <input name="dob" type="date" style={inputStyle} onChange={handleChange} />
+        <input name="emergencyName" placeholder="Emergency Contact Name" style={inputStyle} onChange={handleChange} />
+        <input name="emergencyPhone" placeholder="Emergency Contact Number" style={inputStyle} onChange={handleChange} />
 
         <button
           disabled={!isFormValid}
-          onClick={saveAccountAndContinue}
+          onClick={saveAndContinue}
           style={{
             ...buttonStyle,
             background: isFormValid ? "#ec4899" : "#555",
@@ -107,6 +130,7 @@ export default function App() {
 const pageStyle = {
   minHeight: "100vh",
   background: "#050505",
+  color: "white",
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
@@ -123,10 +147,10 @@ const cardStyle = {
 };
 
 const titleStyle = {
-  color: "white",
   textAlign: "center",
   marginBottom: "30px",
-  fontSize: "38px"
+  fontSize: "36px",
+  fontWeight: "700"
 };
 
 const inputStyle = {
@@ -147,22 +171,17 @@ const buttonStyle = {
   border: "none",
   color: "white",
   fontWeight: "700",
-  fontSize: "16px",
-  marginTop: "10px"
+  marginTop: "16px"
 };
 
-const waiverText = {
-  color: "#ccc",
+const waiverBox = {
+  maxHeight: "360px",
+  overflowY: "auto",
+  background: "#1c1c1c",
+  padding: "20px",
+  borderRadius: "16px",
   lineHeight: "1.6",
-  fontSize: "15px"
-};
-
-const checkStyle = {
-  color: "white",
-  display: "flex",
-  gap: "10px",
-  marginTop: "20px",
-  marginBottom: "20px"
+  color: "#ddd"
 };
 
 const securityText = {
