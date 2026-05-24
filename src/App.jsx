@@ -1,137 +1,166 @@
 import { useState } from "react";
 
 export default function App() {
-  const [page, setPage] = useState("home");
+  const [page, setPage] = useState("signup");
 
-  // SIGN UP PAGE
+  const [form, setForm] = useState({
+    fullName: "",
+    email: "",
+    phone: "",
+    dob: "",
+    emergencyName: "",
+    emergencyPhone: ""
+  });
+
+  const isFormValid =
+    form.fullName &&
+    form.email &&
+    form.phone &&
+    form.dob &&
+    form.emergencyName &&
+    form.emergencyPhone;
+
+  const handleChange = (e) => {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value
+    });
+  };
+
   if (page === "signup") {
     return (
       <div style={pageStyle}>
         <div style={cardStyle}>
-          <h1 style={{ textAlign: "center" }}>Student Information</h1>
+          <h1 style={titleStyle}>
+            Student Information
+          </h1>
 
-          <input placeholder="Full Name" style={inputStyle} />
-          <input placeholder="Email Address" style={inputStyle} />
-          <input placeholder="Phone Number" style={inputStyle} />
-          
+          <input
+            name="fullName"
+            placeholder="Full Name"
+            style={inputStyle}
+            value={form.fullName}
+            onChange={handleChange}
+          />
+
+          <input
+            name="email"
+            placeholder="Email Address"
+            style={inputStyle}
+            value={form.email}
+            onChange={handleChange}
+          />
+
+          <input
+            name="phone"
+            placeholder="Phone Number"
+            style={inputStyle}
+            value={form.phone}
+            onChange={handleChange}
+          />
+
           <input
             type="date"
+            name="dob"
             style={inputStyle}
+            value={form.dob}
+            onChange={handleChange}
           />
 
           <input
+            name="emergencyName"
             placeholder="Emergency Contact Name"
             style={inputStyle}
+            value={form.emergencyName}
+            onChange={handleChange}
           />
 
           <input
+            name="emergencyPhone"
             placeholder="Emergency Contact Number"
             style={inputStyle}
+            value={form.emergencyPhone}
+            onChange={handleChange}
           />
-
-          <button style={buttonStyle}>
-            Continue
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  // LOGIN PAGE
-  if (page === "auth") {
-    return (
-      <div style={pageStyle}>
-        <div style={cardStyle}>
-          <h1 style={{ textAlign: "center" }}>LEGACY</h1>
-
-          <input placeholder="Email" style={inputStyle} />
-
-          <input
-            placeholder="Password"
-            type="password"
-            style={inputStyle}
-          />
-
-          <button style={buttonStyle}>
-            Login
-          </button>
 
           <button
-            onClick={() => setPage("signup")}
+            disabled={!isFormValid}
             style={{
               ...buttonStyle,
-              background: "#333",
-              marginTop: "10px"
+              background: isFormValid ? "#ec4899" : "#555",
+              cursor: isFormValid ? "pointer" : "not-allowed",
+              opacity: isFormValid ? 1 : 0.7
             }}
           >
-            Sign Up
+            Continue
           </button>
+
+          <p style={securityText}>
+            🔒 Your information is safe and secure.
+          </p>
         </div>
       </div>
     );
   }
 
-  // HOME PAGE
-  return (
-    <div style={pageStyle}>
-      <h1>LEGACY</h1>
-      <p>Pole & Aerial Studio</p>
-
-      <button
-        onClick={() => setPage("auth")}
-        style={{
-          marginTop: "20px",
-          padding: "14px 30px",
-          borderRadius: "999px",
-          border: "none",
-          background: "#ec4899",
-          color: "white",
-          fontWeight: "bold",
-          cursor: "pointer"
-        }}
-      >
-        Book Now
-      </button>
-    </div>
-  );
+  return null;
 }
 
 const pageStyle = {
   minHeight: "100vh",
-  background: "#111",
-  color: "white",
+  background: "#050505",
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
-  flexDirection: "column",
-  fontFamily: "Arial"
+  fontFamily: "Arial",
+  padding: "20px"
 };
 
 const cardStyle = {
-  background: "#1a1a1a",
+  width: "380px",
+  background: "#111",
+  borderRadius: "24px",
   padding: "40px",
-  borderRadius: "20px",
-  width: "340px"
+  boxShadow: "0 0 40px rgba(255,255,255,0.05)",
+  border: "1px solid rgba(255,255,255,0.08)"
+};
+
+const titleStyle = {
+  color: "white",
+  textAlign: "center",
+  marginBottom: "30px",
+  fontSize: "42px",
+  fontWeight: "700"
 };
 
 const inputStyle = {
   width: "100%",
-  padding: "14px",
-  marginBottom: "14px",
-  borderRadius: "12px",
-  border: "none",
-  background: "#2a2a2a",
+  padding: "16px",
+  marginBottom: "16px",
+  borderRadius: "14px",
+  border: "1px solid rgba(255,255,255,0.08)",
+  background: "#1c1c1c",
   color: "white",
-  boxSizing: "border-box"
+  fontSize: "15px",
+  boxSizing: "border-box",
+  outline: "none"
 };
 
 const buttonStyle = {
   width: "100%",
-  padding: "14px",
-  borderRadius: "999px",
+  padding: "16px",
+  borderRadius: "16px",
   border: "none",
-  background: "#ec4899",
   color: "white",
-  fontWeight: "bold",
-  cursor: "pointer"
+  fontWeight: "700",
+  fontSize: "16px",
+  marginTop: "10px",
+  transition: "0.2s ease"
+};
+
+const securityText = {
+  textAlign: "center",
+  color: "#999",
+  marginTop: "22px",
+  fontSize: "14px"
 };
