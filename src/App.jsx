@@ -157,55 +157,59 @@ export default function App() {
   }
 
   function chooseClass(classItem) {
-    const savedStudent =
-      JSON.parse(localStorage.getItem("legacyStudent")) || student;
+  const savedStudent =
+    JSON.parse(localStorage.getItem("legacyStudent")) || student;
 
-    const savedPackage =
-      JSON.parse(localStorage.getItem("legacyPackage")) || selectedPackage;
+  const savedPackage =
+    JSON.parse(localStorage.getItem("legacyPackage")) || selectedPackage;
 
-    const booking = {
-      student: savedStudent,
-      package: savedPackage,
-      class: classItem,
-      creditsRemaining: savedPackage?.credits,
-      creditType: savedPackage?.type,
-      purchaseDate: new Date().toLocaleDateString(),
-      expiryDate: expiryDate(savedPackage?.expiryDays)
-    };
+  const existingCredits =
+    Number(localStorage.getItem("legacyCredits")) || 0;
 
-    localStorage.setItem("legacyBooking", JSON.stringify(booking));
+  let updatedCredits = existingCredits;
 
-    setPage("dashboard");
-  }
+  // CLASS CARD OF 5
+  if (savedPackage?.name === "Class Card of 5") {
 
-  const booking = JSON.parse(localStorage.getItem("legacyBooking")) || {};
+    // FIRST PURCHASE
+    if (existingCredits === 0) {
+      updatedCredits = 5;
+    }
 
-  if (page === "dashboard") {
-    return (
-      <div style={pageStyle}>
-        <div style={editorialCard}>
-          <div style={miniLogo}>L</div>
+    // USE CREDIT
+    updatedCredits = updatedCredits - 1;
 
-          <h1 style={editorialTitle}>Class Booked</h1>
+    if (updatedCredits < 0) {
+      alert("No credits remaining.");
+      return;
+    }
 
-          <div style={infoCard}>
-            <p><b>Name:</b> {booking.student?.fullName}</p>
-            <p><b>Email:</b> {booking.student?.email}</p>
-            <p><b>Package:</b> {booking.package?.name}</p>
-            <p><b>Amount:</b> {booking.package?.price}</p>
-            <p><b>Credits:</b> {booking.creditsRemaining} {booking.creditType}</p>
-            <p><b>Class:</b> {booking.class?.day} {booking.class?.time} — {booking.class?.name}</p>
-            <p><b>Expiry:</b> {booking.expiryDate}</p>
-          </div>
-
-          <button style={luxuryButton} onClick={() => setPage("packages")}>
-            Book Another Class
-          </button>
-        </div>
-      </div>
+    localStorage.setItem(
+      "legacyCredits",
+      updatedCredits
     );
   }
 
+  const booking = {
+    student: savedStudent,
+    package: savedPackage,
+    class: classItem,
+    creditsRemaining:
+      savedPackage?.name === "Class Card of 5"
+        ? updatedCredits
+        : savedPackage?.credits,
+    creditType: savedPackage?.type,
+    purchaseDate: new Date().toLocaleDateString(),
+    expiryDate: expiryDate(savedPackage?.expiryDays)
+  };
+
+  localStorage.setItem(
+    "legacyBooking",
+    JSON.stringify(booking)
+  );
+
+  setPage("dashboard");
+}
   if (page === "schedule") {
     return (
       <div style={pageStyle}>
