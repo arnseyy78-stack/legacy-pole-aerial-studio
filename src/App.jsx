@@ -216,8 +216,17 @@ export default function App() {
       updatedCredits = updatedCredits - 1;
 
 if (updatedCredits < 0) {
-  alert("No credits remaining.");
-  return;
+  const choice = window.confirm(
+  "No credits remaining.\n\nPress OK to buy a new package.\nPress Cancel to view your dashboard."
+);
+
+if (choice) {
+  setPage("packages");
+} else {
+  setPage("dashboard");
+}
+
+return;
 }
       if (existingCredits <= 0) {
 
