@@ -28,13 +28,13 @@ export default function App() {
 
   const packages = [
     {
-      name: "TEST PACKAGE",
-      price: "₱1.00",
-      amount: 100,
-      credits: 1,
-      type: "Test Credit",
-      note: "Test checkout only"
-    },
+  name: "TEST PACKAGE",
+  price: "₱1.00",
+  amount: 100,
+  credits: 5,
+  type: "Class Credits",
+  note: "5 test credits"
+},
     {
       name: "Single Pass",
       price: "₱850",
