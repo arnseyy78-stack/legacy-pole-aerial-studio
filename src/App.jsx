@@ -139,7 +139,35 @@ export default function App() {
       "legacyPackage",
       JSON.stringify(pkg)
     );
+// FREE TEST PACKAGE
+if (pkg.name === "TEST PACKAGE") {
 
+  const savedStudent =
+    JSON.parse(localStorage.getItem("legacyStudent")) || student;
+
+  const booking = {
+    student: savedStudent,
+    package: pkg,
+    class: null,
+    creditsRemaining: 5,
+    creditType: pkg.type,
+    purchaseDate: new Date().toLocaleDateString(),
+    expiryDate: "No expiry"
+  };
+
+  localStorage.setItem(
+    "legacyBooking",
+    JSON.stringify(booking)
+  );
+
+  localStorage.setItem(
+    "legacyCredits",
+    5
+  );
+
+  setPage("schedule");
+  return;
+}
     // RESET CREDITS
     if (
       pkg.name === "Class Card of 5" ||
