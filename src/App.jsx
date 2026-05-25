@@ -251,7 +251,37 @@ export default function App() {
       </div>
     );
   }
+if (page === "home") {
+  return (
+    <div style={pageStyle}>
+      <div style={cardStyle}>
+        <h1 style={titleStyle}>LEGACY</h1>
 
+        <p style={mutedText}>
+          Pole & Aerial Studio
+        </p>
+
+        <button
+          style={buttonStyle}
+          onClick={() => setPage("signup")}
+        >
+          Sign Up
+        </button>
+
+        <button
+          style={{
+            ...buttonStyle,
+            background: "#333",
+            marginTop: "12px"
+          }}
+          onClick={() => setPage("login")}
+        >
+          Login
+        </button>
+      </div>
+    </div>
+  );
+}
   return (
     <div style={pageStyle}>
       <div style={cardStyle}>
