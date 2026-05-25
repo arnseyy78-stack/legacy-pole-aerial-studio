@@ -15,7 +15,13 @@ export default function App() {
     emergencyPhone: ""
   });
 
+  const [login, setLogin] = useState({
+    email: "",
+    password: ""
+  });
+
   const isFormValid = Object.values(form).every(Boolean);
+  const isLoginValid = login.email && login.password;
 
   const classes = [
     { day: "Monday", time: "6:00 PM", name: "Pole Fitness" },
@@ -26,13 +32,13 @@ export default function App() {
     { day: "Saturday", time: "6:00 PM", name: "Floor Work" }
   ];
 
-const packages = [
-  { name: "TEST PACKAGE", price: "₱1.00", amount: 100, note: "Test checkout only" },
-  { name: "Single Pass", price: "₱850.00", amount: 85000, note: "One class access" },
-  { name: "Class Card of 5", price: "₱4,000.00", amount: 400000, note: "Consumable within 30 days" },
-  { name: "Practice Session", price: "₱550.00", amount: 55000, note: "Open practice access" },
-  { name: "Private Class", price: "₱3,000.00", amount: 300000, note: "Can be up to 3 students" }
-];
+  const packages = [
+    { name: "TEST PACKAGE", price: "₱1.00", amount: 100, note: "Test checkout only" },
+    { name: "Single Pass", price: "₱850.00", amount: 85000, note: "One class access" },
+    { name: "Class Card of 5", price: "₱4,000.00", amount: 400000, note: "Consumable within 30 days" },
+    { name: "Practice Session", price: "₱550.00", amount: 55000, note: "Open practice access" },
+    { name: "Private Class", price: "₱3,000.00", amount: 300000, note: "Can be up to 3 students" }
+  ];
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -45,9 +51,19 @@ const packages = [
     setForm({ ...form, [e.target.name]: e.target.value });
   }
 
+  function handleLoginChange(e) {
+    setLogin({ ...login, [e.target.name]: e.target.value });
+  }
+
   function saveAndContinue() {
     localStorage.setItem("legacyStudentRecord", JSON.stringify(form));
+    setLogin({ email: form.email, password: "" });
     setPage("waiver");
+  }
+
+  function loginAndContinue() {
+    localStorage.setItem("legacyStudentLogin", JSON.stringify(login));
+    setPage("calendar");
   }
 
   function chooseClass(item) {
@@ -63,26 +79,29 @@ const packages = [
     localStorage.setItem("legacyStudentRecord", JSON.stringify(form));
     localStorage.setItem("legacySelectedClass", JSON.stringify(selectedClass));
 
-    const response = await fetch("/api/create-checkout", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        packageName: item.name,
-        amount: item.amount,
-        studentName: form.fullName,
-        studentEmail: form.email,
-        className: `${selectedClass.day} ${selectedClass.time} - ${selectedClass.name}`
-      })
-    });
+    try {
+      const response = await fetch("/api/create-checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          packageName: item.name,
+          amount: item.amount,
+          studentName: form.fullName,
+          studentEmail: form.email,
+          className: `${selectedClass.day} ${selectedClass.time} - ${selectedClass.name}`
+        })
+      });
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (data.checkoutUrl) {
-      window.location.href = data.checkoutUrl;
-    } else {
-      alert("Payment checkout failed. Please check PayMongo setup.");
+      if (data.checkoutUrl) {
+        window.location.href = data.checkoutUrl;
+      } else {
+        alert("Payment checkout failed. Please check PayMongo setup.");
+        setLoading(false);
+      }
+    } catch {
+      alert("Checkout error. Please try again.");
       setLoading(false);
     }
   }
@@ -106,9 +125,7 @@ const packages = [
             <p><b>Amount:</b> {bookedPackage?.price}</p>
           </div>
 
-          <p style={mutedText}>
-            📧 PayMongo will send the payment receipt to the student email.
-          </p>
+          <p style={mutedText}>📧 PayMongo will send the payment receipt to the student email.</p>
 
           <button
             style={buttonStyle}
@@ -118,6 +135,41 @@ const packages = [
             }}
           >
             Book Another Class
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (page === "login") {
+    return (
+      <div style={pageStyle}>
+        <div style={cardStyle}>
+          <h1 style={titleStyle}>Student Login</h1>
+
+          <input
+            name="email"
+            placeholder="Email Address"
+            value={login.email}
+            style={inputStyle}
+            onChange={handleLoginChange}
+          />
+
+          <input
+            name="password"
+            type="password"
+            placeholder="Create Password"
+            value={login.password}
+            style={inputStyle}
+            onChange={handleLoginChange}
+          />
+
+          <button
+            disabled={!isLoginValid}
+            onClick={loginAndContinue}
+            style={{ ...buttonStyle, background: isLoginValid ? "#ec4899" : "#555" }}
+          >
+            Continue to Classes
           </button>
         </div>
       </div>
@@ -190,7 +242,7 @@ const packages = [
 
           <button
             disabled={!agreed}
-            onClick={() => setPage("calendar")}
+            onClick={() => setPage("login")}
             style={{ ...buttonStyle, background: agreed ? "#ec4899" : "#555" }}
           >
             Accept Waiver
