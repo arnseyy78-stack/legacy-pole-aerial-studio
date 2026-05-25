@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function App() {
   const [page, setPage] = useState("signup");
   const [agreed, setAgreed] = useState(false);
   const [selectedClass, setSelectedClass] = useState(null);
-  const [selectedPackage, setSelectedPackage] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const [form, setForm] = useState({
     fullName: "",
@@ -27,11 +27,18 @@ export default function App() {
   ];
 
   const packages = [
-    { name: "Single Pass", price: "₱850.00", note: "One class access", link: "https://pm.link/org-VizvF8g1Lq5cvJviJRNCMyTe/v2MjJM8" },
-    { name: "Class Card of 5", price: "₱4,000.00", note: "Consumable within 30 days", link: "https://pm.link/org-VizvF8g1Lq5cvJviJRNCMyTe/P9RbNrW" },
-    { name: "Practice Session", price: "₱550.00", note: "Open practice access", link: "https://pm.link/org-VizvF8g1Lq5cvJviJRNCMyTe/ueZSEI4" },
-    { name: "Private Class", price: "₱3,000.00", note: "Can be up to 3 students", link: "https://pm.link/org-VizvF8g1Lq5cvJviJRNCMyTe/8FmRI3q" }
+    { name: "Single Pass", price: "₱850.00", amount: 85000, note: "One class access" },
+    { name: "Class Card of 5", price: "₱4,000.00", amount: 400000, note: "Consumable within 30 days" },
+    { name: "Practice Session", price: "₱550.00", amount: 55000, note: "Open practice access" },
+    { name: "Private Class", price: "₱3,000.00", amount: 300000, note: "Can be up to 3 students" }
   ];
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("paid") === "true") {
+      setPage("success");
+    }
+  }, []);
 
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -48,14 +55,42 @@ export default function App() {
     setPage("packages");
   }
 
-  function choosePackage(item) {
-    setSelectedPackage(item);
+  async function choosePackage(item) {
+    setLoading(true);
+
     localStorage.setItem("legacySelectedPackage", JSON.stringify(item));
-    window.open(item.link, "_blank");
-    setPage("paymentPending");
+    localStorage.setItem("legacyStudentRecord", JSON.stringify(form));
+    localStorage.setItem("legacySelectedClass", JSON.stringify(selectedClass));
+
+    const response = await fetch("/api/create-checkout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        packageName: item.name,
+        amount: item.amount,
+        studentName: form.fullName,
+        studentEmail: form.email,
+        className: `${selectedClass.day} ${selectedClass.time} - ${selectedClass.name}`
+      })
+    });
+
+    const data = await response.json();
+
+    if (data.checkoutUrl) {
+      window.location.href = data.checkoutUrl;
+    } else {
+      alert("Payment checkout failed. Please check PayMongo setup.");
+      setLoading(false);
+    }
   }
 
   if (page === "success") {
+    const student = JSON.parse(localStorage.getItem("legacyStudentRecord"));
+    const bookedClass = JSON.parse(localStorage.getItem("legacySelectedClass"));
+    const bookedPackage = JSON.parse(localStorage.getItem("legacySelectedPackage"));
+
     return (
       <div style={pageStyle}>
         <div style={{ ...cardStyle, width: "650px", textAlign: "center" }}>
@@ -63,31 +98,25 @@ export default function App() {
           <h1 style={{ ...titleStyle, textAlign: "center" }}>Class Booked</h1>
 
           <div style={summaryBox}>
-            <p><b>Name:</b> {form.fullName}</p>
-            <p><b>Email:</b> {form.email}</p>
-            <p><b>Class:</b> {selectedClass?.day} {selectedClass?.time} — {selectedClass?.name}</p>
-            <p><b>Package:</b> {selectedPackage?.name}</p>
-            <p><b>Amount:</b> {selectedPackage?.price}</p>
+            <p><b>Name:</b> {student?.fullName}</p>
+            <p><b>Email:</b> {student?.email}</p>
+            <p><b>Class:</b> {bookedClass?.day} {bookedClass?.time} — {bookedClass?.name}</p>
+            <p><b>Package:</b> {bookedPackage?.name}</p>
+            <p><b>Amount:</b> {bookedPackage?.price}</p>
           </div>
 
           <p style={mutedText}>
-            📧 Confirmation prepared for: <b>{form.email}</b>
+            📧 PayMongo will send the payment receipt to the student email.
           </p>
-        </div>
-      </div>
-    );
-  }
 
-  if (page === "paymentPending") {
-    return (
-      <div style={pageStyle}>
-        <div style={{ ...cardStyle, width: "600px", textAlign: "center" }}>
-          <h1 style={{ ...titleStyle, textAlign: "center" }}>Complete Payment</h1>
-          <p style={mutedText}>PayMongo opened in a new tab.</p>
-          <p style={mutedText}>After payment is complete, click below.</p>
-
-          <button style={buttonStyle} onClick={() => setPage("success")}>
-            I Have Paid
+          <button
+            style={buttonStyle}
+            onClick={() => {
+              localStorage.clear();
+              window.location.href = "/";
+            }}
+          >
+            Book Another Class
           </button>
         </div>
       </div>
@@ -114,6 +143,8 @@ export default function App() {
               </button>
             ))}
           </div>
+
+          {loading && <p style={mutedText}>Creating secure checkout...</p>}
         </div>
       </div>
     );
