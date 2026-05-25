@@ -28,6 +28,14 @@ export default function App() {
 
   const packages = [
     {
+      name: "TEST PACKAGE",
+      price: "₱1.00",
+      amount: 100,
+      credits: 1,
+      type: "Test Credit",
+      note: "Test checkout only"
+    },
+    {
       name: "Single Pass",
       price: "₱850",
       amount: 85000,
@@ -41,7 +49,8 @@ export default function App() {
       amount: 400000,
       credits: 5,
       type: "Class Credits",
-      note: "Consumable within 30 days"
+      note: "Consumable within 30 days",
+      expiryDays: 30
     },
     {
       name: "Practice Session",
@@ -50,6 +59,14 @@ export default function App() {
       credits: 1,
       type: "Practice Credit",
       note: "Open practice access"
+    },
+    {
+      name: "Private Class",
+      price: "₱3,000",
+      amount: 300000,
+      credits: 1,
+      type: "Private Credit",
+      note: "Can be up to 3 students"
     }
   ];
 
@@ -76,53 +93,54 @@ export default function App() {
   }
 
   function saveStudent() {
-    localStorage.setItem(
-      "legacyStudent",
-      JSON.stringify(student)
-    );
-
+    localStorage.setItem("legacyStudent", JSON.stringify(student));
     setPage("waiver");
   }
 
   function saveLogin() {
-    localStorage.setItem(
-      "legacyLogin",
-      JSON.stringify(login)
-    );
+    const returningStudent = {
+      fullName: "Returning Student",
+      email: login.email,
+      phone: ""
+    };
+
+    localStorage.setItem("legacyStudent", JSON.stringify(returningStudent));
+    localStorage.setItem("legacyLogin", JSON.stringify(login));
 
     setPage("packages");
   }
 
-  function choosePackage(pkg) {
-    setSelectedPackage(pkg);
+  function expiryDate(days) {
+    if (!days) return "No expiry";
 
-    localStorage.setItem(
-      "legacyPackage",
-      JSON.stringify(pkg)
-    );
+    const date = new Date();
+    date.setDate(date.getDate() + days);
 
-    handlePayment(pkg);
+    return date.toLocaleDateString();
   }
 
-  async function handlePayment(pkg) {
+  async function choosePackage(pkg) {
     setLoading(true);
+    setSelectedPackage(pkg);
+
+    const savedStudent =
+      JSON.parse(localStorage.getItem("legacyStudent")) || student;
+
+    localStorage.setItem("legacyPackage", JSON.stringify(pkg));
 
     try {
-      const response = await fetch(
-        "/api/create-checkout",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            packageName: pkg.name,
-            amount: pkg.amount,
-            studentName: student.fullName,
-            studentEmail: student.email
-          })
-        }
-      );
+      const response = await fetch("/api/create-checkout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          packageName: pkg.name,
+          amount: pkg.amount,
+          studentName: savedStudent.fullName,
+          studentEmail: savedStudent.email
+        })
+      });
 
       const data = await response.json();
 
@@ -130,33 +148,37 @@ export default function App() {
         window.location.href = data.checkoutUrl;
       } else {
         alert("Payment checkout failed.");
+        setLoading(false);
       }
     } catch {
       alert("Checkout error.");
+      setLoading(false);
     }
-
-    setLoading(false);
   }
 
-  async function chooseClass(classItem) {
+  function chooseClass(classItem) {
+    const savedStudent =
+      JSON.parse(localStorage.getItem("legacyStudent")) || student;
+
+    const savedPackage =
+      JSON.parse(localStorage.getItem("legacyPackage")) || selectedPackage;
+
     const booking = {
-      student,
-      package: selectedPackage,
-      class: classItem
+      student: savedStudent,
+      package: savedPackage,
+      class: classItem,
+      creditsRemaining: savedPackage?.credits,
+      creditType: savedPackage?.type,
+      purchaseDate: new Date().toLocaleDateString(),
+      expiryDate: expiryDate(savedPackage?.expiryDays)
     };
 
-    localStorage.setItem(
-      "legacyBooking",
-      JSON.stringify(booking)
-    );
+    localStorage.setItem("legacyBooking", JSON.stringify(booking));
 
     setPage("dashboard");
   }
 
-  const booking =
-    JSON.parse(
-      localStorage.getItem("legacyBooking")
-    ) || {};
+  const booking = JSON.parse(localStorage.getItem("legacyBooking")) || {};
 
   if (page === "dashboard") {
     return (
@@ -164,38 +186,19 @@ export default function App() {
         <div style={editorialCard}>
           <div style={miniLogo}>L</div>
 
-          <h1 style={editorialTitle}>
-            Class Booked
-          </h1>
+          <h1 style={editorialTitle}>Class Booked</h1>
 
           <div style={infoCard}>
-            <p>
-              <b>Name:</b>{" "}
-              {booking.student?.fullName}
-            </p>
-
-            <p>
-              <b>Email:</b>{" "}
-              {booking.student?.email}
-            </p>
-
-            <p>
-              <b>Package:</b>{" "}
-              {booking.package?.name}
-            </p>
-
-            <p>
-              <b>Class:</b>{" "}
-              {booking.class?.day}{" "}
-              {booking.class?.time} —{" "}
-              {booking.class?.name}
-            </p>
+            <p><b>Name:</b> {booking.student?.fullName}</p>
+            <p><b>Email:</b> {booking.student?.email}</p>
+            <p><b>Package:</b> {booking.package?.name}</p>
+            <p><b>Amount:</b> {booking.package?.price}</p>
+            <p><b>Credits:</b> {booking.creditsRemaining} {booking.creditType}</p>
+            <p><b>Class:</b> {booking.class?.day} {booking.class?.time} — {booking.class?.name}</p>
+            <p><b>Expiry:</b> {booking.expiryDate}</p>
           </div>
 
-          <button
-            style={luxuryButton}
-            onClick={() => setPage("packages")}
-          >
+          <button style={luxuryButton} onClick={() => setPage("packages")}>
             Book Another Class
           </button>
         </div>
@@ -209,9 +212,11 @@ export default function App() {
         <div style={editorialCard}>
           <div style={miniLogo}>L</div>
 
-          <h1 style={editorialTitle}>
-            Class Schedule
-          </h1>
+          <h1 style={editorialTitle}>Class Schedule</h1>
+
+          <p style={subText}>
+            Payment complete. Please select your class.
+          </p>
 
           <div style={classGrid}>
             {classes.map((item) => (
@@ -220,17 +225,9 @@ export default function App() {
                 style={classCard}
                 onClick={() => chooseClass(item)}
               >
-                <h2 style={classDay}>
-                  {item.day}
-                </h2>
-
-                <p style={classTime}>
-                  {item.time}
-                </p>
-
-                <p style={className}>
-                  {item.name}
-                </p>
+                <h2 style={classDay}>{item.day}</h2>
+                <p style={classTime}>{item.time}</p>
+                <p style={className}>{item.name}</p>
               </button>
             ))}
           </div>
@@ -238,7 +235,8 @@ export default function App() {
       </div>
     );
   }
-    if (page === "packages") {
+
+  if (page === "packages") {
     return (
       <div style={pageStyle}>
         <div style={editorialCard}>
@@ -273,6 +271,30 @@ export default function App() {
           <div style={miniLogo}>L</div>
 
           <h1 style={editorialTitle}>Login / Sign Up</h1>
+
+          <div style={authGrid}>
+            <button style={authCard} onClick={() => setPage("student")}>
+              <h2>Sign Up</h2>
+              <p>New student registration</p>
+            </button>
+
+            <button style={authCard} onClick={() => setPage("login")}>
+              <h2>Login</h2>
+              <p>Returning student</p>
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (page === "login") {
+    return (
+      <div style={pageStyle}>
+        <div style={editorialCard}>
+          <div style={miniLogo}>L</div>
+
+          <h1 style={editorialTitle}>Login</h1>
 
           <input
             name="email"
@@ -315,7 +337,7 @@ export default function App() {
             </p>
           </div>
 
-          <label style={{ display: "flex", gap: "12px", marginTop: "28px" }}>
+          <label style={checkRow}>
             <input
               type="checkbox"
               checked={agreed}
@@ -326,8 +348,11 @@ export default function App() {
 
           <button
             disabled={!agreed}
-            style={{ ...luxuryButton, opacity: agreed ? 1 : 0.45 }}
-            onClick={() => setPage("auth")}
+            style={{
+              ...luxuryButton,
+              opacity: agreed ? 1 : 0.45
+            }}
+            onClick={() => setPage("packages")}
           >
             Continue
           </button>
@@ -397,7 +422,7 @@ export default function App() {
             and feminine energy.
           </p>
 
-          <button style={luxuryButton} onClick={() => setPage("student")}>
+          <button style={luxuryButton} onClick={() => setPage("auth")}>
             Start Booking
           </button>
         </div>
@@ -625,4 +650,26 @@ const infoCard = {
   background: "rgba(255,255,255,0.55)",
   border: "1px solid rgba(0,0,0,0.08)",
   lineHeight: "2"
+};
+
+const authGrid = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))",
+  gap: "20px"
+};
+
+const authCard = {
+  padding: "34px",
+  borderRadius: "30px",
+  border: "1px solid rgba(0,0,0,0.08)",
+  background: "rgba(255,255,255,0.6)",
+  cursor: "pointer",
+  textAlign: "left",
+  color: "#2b2118"
+};
+
+const checkRow = {
+  display: "flex",
+  gap: "12px",
+  marginTop: "28px"
 };
