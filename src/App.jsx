@@ -27,7 +27,7 @@ export default function App() {
   ];
 
   const packages = [
-    { name: "Single Pass", price: "₱850.00", note: "One class access", link: "https://pm.link/org-VizvF8g1Lq5cvJviJRNCMyTe/geUY4Ih" },
+    { name: "Single Pass", price: "₱850.00", note: "One class access", link: "https://pm.link/org-VizvF8g1Lq5cvJviJRNCMyTe/v2MjJM8" },
     { name: "Class Card of 5", price: "₱4,000.00", note: "Consumable within 30 days", link: "https://pm.link/org-VizvF8g1Lq5cvJviJRNCMyTe/P9RbNrW" },
     { name: "Practice Session", price: "₱550.00", note: "Open practice access", link: "https://pm.link/org-VizvF8g1Lq5cvJviJRNCMyTe/ueZSEI4" },
     { name: "Private Class", price: "₱3,000.00", note: "Can be up to 3 students", link: "https://pm.link/org-VizvF8g1Lq5cvJviJRNCMyTe/8FmRI3q" }
