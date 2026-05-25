@@ -15,10 +15,7 @@ export default function App() {
     emergencyPhone: ""
   });
 
-  const [login, setLogin] = useState({
-    email: "",
-    password: ""
-  });
+  const [login, setLogin] = useState({ email: "", password: "" });
 
   const isFormValid = Object.values(form).every(Boolean);
   const isLoginValid = login.email && login.password;
@@ -33,18 +30,16 @@ export default function App() {
   ];
 
   const packages = [
-    { name: "TEST PACKAGE", price: "₱1.00", amount: 100, note: "Test checkout only" },
-    { name: "Single Pass", price: "₱850.00", amount: 85000, note: "One class access" },
-    { name: "Class Card of 5", price: "₱4,000.00", amount: 400000, note: "Consumable within 30 days" },
-    { name: "Practice Session", price: "₱550.00", amount: 55000, note: "Open practice access" },
-    { name: "Private Class", price: "₱3,000.00", amount: 300000, note: "Can be up to 3 students" }
+    { name: "TEST PACKAGE", price: "₱1.00", amount: 100, note: "Test checkout only", credits: 1, type: "Test Credit" },
+    { name: "Single Pass", price: "₱850.00", amount: 85000, note: "One class access", credits: 1, type: "Class Credit" },
+    { name: "Class Card of 5", price: "₱4,000.00", amount: 400000, note: "Consumable within 30 days", credits: 5, type: "Class Credits", expiryDays: 30 },
+    { name: "Practice Session", price: "₱550.00", amount: 55000, note: "Open practice access", credits: 1, type: "Practice Credit" },
+    { name: "Private Class", price: "₱3,000.00", amount: 300000, note: "Can be up to 3 students", credits: 1, type: "Private Credit" }
   ];
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    if (params.get("paid") === "true") {
-      setPage("success");
-    }
+    if (params.get("paid") === "true") setPage("dashboard");
   }, []);
 
   function handleChange(e) {
@@ -72,9 +67,26 @@ export default function App() {
     setPage("packages");
   }
 
+  function getExpiryDate(days) {
+    if (!days) return "No expiry";
+    const date = new Date();
+    date.setDate(date.getDate() + days);
+    return date.toLocaleDateString();
+  }
+
   async function choosePackage(item) {
     setLoading(true);
 
+    const booking = {
+      student: form,
+      class: selectedClass,
+      package: item,
+      creditsRemaining: item.credits,
+      expiryDate: getExpiryDate(item.expiryDays),
+      purchaseDate: new Date().toLocaleDateString()
+    };
+
+    localStorage.setItem("legacyBookingDashboard", JSON.stringify(booking));
     localStorage.setItem("legacySelectedPackage", JSON.stringify(item));
     localStorage.setItem("legacyStudentRecord", JSON.stringify(form));
     localStorage.setItem("legacySelectedClass", JSON.stringify(selectedClass));
@@ -106,35 +118,49 @@ export default function App() {
     }
   }
 
-  if (page === "success") {
-    const student = JSON.parse(localStorage.getItem("legacyStudentRecord"));
-    const bookedClass = JSON.parse(localStorage.getItem("legacySelectedClass"));
-    const bookedPackage = JSON.parse(localStorage.getItem("legacySelectedPackage"));
+  if (page === "dashboard") {
+    const booking = JSON.parse(localStorage.getItem("legacyBookingDashboard"));
+    const student = booking?.student;
+    const bookedClass = booking?.class;
+    const bookedPackage = booking?.package;
 
     return (
       <div style={pageStyle}>
-        <div style={{ ...cardStyle, width: "650px", textAlign: "center" }}>
-          <div style={{ fontSize: "70px" }}>✅</div>
-          <h1 style={{ ...titleStyle, textAlign: "center" }}>Class Booked</h1>
+        <div style={{ ...cardStyle, width: "760px", maxWidth: "95%" }}>
+          <h1 style={titleStyle}>Student Dashboard</h1>
 
           <div style={summaryBox}>
-            <p><b>Name:</b> {student?.fullName}</p>
+            <p><b>Student:</b> {student?.fullName}</p>
             <p><b>Email:</b> {student?.email}</p>
-            <p><b>Class:</b> {bookedClass?.day} {bookedClass?.time} — {bookedClass?.name}</p>
+            <p><b>Booked Class:</b> {bookedClass?.day} {bookedClass?.time} — {bookedClass?.name}</p>
             <p><b>Package:</b> {bookedPackage?.name}</p>
-            <p><b>Amount:</b> {bookedPackage?.price}</p>
+            <p><b>Amount Paid:</b> {bookedPackage?.price}</p>
+            <p><b>Remaining Credits:</b> {booking?.creditsRemaining} {bookedPackage?.type}</p>
+            <p><b>Purchased:</b> {booking?.purchaseDate}</p>
+            <p><b>Expiry:</b> {booking?.expiryDate}</p>
           </div>
 
-          <p style={mutedText}>📧 PayMongo will send the payment receipt to the student email.</p>
-
-          <button
-            style={buttonStyle}
-            onClick={() => {
-              localStorage.clear();
-              window.location.href = "/";
-            }}
-          >
+          <button style={buttonStyle} onClick={() => setPage("calendar")}>
             Book Another Class
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (page === "home") {
+    return (
+      <div style={pageStyle}>
+        <div style={cardStyle}>
+          <h1 style={titleStyle}>LEGACY</h1>
+          <p style={mutedText}>Pole & Aerial Studio</p>
+
+          <button style={buttonStyle} onClick={() => setPage("signup")}>
+            Sign Up
+          </button>
+
+          <button style={{ ...buttonStyle, background: "#333" }} onClick={() => setPage("login")}>
+            Login
           </button>
         </div>
       </div>
@@ -147,28 +173,10 @@ export default function App() {
         <div style={cardStyle}>
           <h1 style={titleStyle}>Student Login</h1>
 
-          <input
-            name="email"
-            placeholder="Email Address"
-            value={login.email}
-            style={inputStyle}
-            onChange={handleLoginChange}
-          />
+          <input name="email" placeholder="Email Address" value={login.email} style={inputStyle} onChange={handleLoginChange} />
+          <input name="password" type="password" placeholder="Password" value={login.password} style={inputStyle} onChange={handleLoginChange} />
 
-          <input
-            name="password"
-            type="password"
-            placeholder="Create Password"
-            value={login.password}
-            style={inputStyle}
-            onChange={handleLoginChange}
-          />
-
-          <button
-            disabled={!isLoginValid}
-            onClick={loginAndContinue}
-            style={{ ...buttonStyle, background: isLoginValid ? "#ec4899" : "#555" }}
-          >
+          <button disabled={!isLoginValid} onClick={loginAndContinue} style={{ ...buttonStyle, background: isLoginValid ? "#ec4899" : "#555" }}>
             Continue to Classes
           </button>
         </div>
@@ -240,48 +248,14 @@ export default function App() {
             <span>I have read and agree to the waiver.</span>
           </label>
 
-          <button
-            disabled={!agreed}
-            onClick={() => setPage("login")}
-            style={{ ...buttonStyle, background: agreed ? "#ec4899" : "#555" }}
-          >
+          <button disabled={!agreed} onClick={() => setPage("login")} style={{ ...buttonStyle, background: agreed ? "#ec4899" : "#555" }}>
             Accept Waiver
           </button>
         </div>
       </div>
     );
   }
-if (page === "home") {
-  return (
-    <div style={pageStyle}>
-      <div style={cardStyle}>
-        <h1 style={titleStyle}>LEGACY</h1>
 
-        <p style={mutedText}>
-          Pole & Aerial Studio
-        </p>
-
-        <button
-          style={buttonStyle}
-          onClick={() => setPage("signup")}
-        >
-          Sign Up
-        </button>
-
-        <button
-          style={{
-            ...buttonStyle,
-            background: "#333",
-            marginTop: "12px"
-          }}
-          onClick={() => setPage("login")}
-        >
-          Login
-        </button>
-      </div>
-    </div>
-  );
-}
   return (
     <div style={pageStyle}>
       <div style={cardStyle}>
@@ -294,11 +268,7 @@ if (page === "home") {
         <input name="emergencyName" placeholder="Emergency Contact Name" style={inputStyle} onChange={handleChange} />
         <input name="emergencyPhone" placeholder="Emergency Contact Number" style={inputStyle} onChange={handleChange} />
 
-        <button
-          disabled={!isFormValid}
-          onClick={saveAndContinue}
-          style={{ ...buttonStyle, background: isFormValid ? "#ec4899" : "#555" }}
-        >
+        <button disabled={!isFormValid} onClick={saveAndContinue} style={{ ...buttonStyle, background: isFormValid ? "#ec4899" : "#555" }}>
           Continue
         </button>
       </div>
@@ -350,7 +320,8 @@ const buttonStyle = {
   color: "white",
   fontWeight: "700",
   marginTop: "16px",
-  cursor: "pointer"
+  cursor: "pointer",
+  background: "#ec4899"
 };
 
 const waiverBox = {
