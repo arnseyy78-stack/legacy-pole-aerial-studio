@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 export default function App() {
-  const [page, setPage] = useState("signup");
+  const [page, setPage] = useState("home");
   const [agreed, setAgreed] = useState(false);
   const [selectedClass, setSelectedClass] = useState(null);
   const [loading, setLoading] = useState(false);
