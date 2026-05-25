@@ -307,116 +307,120 @@ if (page === "home") {
 }
 
 const pageStyle = {
+  background: "linear-gradient(to bottom, #050505, #0f0f0f)",
   minHeight: "100vh",
-  background: "#050505",
   color: "white",
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
-  fontFamily: "Arial",
-  padding: "20px"
+  padding: "20px",
+  fontFamily: "'Poppins', sans-serif"
 };
 
 const cardStyle = {
-  width: "380px",
-  background: "#111",
-  borderRadius: "24px",
-  padding: "40px",
-  border: "1px solid rgba(255,255,255,0.08)"
+  width: "100%",
+  maxWidth: "520px",
+  background: "rgba(15,15,15,0.92)",
+  border: "1px solid rgba(255,215,160,0.12)",
+  borderRadius: "32px",
+  padding: "42px",
+  backdropFilter: "blur(18px)",
+  boxShadow: "0 0 40px rgba(0,0,0,0.55)"
 };
 
 const titleStyle = {
-  marginBottom: "30px",
-  fontSize: "42px",
-  fontWeight: "800"
+  fontSize: "56px",
+  fontWeight: "800",
+  marginBottom: "12px",
+  letterSpacing: "-2px",
+  background: "linear-gradient(to right,#ffffff,#d4b06a)",
+  WebkitBackgroundClip: "text",
+  WebkitTextFillColor: "transparent"
+};
+
+const mutedText = {
+  color: "#b8b8b8",
+  marginBottom: "28px",
+  fontSize: "15px",
+  lineHeight: "1.6"
 };
 
 const inputStyle = {
   width: "100%",
-  padding: "16px",
+  padding: "18px",
   marginBottom: "16px",
-  borderRadius: "14px",
+  background: "rgba(255,255,255,0.04)",
   border: "1px solid rgba(255,255,255,0.08)",
-  background: "#1c1c1c",
+  borderRadius: "18px",
   color: "white",
-  boxSizing: "border-box"
+  fontSize: "15px",
+  boxSizing: "border-box",
+  outline: "none",
+  transition: "0.3s"
 };
 
 const buttonStyle = {
   width: "100%",
-  padding: "16px",
-  borderRadius: "16px",
-  border: "none",
+  padding: "18px",
+  background: "linear-gradient(to right,#ec4899,#d4b06a)",
   color: "white",
+  border: "none",
+  borderRadius: "18px",
   fontWeight: "700",
-  marginTop: "16px",
-  cursor: "pointer"
-};
-
-const waiverBox = {
-  background: "#1c1c1c",
-  padding: "20px",
-  borderRadius: "16px",
-  lineHeight: "1.6",
-  color: "#ddd"
-};
-
-const classList = {
-  display: "flex",
-  flexDirection: "column",
-  gap: "14px"
+  fontSize: "15px",
+  cursor: "pointer",
+  marginTop: "14px",
+  transition: "0.3s",
+  boxShadow: "0 10px 25px rgba(236,72,153,0.25)"
 };
 
 const classRow = {
-  background: "transparent",
-  border: "none",
+  background: "rgba(255,255,255,0.03)",
+  border: "1px solid rgba(255,255,255,0.06)",
   color: "white",
   textAlign: "left",
-  fontSize: "24px",
+  fontSize: "18px",
   cursor: "pointer",
-  textDecoration: "underline"
+  borderRadius: "18px",
+  padding: "18px",
+  display: "block",
+  marginBottom: "14px",
+  transition: "0.3s"
 };
 
 const packageGrid = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-  gap: "18px"
+  gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))",
+  gap: "22px"
 };
 
 const packageCard = {
-  background: "#1c1c1c",
-  border: "1px solid rgba(255,255,255,0.1)",
-  borderRadius: "20px",
-  padding: "24px",
+  background: "rgba(255,255,255,0.03)",
+  border: "1px solid rgba(255,215,160,0.12)",
+  borderRadius: "24px",
+  padding: "28px",
   color: "white",
   textAlign: "left",
-  cursor: "pointer"
+  cursor: "pointer",
+  transition: "0.3s",
+  backdropFilter: "blur(12px)"
 };
 
-const priceText = {
-  fontSize: "28px",
-  fontWeight: "800",
-  color: "#ec4899"
+const summaryBox = {
+  background: "rgba(255,255,255,0.03)",
+  border: "1px solid rgba(255,255,255,0.06)",
+  borderRadius: "24px",
+  padding: "26px",
+  lineHeight: "2.2",
+  color: "#f2f2f2"
 };
-
-const noteText = { color: "#bbb" };
-const selectedText = { color: "#ccc", marginBottom: "24px" };
-const mutedText = { color: "#bbb", fontSize: "17px" };
 
 const backButton = {
   background: "transparent",
   border: "none",
-  color: "#ec4899",
-  fontSize: "16px",
+  color: "#d4b06a",
+  fontSize: "15px",
   cursor: "pointer",
-  marginBottom: "20px"
-};
-
-const summaryBox = {
-  background: "#1c1c1c",
-  padding: "24px",
-  borderRadius: "18px",
-  textAlign: "left",
-  lineHeight: "1.8",
-  marginTop: "30px"
+  marginBottom: "20px",
+  fontWeight: "600"
 };
