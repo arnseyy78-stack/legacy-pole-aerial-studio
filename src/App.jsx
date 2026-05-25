@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 
 export default function App() {
   const [page, setPage] = useState("home");
-  const [agreed, setAgreed] = useState(false);
   const [selectedClass, setSelectedClass] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -15,11 +14,6 @@ export default function App() {
     emergencyPhone: ""
   });
 
-  const [login, setLogin] = useState({
-    email: "",
-    password: ""
-  });
-
   const classes = [
     { day: "Monday", time: "6:00 PM", name: "Pole Fitness" },
     { day: "Tuesday", time: "6:00 PM", name: "Pole Flow" },
@@ -30,38 +24,49 @@ export default function App() {
   ];
 
   const packages = [
-    { name: "TEST PACKAGE", price: "₱1.00", amount: 100, credits: 1, type: "Test Credit", note: "Test checkout only" },
-    { name: "Single Pass", price: "₱850.00", amount: 85000, credits: 1, type: "Class Credit", note: "One class access" },
-    { name: "Class Card of 5", price: "₱4,000.00", amount: 400000, credits: 5, type: "Class Credits", note: "Consumable within 30 days", expiryDays: 30 },
-    { name: "Practice Session", price: "₱550.00", amount: 55000, credits: 1, type: "Practice Credit", note: "Open practice access" },
-    { name: "Private Class", price: "₱3,000.00", amount: 300000, credits: 1, type: "Private Credit", note: "Can be up to 3 students" }
+    {
+      name: "TEST PACKAGE",
+      price: "₱1.00",
+      amount: 100,
+      credits: 1,
+      type: "Test Credit",
+      note: "Test checkout only"
+    },
+    {
+      name: "Single Pass",
+      price: "₱850",
+      amount: 85000,
+      credits: 1,
+      type: "Class Credit",
+      note: "One class access"
+    },
+    {
+      name: "Class Card of 5",
+      price: "₱4,000",
+      amount: 400000,
+      credits: 5,
+      type: "Class Credits",
+      note: "Consumable within 30 days"
+    }
   ];
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
+
     if (params.get("paid") === "true") {
       setPage("dashboard");
     }
   }, []);
 
-  const isStudentValid = Object.values(student).every(Boolean);
-  const isLoginValid = login.email && login.password;
-
-  function handleStudentChange(e) {
-    setStudent({ ...student, [e.target.name]: e.target.value });
+  function handleChange(e) {
+    setStudent({
+      ...student,
+      [e.target.name]: e.target.value
+    });
   }
 
-  function handleLoginChange(e) {
-    setLogin({ ...login, [e.target.name]: e.target.value });
-  }
-
-  function saveStudent() {
+  function continueToClasses() {
     localStorage.setItem("legacyStudent", JSON.stringify(student));
-    setPage("waiver");
-  }
-
-  function loginStudent() {
-    localStorage.setItem("legacyLoginEmail", login.email);
     setPage("classes");
   }
 
@@ -71,45 +76,30 @@ export default function App() {
     setPage("packages");
   }
 
-  function expiryDate(days) {
-    if (!days) return "No expiry";
-    const date = new Date();
-    date.setDate(date.getDate() + days);
-    return date.toLocaleDateString();
-  }
-
   async function choosePackage(pkg) {
     setLoading(true);
 
-    const savedStudent = JSON.parse(localStorage.getItem("legacyStudent")) || {
-      fullName: "Returning Student",
-      email: localStorage.getItem("legacyLoginEmail") || "No email saved"
-    };
-
-    const savedClass = JSON.parse(localStorage.getItem("legacyClass")) || selectedClass;
-
-    const booking = {
-      student: savedStudent,
-      class: savedClass,
-      package: pkg,
-      creditsRemaining: pkg.credits,
-      creditType: pkg.type,
-      purchaseDate: new Date().toLocaleDateString(),
-      expiryDate: expiryDate(pkg.expiryDays)
-    };
-
-    localStorage.setItem("legacyBooking", JSON.stringify(booking));
+    localStorage.setItem(
+      "legacyBooking",
+      JSON.stringify({
+        student,
+        class: selectedClass,
+        package: pkg
+      })
+    );
 
     try {
       const response = await fetch("/api/create-checkout", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json"
+        },
         body: JSON.stringify({
           packageName: pkg.name,
           amount: pkg.amount,
-          studentName: savedStudent.fullName,
-          studentEmail: savedStudent.email,
-          className: `${savedClass.day} ${savedClass.time} - ${savedClass.name}`
+          studentName: student.fullName,
+          studentEmail: student.email,
+          className: `${selectedClass.day} ${selectedClass.time} - ${selectedClass.name}`
         })
       });
 
@@ -118,122 +108,44 @@ export default function App() {
       if (data.checkoutUrl) {
         window.location.href = data.checkoutUrl;
       } else {
-        alert("Payment checkout failed. Please check PayMongo setup.");
-        setLoading(false);
+        alert("Checkout failed.");
       }
     } catch {
-      alert("Checkout error. Please try again.");
-      setLoading(false);
+      alert("Checkout error.");
     }
+
+    setLoading(false);
   }
 
-  if (page === "home") {
+  const booking =
+    JSON.parse(localStorage.getItem("legacyBooking")) || {};
+
+  if (page === "dashboard") {
     return (
       <div style={pageStyle}>
-        <div style={cardStyle}>
-          <h1 style={titleStyle}>LEGACY</h1>
-          <p style={mutedText}>Pole & Aerial Studio</p>
+        <div style={editorialCard}>
+          <div style={miniLogo}>L</div>
 
-          <button style={buttonStyle} onClick={() => setPage("student-info")}>
-            Sign Up
-          </button>
+          <h1 style={editorialTitle}>Class Booked</h1>
 
-          <button style={{ ...buttonStyle, background: "#111", color: "#fff" }} onClick={() => setPage("login")}>
-            Log In
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  if (page === "login") {
-    return (
-      <div style={pageStyle}>
-        <div style={cardStyle}>
-          <h1 style={titleStyle}>Login</h1>
-
-          <input name="email" placeholder="Email Address" style={inputStyle} onChange={handleLoginChange} />
-          <input name="password" type="password" placeholder="Password" style={inputStyle} onChange={handleLoginChange} />
-
-          <button
-            disabled={!isLoginValid}
-            onClick={loginStudent}
-            style={{ ...buttonStyle, background: isLoginValid ? "linear-gradient(to right,#d4b06a,#f0d8a8)" : "#ccc" }}
-          >
-            Continue
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  if (page === "student-info") {
-    return (
-      <div style={pageStyle}>
-        <div style={cardStyle}>
-          <h1 style={titleStyle}>Student Information</h1>
-
-          <input name="fullName" placeholder="Full Name" style={inputStyle} onChange={handleStudentChange} />
-          <input name="email" placeholder="Email Address" style={inputStyle} onChange={handleStudentChange} />
-          <input name="phone" placeholder="Phone Number" style={inputStyle} onChange={handleStudentChange} />
-          <input name="dob" type="date" style={inputStyle} onChange={handleStudentChange} />
-          <input name="emergencyName" placeholder="Emergency Contact Name" style={inputStyle} onChange={handleStudentChange} />
-          <input name="emergencyPhone" placeholder="Emergency Contact Number" style={inputStyle} onChange={handleStudentChange} />
-
-          <button
-            disabled={!isStudentValid}
-            onClick={saveStudent}
-            style={{ ...buttonStyle, background: isStudentValid ? "linear-gradient(to right,#d4b06a,#f0d8a8)" : "#ccc" }}
-          >
-            Continue
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  if (page === "waiver") {
-    return (
-      <div style={pageStyle}>
-        <div style={{ ...cardStyle, maxWidth: "700px" }}>
-          <h1 style={titleStyle}>Student Waiver & Release</h1>
-
-          <div style={summaryBox}>
-            <p><b>Legacy Pole & Aerial Studio Waiver</b></p>
-            <p>I understand pole and aerial fitness involves physical risk.</p>
-            <p>I confirm I am physically fit to participate.</p>
-            <p>I agree to follow all safety rules and instructor instructions.</p>
-            <p>I release Legacy Pole & Aerial Studio from claims arising from participation, except where prohibited by law.</p>
+          <div style={infoCard}>
+            <p><b>Name:</b> {booking.student?.fullName}</p>
+            <p><b>Email:</b> {booking.student?.email}</p>
+            <p>
+              <b>Class:</b>{" "}
+              {booking.class?.day} {booking.class?.time} —{" "}
+              {booking.class?.name}
+            </p>
+            <p><b>Package:</b> {booking.package?.name}</p>
+            <p><b>Amount:</b> {booking.package?.price}</p>
           </div>
 
-          <label style={{ display: "flex", gap: "10px", marginTop: "20px" }}>
-            <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} />
-            <span>I have read and agree to the waiver.</span>
-          </label>
-
           <button
-            disabled={!agreed}
-            onClick={() => setPage("login")}
-            style={{ ...buttonStyle, background: agreed ? "linear-gradient(to right,#d4b06a,#f0d8a8)" : "#ccc" }}
+            style={luxuryButton}
+            onClick={() => setPage("classes")}
           >
-            Accept Waiver
+            Book Another Class
           </button>
-        </div>
-      </div>
-    );
-  }
-
-  if (page === "classes") {
-    return (
-      <div style={pageStyle}>
-        <div style={cardStyle}>
-          <h1 style={titleStyle}>Classes</h1>
-
-          {classes.map((item) => (
-            <button key={item.day} style={classRow} onClick={() => chooseClass(item)}>
-              <b>{item.day}</b> {item.time} {item.name}
-            </button>
-          ))}
         </div>
       </div>
     );
@@ -242,165 +154,365 @@ export default function App() {
   if (page === "packages") {
     return (
       <div style={pageStyle}>
-        <div style={{ ...cardStyle, maxWidth: "900px" }}>
-          <button style={backButton} onClick={() => setPage("classes")}>
-            ← Back to Classes
-          </button>
+        <div style={editorialCard}>
+          <div style={miniLogo}>L</div>
 
-          <h1 style={titleStyle}>Choose Package</h1>
+          <h1 style={editorialTitle}>Packages</h1>
 
-          <p style={mutedText}>
-            Selected: <b>{selectedClass?.day} {selectedClass?.time}</b> — {selectedClass?.name}
+          <p style={subText}>
+            {selectedClass.day} {selectedClass.time} —{" "}
+            {selectedClass.name}
           </p>
 
           <div style={packageGrid}>
             {packages.map((pkg) => (
-              <button key={pkg.name} style={packageCard} onClick={() => choosePackage(pkg)}>
-                <h2>{pkg.name}</h2>
-                <h1 style={{ color: "#b48a3c" }}>{pkg.price}</h1>
-                <p style={{ color: "#777" }}>{pkg.note}</p>
+              <button
+                key={pkg.name}
+                style={packageCard}
+                onClick={() => choosePackage(pkg)}
+              >
+                <h2 style={packageName}>{pkg.name}</h2>
+
+                <h1 style={packagePrice}>{pkg.price}</h1>
+
+                <p style={packageNote}>{pkg.note}</p>
               </button>
             ))}
           </div>
 
-          {loading && <p style={mutedText}>Creating secure checkout...</p>}
+          {loading && (
+            <p style={subText}>Creating secure checkout...</p>
+          )}
         </div>
       </div>
     );
   }
 
-  if (page === "dashboard") {
-    const booking = JSON.parse(localStorage.getItem("legacyBooking"));
-
+  if (page === "classes") {
     return (
       <div style={pageStyle}>
-        <div style={{ ...cardStyle, maxWidth: "700px" }}>
-          <h1 style={titleStyle}>Student Dashboard</h1>
+        <div style={editorialCard}>
+          <div style={miniLogo}>L</div>
 
-          <div style={summaryBox}>
-            <p><b>Student:</b> {booking?.student?.fullName || "Returning Student"}</p>
-            <p><b>Email:</b> {booking?.student?.email || localStorage.getItem("legacyLoginEmail") || "No email saved"}</p>
-            <p><b>Booked Class:</b> {booking?.class?.day} {booking?.class?.time} — {booking?.class?.name}</p>
-            <p><b>Package:</b> {booking?.package?.name}</p>
-            <p><b>Amount Paid:</b> {booking?.package?.price}</p>
-            <p><b>Remaining Credits:</b> {booking?.creditsRemaining} {booking?.creditType}</p>
-            <p><b>Purchased:</b> {booking?.purchaseDate}</p>
-            <p><b>Expiry:</b> {booking?.expiryDate}</p>
+          <h1 style={editorialTitle}>Classes</h1>
+
+          <div style={classGrid}>
+            {classes.map((item) => (
+              <button
+                key={item.day}
+                style={classCard}
+                onClick={() => chooseClass(item)}
+              >
+                <h2 style={classDay}>{item.day}</h2>
+
+                <p style={classTime}>{item.time}</p>
+
+                <p style={className}>{item.name}</p>
+              </button>
+            ))}
           </div>
-
-          <button style={buttonStyle} onClick={() => setPage("classes")}>
-            Book Another Class
-          </button>
         </div>
       </div>
     );
   }
 
-  return null;
+  return (
+    <div style={pageStyle}>
+      <nav style={navStyle}>
+        <div style={logoCircle}>L</div>
+
+        <div style={navLinks}>
+          <span>ABOUT</span>
+          <span>CONTACT</span>
+        </div>
+      </nav>
+
+      <div style={heroContainer}>
+        <div style={leftHero}>
+          <h1 style={mainTitle}>LEGACY</h1>
+
+          <p style={mainSubtitle}>
+            Pole & Aerial Studio
+          </p>
+
+          <p style={description}>
+            Premium movement experience blending strength,
+            confidence, elegance, and feminine energy.
+          </p>
+
+          <div style={formCard}>
+            <input
+              name="fullName"
+              placeholder="Full Name"
+              style={inputStyle}
+              onChange={handleChange}
+            />
+
+            <input
+              name="email"
+              placeholder="Email Address"
+              style={inputStyle}
+              onChange={handleChange}
+            />
+
+            <input
+              name="phone"
+              placeholder="Phone Number"
+              style={inputStyle}
+              onChange={handleChange}
+            />
+
+            <button
+              style={luxuryButton}
+              onClick={continueToClasses}
+            >
+              Start Booking
+            </button>
+          </div>
+        </div>
+
+        <div style={artContainer}>
+          <div style={circleOne}></div>
+          <div style={circleTwo}></div>
+          <div style={circleThree}></div>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 const pageStyle = {
-  background: "linear-gradient(to bottom,#f7f4ee,#ffffff)",
   minHeight: "100vh",
-  color: "#111",
+  background:
+    "linear-gradient(to bottom right,#f6eee3,#efe2d1,#f9f5ef)",
+  fontFamily: "Georgia, serif",
+  color: "#2b2118",
+  padding: "40px"
+};
+
+const navStyle = {
   display: "flex",
-  justifyContent: "center",
+  justifyContent: "space-between",
   alignItems: "center",
-  padding: "20px",
-  fontFamily: "Arial"
+  marginBottom: "40px"
 };
 
-const cardStyle = {
-  width: "100%",
-  maxWidth: "520px",
-  background: "rgba(255,255,255,0.92)",
-  border: "1px solid rgba(212,176,106,0.25)",
-  borderRadius: "32px",
-  padding: "42px",
-  boxShadow: "0 15px 45px rgba(0,0,0,0.08)"
+const navLinks = {
+  display: "flex",
+  gap: "40px",
+  fontSize: "14px",
+  letterSpacing: "2px"
 };
 
-const titleStyle = {
-  fontSize: "52px",
-  fontWeight: "800",
-  marginBottom: "24px",
-  background: "linear-gradient(to right,#111,#d4b06a)",
-  WebkitBackgroundClip: "text",
-  WebkitTextFillColor: "transparent"
+const logoCircle = {
+  width: "60px",
+  height: "60px",
+  borderRadius: "50%",
+  border: "1px solid #2b2118",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  fontWeight: "bold",
+  fontSize: "22px"
 };
 
-const mutedText = {
-  color: "#777",
-  marginBottom: "24px"
+const heroContainer = {
+  display: "grid",
+  gridTemplateColumns: "1.1fr 0.9fr",
+  gap: "60px",
+  alignItems: "center",
+  maxWidth: "1400px",
+  margin: "0 auto",
+  minHeight: "80vh"
+};
+
+const leftHero = {
+  maxWidth: "600px"
+};
+
+const mainTitle = {
+  fontSize: "110px",
+  lineHeight: "0.9",
+  margin: 0,
+  letterSpacing: "-5px"
+};
+
+const mainSubtitle = {
+  fontSize: "30px",
+  marginTop: "20px"
+};
+
+const description = {
+  fontSize: "18px",
+  lineHeight: "1.8",
+  color: "#6e6257",
+  marginTop: "30px"
+};
+
+const formCard = {
+  marginTop: "40px",
+  background: "rgba(255,255,255,0.5)",
+  padding: "30px",
+  borderRadius: "30px",
+  backdropFilter: "blur(12px)",
+  border: "1px solid rgba(0,0,0,0.08)"
 };
 
 const inputStyle = {
   width: "100%",
-  padding: "16px",
-  marginBottom: "14px",
-  background: "#fff",
-  border: "1px solid rgba(212,176,106,0.22)",
-  borderRadius: "16px",
-  color: "#111",
-  fontSize: "15px",
-  boxSizing: "border-box"
-};
-
-const buttonStyle = {
-  width: "100%",
-  padding: "16px",
-  background: "linear-gradient(to right,#d4b06a,#f0d8a8)",
-  color: "#111",
-  border: "none",
-  borderRadius: "16px",
-  fontWeight: "700",
-  cursor: "pointer",
-  marginTop: "12px"
-};
-
-const classRow = {
-  background: "#fff",
-  border: "1px solid rgba(212,176,106,0.18)",
-  color: "#111",
-  textAlign: "left",
-  fontSize: "18px",
-  cursor: "pointer",
-  borderRadius: "16px",
   padding: "18px",
-  display: "block",
-  marginBottom: "14px"
+  marginBottom: "16px",
+  borderRadius: "18px",
+  border: "1px solid rgba(0,0,0,0.1)",
+  background: "rgba(255,255,255,0.7)",
+  fontSize: "15px",
+  boxSizing: "border-box",
+  outline: "none"
+};
+
+const luxuryButton = {
+  width: "100%",
+  padding: "18px",
+  borderRadius: "999px",
+  border: "none",
+  background: "#2b2118",
+  color: "white",
+  fontWeight: "bold",
+  cursor: "pointer",
+  fontSize: "15px",
+  letterSpacing: "1px"
+};
+
+const artContainer = {
+  height: "650px",
+  position: "relative"
+};
+
+const circleOne = {
+  position: "absolute",
+  width: "350px",
+  height: "350px",
+  borderRadius: "50%",
+  background: "#d8b48c",
+  top: "40px",
+  left: "60px",
+  opacity: 0.7
+};
+
+const circleTwo = {
+  position: "absolute",
+  width: "280px",
+  height: "280px",
+  borderRadius: "50%",
+  background: "#b8865d",
+  bottom: "100px",
+  right: "40px"
+};
+
+const circleThree = {
+  position: "absolute",
+  width: "180px",
+  height: "180px",
+  borderRadius: "50%",
+  background: "#ede0cf",
+  top: "220px",
+  right: "120px",
+  border: "1px solid rgba(0,0,0,0.08)"
+};
+
+const editorialCard = {
+  maxWidth: "900px",
+  margin: "0 auto",
+  background: "rgba(255,255,255,0.45)",
+  borderRadius: "40px",
+  padding: "50px",
+  backdropFilter: "blur(14px)",
+  border: "1px solid rgba(0,0,0,0.08)"
+};
+
+const editorialTitle = {
+  fontSize: "72px",
+  marginBottom: "20px",
+  letterSpacing: "-3px"
+};
+
+const subText = {
+  color: "#7a6c60",
+  marginBottom: "30px"
+};
+
+const classGrid = {
+  display: "grid",
+  gap: "20px"
+};
+
+const classCard = {
+  padding: "30px",
+  borderRadius: "26px",
+  border: "1px solid rgba(0,0,0,0.08)",
+  background: "rgba(255,255,255,0.6)",
+  cursor: "pointer",
+  textAlign: "left"
+};
+
+const classDay = {
+  margin: 0,
+  fontSize: "30px"
+};
+
+const classTime = {
+  color: "#7a6c60"
+};
+
+const className = {
+  fontSize: "18px"
 };
 
 const packageGrid = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
+  gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))",
   gap: "20px"
 };
 
 const packageCard = {
-  background: "#fff",
-  border: "1px solid rgba(212,176,106,0.18)",
-  borderRadius: "20px",
-  padding: "24px",
-  color: "#111",
-  textAlign: "left",
-  cursor: "pointer"
-};
-
-const summaryBox = {
-  background: "#fff",
-  border: "1px solid rgba(212,176,106,0.18)",
-  borderRadius: "20px",
-  padding: "22px",
-  lineHeight: "2.2",
-  color: "#222"
-};
-
-const backButton = {
-  background: "transparent",
-  border: "none",
-  color: "#b48a3c",
-  fontSize: "16px",
+  padding: "30px",
+  borderRadius: "30px",
+  border: "1px solid rgba(0,0,0,0.08)",
+  background: "rgba(255,255,255,0.6)",
   cursor: "pointer",
-  marginBottom: "20px"
+  textAlign: "left"
+};
+
+const packageName = {
+  fontSize: "24px"
+};
+
+const packagePrice = {
+  fontSize: "42px",
+  margin: "20px 0",
+  color: "#a67c52"
+};
+
+const packageNote = {
+  color: "#7a6c60"
+};
+
+const miniLogo = {
+  width: "50px",
+  height: "50px",
+  borderRadius: "50%",
+  border: "1px solid #2b2118",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  marginBottom: "30px",
+  fontWeight: "bold"
+};
+
+const infoCard = {
+  padding: "30px",
+  borderRadius: "24px",
+  background: "rgba(255,255,255,0.55)",
+  border: "1px solid rgba(0,0,0,0.08)",
+  lineHeight: "2"
 };
