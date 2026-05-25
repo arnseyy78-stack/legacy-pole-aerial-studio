@@ -307,9 +307,9 @@ if (page === "home") {
 }
 
 const pageStyle = {
-  background: "linear-gradient(to bottom, #050505, #0f0f0f)",
+  background: "linear-gradient(to bottom,#f7f4ee,#ffffff)",
   minHeight: "100vh",
-  color: "white",
+  color: "#111",
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
@@ -320,12 +320,12 @@ const pageStyle = {
 const cardStyle = {
   width: "100%",
   maxWidth: "520px",
-  background: "rgba(15,15,15,0.92)",
-  border: "1px solid rgba(255,215,160,0.12)",
+  background: "rgba(255,255,255,0.88)",
+  border: "1px solid rgba(212,176,106,0.22)",
   borderRadius: "32px",
   padding: "42px",
   backdropFilter: "blur(18px)",
-  boxShadow: "0 0 40px rgba(0,0,0,0.55)"
+  boxShadow: "0 15px 45px rgba(0,0,0,0.08)"
 };
 
 const titleStyle = {
@@ -333,13 +333,13 @@ const titleStyle = {
   fontWeight: "800",
   marginBottom: "12px",
   letterSpacing: "-2px",
-  background: "linear-gradient(to right,#ffffff,#d4b06a)",
+  background: "linear-gradient(to right,#111,#d4b06a)",
   WebkitBackgroundClip: "text",
   WebkitTextFillColor: "transparent"
 };
 
 const mutedText = {
-  color: "#b8b8b8",
+  color: "#777",
   marginBottom: "28px",
   fontSize: "15px",
   lineHeight: "1.6"
@@ -349,21 +349,22 @@ const inputStyle = {
   width: "100%",
   padding: "18px",
   marginBottom: "16px",
-  background: "rgba(255,255,255,0.04)",
-  border: "1px solid rgba(255,255,255,0.08)",
+  background: "#fff",
+  border: "1px solid rgba(212,176,106,0.18)",
   borderRadius: "18px",
-  color: "white",
+  color: "#111",
   fontSize: "15px",
   boxSizing: "border-box",
   outline: "none",
-  transition: "0.3s"
+  transition: "0.3s",
+  boxShadow: "0 2px 8px rgba(0,0,0,0.03)"
 };
 
 const buttonStyle = {
   width: "100%",
   padding: "18px",
-  background: "linear-gradient(to right,#ec4899,#d4b06a)",
-  color: "white",
+  background: "linear-gradient(to right,#d4b06a,#f0d8a8)",
+  color: "#111",
   border: "none",
   borderRadius: "18px",
   fontWeight: "700",
@@ -371,13 +372,13 @@ const buttonStyle = {
   cursor: "pointer",
   marginTop: "14px",
   transition: "0.3s",
-  boxShadow: "0 10px 25px rgba(236,72,153,0.25)"
+  boxShadow: "0 10px 25px rgba(212,176,106,0.22)"
 };
 
 const classRow = {
-  background: "rgba(255,255,255,0.03)",
-  border: "1px solid rgba(255,255,255,0.06)",
-  color: "white",
+  background: "#fff",
+  border: "1px solid rgba(212,176,106,0.12)",
+  color: "#111",
   textAlign: "left",
   fontSize: "18px",
   cursor: "pointer",
@@ -385,7 +386,8 @@ const classRow = {
   padding: "18px",
   display: "block",
   marginBottom: "14px",
-  transition: "0.3s"
+  transition: "0.3s",
+  boxShadow: "0 4px 12px rgba(0,0,0,0.03)"
 };
 
 const packageGrid = {
@@ -395,30 +397,31 @@ const packageGrid = {
 };
 
 const packageCard = {
-  background: "rgba(255,255,255,0.03)",
-  border: "1px solid rgba(255,215,160,0.12)",
+  background: "#fff",
+  border: "1px solid rgba(212,176,106,0.14)",
   borderRadius: "24px",
   padding: "28px",
-  color: "white",
+  color: "#111",
   textAlign: "left",
   cursor: "pointer",
   transition: "0.3s",
-  backdropFilter: "blur(12px)"
+  boxShadow: "0 4px 14px rgba(0,0,0,0.04)"
 };
 
 const summaryBox = {
-  background: "rgba(255,255,255,0.03)",
-  border: "1px solid rgba(255,255,255,0.06)",
+  background: "#fff",
+  border: "1px solid rgba(212,176,106,0.12)",
   borderRadius: "24px",
   padding: "26px",
   lineHeight: "2.2",
-  color: "#f2f2f2"
+  color: "#222",
+  boxShadow: "0 4px 14px rgba(0,0,0,0.04)"
 };
 
 const backButton = {
   background: "transparent",
   border: "none",
-  color: "#d4b06a",
+  color: "#b48a3c",
   fontSize: "15px",
   cursor: "pointer",
   marginBottom: "20px",
