@@ -28,13 +28,13 @@ export default function App() {
 
   const packages = [
     {
-  name: "TEST PACKAGE",
-  price: "₱1.00",
-  amount: 100,
-  credits: 5,
-  type: "Class Credits",
-  note: "5 test credits"
-},
+      name: "TEST PACKAGE",
+      price: "₱1.00",
+      amount: 100,
+      credits: 5,
+      type: "Class Credits",
+      note: "5 test credits"
+    },
     {
       name: "Single Pass",
       price: "₱850",
@@ -93,7 +93,11 @@ export default function App() {
   }
 
   function saveStudent() {
-    localStorage.setItem("legacyStudent", JSON.stringify(student));
+    localStorage.setItem(
+      "legacyStudent",
+      JSON.stringify(student)
+    );
+
     setPage("waiver");
   }
 
@@ -104,8 +108,15 @@ export default function App() {
       phone: ""
     };
 
-    localStorage.setItem("legacyStudent", JSON.stringify(returningStudent));
-    localStorage.setItem("legacyLogin", JSON.stringify(login));
+    localStorage.setItem(
+      "legacyStudent",
+      JSON.stringify(returningStudent)
+    );
+
+    localStorage.setItem(
+      "legacyLogin",
+      JSON.stringify(login)
+    );
 
     setPage("packages");
   }
@@ -121,31 +132,52 @@ export default function App() {
 
   async function choosePackage(pkg) {
     setLoading(true);
+
     setSelectedPackage(pkg);
 
-    const savedStudent =
-      JSON.parse(localStorage.getItem("legacyStudent")) || student;
+    localStorage.setItem(
+      "legacyPackage",
+      JSON.stringify(pkg)
+    );
 
-    localStorage.setItem("legacyPackage", JSON.stringify(pkg));
+    // RESET CREDITS
+    if (
+      pkg.name === "Class Card of 5" ||
+      pkg.name === "TEST PACKAGE"
+    ) {
+      localStorage.setItem(
+        "legacyCredits",
+        5
+      );
+    }
+
+    const savedStudent =
+      JSON.parse(
+        localStorage.getItem("legacyStudent")
+      ) || student;
 
     try {
-      const response = await fetch("/api/create-checkout", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          packageName: pkg.name,
-          amount: pkg.amount,
-          studentName: savedStudent.fullName,
-          studentEmail: savedStudent.email
-        })
-      });
+      const response = await fetch(
+        "/api/create-checkout",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            packageName: pkg.name,
+            amount: pkg.amount,
+            studentName: savedStudent.fullName,
+            studentEmail: savedStudent.email
+          })
+        }
+      );
 
       const data = await response.json();
 
       if (data.checkoutUrl) {
-        window.location.href = data.checkoutUrl;
+        window.location.href =
+          data.checkoutUrl;
       } else {
         alert("Payment checkout failed.");
         setLoading(false);
@@ -157,69 +189,163 @@ export default function App() {
   }
 
   function chooseClass(classItem) {
-  const savedStudent =
-    JSON.parse(localStorage.getItem("legacyStudent")) || student;
+    const savedStudent =
+      JSON.parse(
+        localStorage.getItem("legacyStudent")
+      ) || student;
 
-  const savedPackage =
-    JSON.parse(localStorage.getItem("legacyPackage")) || selectedPackage;
+    const savedPackage =
+      JSON.parse(
+        localStorage.getItem("legacyPackage")
+      ) || selectedPackage;
 
-  const existingCredits =
-    Number(localStorage.getItem("legacyCredits")) || 0;
+    const existingCredits =
+      Number(
+        localStorage.getItem("legacyCredits")
+      ) || 0;
 
-  let updatedCredits = existingCredits;
+    let updatedCredits = existingCredits;
 
-  // CLASS CARD OF 5
-  if (savedPackage?.name === "Class Card of 5") {
+    // CREDIT SYSTEM
+    if (
+      savedPackage?.name === "Class Card of 5" ||
+      savedPackage?.name === "TEST PACKAGE"
+    ) {
 
-    // FIRST PURCHASE
-    if (existingCredits === 0) {
-      updatedCredits = 5;
+      // FIRST PURCHASE
+      if (existingCredits === 0) {
+        updatedCredits = 5;
+      }
+
+      // USE CREDIT
+      updatedCredits =
+        updatedCredits - 1;
+
+      if (updatedCredits < 0) {
+        alert("No credits remaining.");
+        return;
+      }
+
+      localStorage.setItem(
+        "legacyCredits",
+        updatedCredits
+      );
     }
 
-    // USE CREDIT
-    updatedCredits = updatedCredits - 1;
-
-    if (updatedCredits < 0) {
-      alert("No credits remaining.");
-      return;
-    }
+    const booking = {
+      student: savedStudent,
+      package: savedPackage,
+      class: classItem,
+      creditsRemaining:
+        savedPackage?.name ===
+          "Class Card of 5" ||
+        savedPackage?.name ===
+          "TEST PACKAGE"
+          ? updatedCredits
+          : savedPackage?.credits,
+      creditType: savedPackage?.type,
+      purchaseDate:
+        new Date().toLocaleDateString(),
+      expiryDate: expiryDate(
+        savedPackage?.expiryDays
+      )
+    };
 
     localStorage.setItem(
-      "legacyCredits",
-      updatedCredits
+      "legacyBooking",
+      JSON.stringify(booking)
+    );
+
+    setPage("dashboard");
+  }
+
+  const booking =
+    JSON.parse(
+      localStorage.getItem("legacyBooking")
+    ) || {};
+
+  if (page === "dashboard") {
+    return (
+      <div style={pageStyle}>
+        <div style={editorialCard}>
+          <div style={miniLogo}>L</div>
+
+          <h1 style={editorialTitle}>
+            Class Booked
+          </h1>
+
+          <div style={infoCard}>
+            <p>
+              <b>Name:</b>{" "}
+              {booking.student?.fullName}
+            </p>
+
+            <p>
+              <b>Email:</b>{" "}
+              {booking.student?.email}
+            </p>
+
+            <p>
+              <b>Package:</b>{" "}
+              {booking.package?.name}
+            </p>
+
+            <p>
+              <b>Amount:</b>{" "}
+              {booking.package?.price}
+            </p>
+
+            <p>
+              <b>Remaining Credits:</b>{" "}
+              {booking.package?.name ===
+                "Class Card of 5" ||
+              booking.package?.name ===
+                "TEST PACKAGE"
+                ? localStorage.getItem(
+                    "legacyCredits"
+                  )
+                : booking.creditsRemaining}{" "}
+              {booking.creditType}
+            </p>
+
+            <p>
+              <b>Class:</b>{" "}
+              {booking.class?.day}{" "}
+              {booking.class?.time} —{" "}
+              {booking.class?.name}
+            </p>
+
+            <p>
+              <b>Expiry:</b>{" "}
+              {booking.expiryDate}
+            </p>
+          </div>
+
+          <button
+            style={luxuryButton}
+            onClick={() =>
+              setPage("schedule")
+            }
+          >
+            Book Another Class
+          </button>
+        </div>
+      </div>
     );
   }
 
-  const booking = {
-    student: savedStudent,
-    package: savedPackage,
-    class: classItem,
-    creditsRemaining:
-      savedPackage?.name === "Class Card of 5"
-        ? updatedCredits
-        : savedPackage?.credits,
-    creditType: savedPackage?.type,
-    purchaseDate: new Date().toLocaleDateString(),
-    expiryDate: expiryDate(savedPackage?.expiryDays)
-  };
-
-  localStorage.setItem(
-    "legacyBooking",
-    JSON.stringify(booking)
-  );
-
-  setPage("dashboard");
-}
   if (page === "schedule") {
     return (
       <div style={pageStyle}>
         <div style={editorialCard}>
           <div style={miniLogo}>L</div>
 
-          <h1 style={editorialTitle}>Class Schedule</h1>
+          <h1 style={editorialTitle}>
+            Class Schedule
+          </h1>
 
           <p style={subText}>
-            Payment complete. Please select your class.
+            Select your next class.
           </p>
 
           <div style={classGrid}>
@@ -227,11 +353,21 @@ export default function App() {
               <button
                 key={item.day}
                 style={classCard}
-                onClick={() => chooseClass(item)}
+                onClick={() =>
+                  chooseClass(item)
+                }
               >
-                <h2 style={classDay}>{item.day}</h2>
-                <p style={classTime}>{item.time}</p>
-                <p style={className}>{item.name}</p>
+                <h2 style={classDay}>
+                  {item.day}
+                </h2>
+
+                <p style={classTime}>
+                  {item.time}
+                </p>
+
+                <p style={className}>
+                  {item.name}
+                </p>
               </button>
             ))}
           </div>
@@ -246,23 +382,39 @@ export default function App() {
         <div style={editorialCard}>
           <div style={miniLogo}>L</div>
 
-          <h1 style={editorialTitle}>Packages</h1>
+          <h1 style={editorialTitle}>
+            Packages
+          </h1>
 
           <div style={packageGrid}>
             {packages.map((pkg) => (
               <button
                 key={pkg.name}
                 style={packageCard}
-                onClick={() => choosePackage(pkg)}
+                onClick={() =>
+                  choosePackage(pkg)
+                }
               >
-                <h2 style={packageName}>{pkg.name}</h2>
-                <h1 style={packagePrice}>{pkg.price}</h1>
-                <p style={packageNote}>{pkg.note}</p>
+                <h2 style={packageName}>
+                  {pkg.name}
+                </h2>
+
+                <h1 style={packagePrice}>
+                  {pkg.price}
+                </h1>
+
+                <p style={packageNote}>
+                  {pkg.note}
+                </p>
               </button>
             ))}
           </div>
 
-          {loading && <p style={subText}>Creating secure checkout...</p>}
+          {loading && (
+            <p style={subText}>
+              Creating secure checkout...
+            </p>
+          )}
         </div>
       </div>
     );
@@ -274,17 +426,33 @@ export default function App() {
         <div style={editorialCard}>
           <div style={miniLogo}>L</div>
 
-          <h1 style={editorialTitle}>Login / Sign Up</h1>
+          <h1 style={editorialTitle}>
+            Login / Sign Up
+          </h1>
 
           <div style={authGrid}>
-            <button style={authCard} onClick={() => setPage("student")}>
+            <button
+              style={authCard}
+              onClick={() =>
+                setPage("student")
+              }
+            >
               <h2>Sign Up</h2>
-              <p>New student registration</p>
+              <p>
+                New student registration
+              </p>
             </button>
 
-            <button style={authCard} onClick={() => setPage("login")}>
+            <button
+              style={authCard}
+              onClick={() =>
+                setPage("login")
+              }
+            >
               <h2>Login</h2>
-              <p>Returning student</p>
+              <p>
+                Returning student
+              </p>
             </button>
           </div>
         </div>
@@ -298,7 +466,9 @@ export default function App() {
         <div style={editorialCard}>
           <div style={miniLogo}>L</div>
 
-          <h1 style={editorialTitle}>Login</h1>
+          <h1 style={editorialTitle}>
+            Login
+          </h1>
 
           <input
             name="email"
@@ -315,7 +485,10 @@ export default function App() {
             onChange={handleLoginChange}
           />
 
-          <button style={luxuryButton} onClick={saveLogin}>
+          <button
+            style={luxuryButton}
+            onClick={saveLogin}
+          >
             Continue
           </button>
         </div>
@@ -329,15 +502,34 @@ export default function App() {
         <div style={editorialCard}>
           <div style={miniLogo}>L</div>
 
-          <h1 style={editorialTitle}>Waiver</h1>
+          <h1 style={editorialTitle}>
+            Waiver
+          </h1>
 
           <div style={infoCard}>
-            <p>I understand pole and aerial fitness involves physical risk.</p>
-            <p>I confirm I am physically fit to participate.</p>
-            <p>I agree to follow all safety rules and instructor instructions.</p>
             <p>
-              I release Legacy Pole & Aerial Studio from claims arising from
-              participation, except where prohibited by law.
+              I understand pole and aerial
+              fitness involves physical
+              risk.
+            </p>
+
+            <p>
+              I confirm I am physically fit
+              to participate.
+            </p>
+
+            <p>
+              I agree to follow all safety
+              rules and instructor
+              instructions.
+            </p>
+
+            <p>
+              I release Legacy Pole &
+              Aerial Studio from claims
+              arising from participation,
+              except where prohibited by
+              law.
             </p>
           </div>
 
@@ -345,9 +537,16 @@ export default function App() {
             <input
               type="checkbox"
               checked={agreed}
-              onChange={(e) => setAgreed(e.target.checked)}
+              onChange={(e) =>
+                setAgreed(
+                  e.target.checked
+                )
+              }
             />
-            <span>I agree to the waiver.</span>
+
+            <span>
+              I agree to the waiver.
+            </span>
           </label>
 
           <button
@@ -356,7 +555,9 @@ export default function App() {
               ...luxuryButton,
               opacity: agreed ? 1 : 0.45
             }}
-            onClick={() => setPage("packages")}
+            onClick={() =>
+              setPage("packages")
+            }
           >
             Continue
           </button>
@@ -371,7 +572,9 @@ export default function App() {
         <div style={editorialCard}>
           <div style={miniLogo}>L</div>
 
-          <h1 style={editorialTitle}>Student Information</h1>
+          <h1 style={editorialTitle}>
+            Student Information
+          </h1>
 
           <div style={formCard}>
             <input
@@ -395,7 +598,10 @@ export default function App() {
               onChange={handleStudentChange}
             />
 
-            <button style={luxuryButton} onClick={saveStudent}>
+            <button
+              style={luxuryButton}
+              onClick={saveStudent}
+            >
               Continue
             </button>
           </div>
@@ -407,7 +613,9 @@ export default function App() {
   return (
     <div style={pageStyle}>
       <nav style={navStyle}>
-        <div style={logoCircle}>L</div>
+        <div style={logoCircle}>
+          L
+        </div>
 
         <div style={navLinks}>
           <span>ABOUT</span>
@@ -417,16 +625,27 @@ export default function App() {
 
       <div style={heroContainer}>
         <div style={leftHero}>
-          <h1 style={mainTitle}>LEGACY</h1>
+          <h1 style={mainTitle}>
+            LEGACY
+          </h1>
 
-          <p style={mainSubtitle}>Pole & Aerial Studio</p>
-
-          <p style={description}>
-            Premium movement experience blending strength, confidence, elegance,
-            and feminine energy.
+          <p style={mainSubtitle}>
+            Pole & Aerial Studio
           </p>
 
-          <button style={luxuryButton} onClick={() => setPage("auth")}>
+          <p style={description}>
+            Premium movement experience
+            blending strength,
+            confidence, elegance, and
+            feminine energy.
+          </p>
+
+          <button
+            style={luxuryButton}
+            onClick={() =>
+              setPage("auth")
+            }
+          >
             Start Booking
           </button>
         </div>
@@ -441,9 +660,12 @@ export default function App() {
   );
 }
 
+// STYLES
+
 const pageStyle = {
   minHeight: "100vh",
-  background: "linear-gradient(to bottom right,#f6eee3,#efe2d1,#f9f5ef)",
+  background:
+    "linear-gradient(to bottom right,#f6eee3,#efe2d1,#f9f5ef)",
   fontFamily: "Georgia, serif",
   color: "#2b2118",
   padding: "40px"
@@ -477,7 +699,8 @@ const logoCircle = {
 
 const heroContainer = {
   display: "grid",
-  gridTemplateColumns: "1.1fr 0.9fr",
+  gridTemplateColumns:
+    "1.1fr 0.9fr",
   gap: "60px",
   alignItems: "center",
   maxWidth: "1400px",
@@ -485,7 +708,9 @@ const heroContainer = {
   minHeight: "80vh"
 };
 
-const leftHero = { maxWidth: "600px" };
+const leftHero = {
+  maxWidth: "600px"
+};
 
 const mainTitle = {
   fontSize: "110px",
@@ -508,11 +733,13 @@ const description = {
 
 const formCard = {
   marginTop: "40px",
-  background: "rgba(255,255,255,0.5)",
+  background:
+    "rgba(255,255,255,0.5)",
   padding: "30px",
   borderRadius: "30px",
   backdropFilter: "blur(12px)",
-  border: "1px solid rgba(0,0,0,0.08)"
+  border:
+    "1px solid rgba(0,0,0,0.08)"
 };
 
 const inputStyle = {
@@ -520,8 +747,10 @@ const inputStyle = {
   padding: "18px",
   marginBottom: "16px",
   borderRadius: "18px",
-  border: "1px solid rgba(0,0,0,0.1)",
-  background: "rgba(255,255,255,0.7)",
+  border:
+    "1px solid rgba(0,0,0,0.1)",
+  background:
+    "rgba(255,255,255,0.7)",
   fontSize: "15px",
   boxSizing: "border-box",
   outline: "none"
@@ -541,7 +770,10 @@ const luxuryButton = {
   marginTop: "20px"
 };
 
-const artContainer = { height: "650px", position: "relative" };
+const artContainer = {
+  height: "650px",
+  position: "relative"
+};
 
 const circleOne = {
   position: "absolute",
@@ -572,17 +804,20 @@ const circleThree = {
   background: "#ede0cf",
   top: "220px",
   right: "120px",
-  border: "1px solid rgba(0,0,0,0.08)"
+  border:
+    "1px solid rgba(0,0,0,0.08)"
 };
 
 const editorialCard = {
   maxWidth: "900px",
   margin: "0 auto",
-  background: "rgba(255,255,255,0.45)",
+  background:
+    "rgba(255,255,255,0.45)",
   borderRadius: "40px",
   padding: "50px",
   backdropFilter: "blur(14px)",
-  border: "1px solid rgba(0,0,0,0.08)"
+  border:
+    "1px solid rgba(0,0,0,0.08)"
 };
 
 const editorialTitle = {
@@ -596,37 +831,56 @@ const subText = {
   marginBottom: "30px"
 };
 
-const classGrid = { display: "grid", gap: "20px" };
+const classGrid = {
+  display: "grid",
+  gap: "20px"
+};
 
 const classCard = {
   padding: "30px",
   borderRadius: "26px",
-  border: "1px solid rgba(0,0,0,0.08)",
-  background: "rgba(255,255,255,0.6)",
+  border:
+    "1px solid rgba(0,0,0,0.08)",
+  background:
+    "rgba(255,255,255,0.6)",
   cursor: "pointer",
   textAlign: "left"
 };
 
-const classDay = { margin: 0, fontSize: "30px" };
-const classTime = { color: "#7a6c60" };
-const className = { fontSize: "18px" };
+const classDay = {
+  margin: 0,
+  fontSize: "30px"
+};
+
+const classTime = {
+  color: "#7a6c60"
+};
+
+const className = {
+  fontSize: "18px"
+};
 
 const packageGrid = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))",
+  gridTemplateColumns:
+    "repeat(auto-fit,minmax(240px,1fr))",
   gap: "20px"
 };
 
 const packageCard = {
   padding: "30px",
   borderRadius: "30px",
-  border: "1px solid rgba(0,0,0,0.08)",
-  background: "rgba(255,255,255,0.6)",
+  border:
+    "1px solid rgba(0,0,0,0.08)",
+  background:
+    "rgba(255,255,255,0.6)",
   cursor: "pointer",
   textAlign: "left"
 };
 
-const packageName = { fontSize: "24px" };
+const packageName = {
+  fontSize: "24px"
+};
 
 const packagePrice = {
   fontSize: "42px",
@@ -634,7 +888,9 @@ const packagePrice = {
   color: "#a67c52"
 };
 
-const packageNote = { color: "#7a6c60" };
+const packageNote = {
+  color: "#7a6c60"
+};
 
 const miniLogo = {
   width: "50px",
@@ -651,22 +907,27 @@ const miniLogo = {
 const infoCard = {
   padding: "30px",
   borderRadius: "24px",
-  background: "rgba(255,255,255,0.55)",
-  border: "1px solid rgba(0,0,0,0.08)",
+  background:
+    "rgba(255,255,255,0.55)",
+  border:
+    "1px solid rgba(0,0,0,0.08)",
   lineHeight: "2"
 };
 
 const authGrid = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))",
+  gridTemplateColumns:
+    "repeat(auto-fit,minmax(240px,1fr))",
   gap: "20px"
 };
 
 const authCard = {
   padding: "34px",
   borderRadius: "30px",
-  border: "1px solid rgba(0,0,0,0.08)",
-  background: "rgba(255,255,255,0.6)",
+  border:
+    "1px solid rgba(0,0,0,0.08)",
+  background:
+    "rgba(255,255,255,0.6)",
   cursor: "pointer",
   textAlign: "left",
   color: "#2b2118"
