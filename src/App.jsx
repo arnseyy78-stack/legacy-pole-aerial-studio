@@ -42,7 +42,7 @@ export default function App() {
       name: "Practice Session",
       price: "₱550.00",
       note: "Open practice access",
-      link: "https://pm.link/org-VizvF8g1Lq5cvJviJRNCMyTe/ueZSEI4"
+      link: "https://pm.link/org-VizvF8g1Lq5cvJviJRNCMyTe/v2MjJM8"
     },
     {
       name: "Private Class",
