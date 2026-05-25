@@ -6,7 +6,7 @@ export default function App() {
   const [selectedClass, setSelectedClass] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const [form, setForm] = useState({
+  const [student, setStudent] = useState({
     fullName: "",
     email: "",
     phone: "",
@@ -20,9 +20,6 @@ export default function App() {
     password: ""
   });
 
-  const isFormValid = Object.values(form).every(Boolean);
-  const isLoginValid = login.email && login.password;
-
   const classes = [
     { day: "Monday", time: "6:00 PM", name: "Pole Fitness" },
     { day: "Tuesday", time: "6:00 PM", name: "Pole Flow" },
@@ -33,62 +30,86 @@ export default function App() {
   ];
 
   const packages = [
-    { name: "TEST PACKAGE", price: "₱1.00", amount: 100, note: "Test checkout only" },
-    { name: "Single Pass", price: "₱850.00", amount: 85000, note: "One class access" },
-    { name: "Class Card of 5", price: "₱4,000.00", amount: 400000, note: "Consumable within 30 days" },
-    { name: "Practice Session", price: "₱550.00", amount: 55000, note: "Open practice access" },
-    { name: "Private Class", price: "₱3,000.00", amount: 300000, note: "Can be up to 3 students" }
+    { name: "TEST PACKAGE", price: "₱1.00", amount: 100, credits: 1, type: "Test Credit", note: "Test checkout only" },
+    { name: "Single Pass", price: "₱850.00", amount: 85000, credits: 1, type: "Class Credit", note: "One class access" },
+    { name: "Class Card of 5", price: "₱4,000.00", amount: 400000, credits: 5, type: "Class Credits", note: "Consumable within 30 days", expiryDays: 30 },
+    { name: "Practice Session", price: "₱550.00", amount: 55000, credits: 1, type: "Practice Credit", note: "Open practice access" },
+    { name: "Private Class", price: "₱3,000.00", amount: 300000, credits: 1, type: "Private Credit", note: "Can be up to 3 students" }
   ];
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("paid") === "true") {
-      setPage("success");
+      setPage("dashboard");
     }
   }, []);
 
-  function handleChange(e) {
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const isStudentValid = Object.values(student).every(Boolean);
+  const isLoginValid = login.email && login.password;
+
+  function handleStudentChange(e) {
+    setStudent({ ...student, [e.target.name]: e.target.value });
   }
 
   function handleLoginChange(e) {
     setLogin({ ...login, [e.target.name]: e.target.value });
   }
 
-  function saveAndContinue() {
-    localStorage.setItem("legacyStudentRecord", JSON.stringify(form));
-    setLogin({ email: form.email, password: "" });
+  function saveStudent() {
+    localStorage.setItem("legacyStudent", JSON.stringify(student));
     setPage("waiver");
   }
 
-  function loginAndContinue() {
-    localStorage.setItem("legacyStudentLogin", JSON.stringify(login));
-    setPage("calendar");
+  function loginStudent() {
+    localStorage.setItem("legacyLoginEmail", login.email);
+    setPage("classes");
   }
 
   function chooseClass(item) {
     setSelectedClass(item);
-    localStorage.setItem("legacySelectedClass", JSON.stringify(item));
+    localStorage.setItem("legacyClass", JSON.stringify(item));
     setPage("packages");
   }
 
-  async function choosePackage(item) {
+  function expiryDate(days) {
+    if (!days) return "No expiry";
+    const date = new Date();
+    date.setDate(date.getDate() + days);
+    return date.toLocaleDateString();
+  }
+
+  async function choosePackage(pkg) {
     setLoading(true);
 
-    localStorage.setItem("legacySelectedPackage", JSON.stringify(item));
-    localStorage.setItem("legacyStudentRecord", JSON.stringify(form));
-    localStorage.setItem("legacySelectedClass", JSON.stringify(selectedClass));
+    const savedStudent = JSON.parse(localStorage.getItem("legacyStudent")) || {
+      fullName: "Returning Student",
+      email: localStorage.getItem("legacyLoginEmail") || "No email saved"
+    };
+
+    const savedClass = JSON.parse(localStorage.getItem("legacyClass")) || selectedClass;
+
+    const booking = {
+      student: savedStudent,
+      class: savedClass,
+      package: pkg,
+      creditsRemaining: pkg.credits,
+      creditType: pkg.type,
+      purchaseDate: new Date().toLocaleDateString(),
+      expiryDate: expiryDate(pkg.expiryDays)
+    };
+
+    localStorage.setItem("legacyBooking", JSON.stringify(booking));
 
     try {
       const response = await fetch("/api/create-checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          packageName: item.name,
-          amount: item.amount,
-          studentName: form.fullName,
-          studentEmail: form.email,
-          className: `${selectedClass.day} ${selectedClass.time} - ${selectedClass.name}`
+          packageName: pkg.name,
+          amount: pkg.amount,
+          studentName: savedStudent.fullName,
+          studentEmail: savedStudent.email,
+          className: `${savedClass.day} ${savedClass.time} - ${savedClass.name}`
         })
       });
 
@@ -106,35 +127,19 @@ export default function App() {
     }
   }
 
-  if (page === "success") {
-    const student = JSON.parse(localStorage.getItem("legacyStudentRecord"));
-    const bookedClass = JSON.parse(localStorage.getItem("legacySelectedClass"));
-    const bookedPackage = JSON.parse(localStorage.getItem("legacySelectedPackage"));
-
+  if (page === "home") {
     return (
       <div style={pageStyle}>
-        <div style={{ ...cardStyle, width: "650px", textAlign: "center" }}>
-          <div style={{ fontSize: "70px" }}>✅</div>
-          <h1 style={{ ...titleStyle, textAlign: "center" }}>Class Booked</h1>
+        <div style={cardStyle}>
+          <h1 style={titleStyle}>LEGACY</h1>
+          <p style={mutedText}>Pole & Aerial Studio</p>
 
-          <div style={summaryBox}>
-            <p><b>Name:</b> {student?.fullName}</p>
-            <p><b>Email:</b> {student?.email}</p>
-            <p><b>Class:</b> {bookedClass?.day} {bookedClass?.time} — {bookedClass?.name}</p>
-            <p><b>Package:</b> {bookedPackage?.name}</p>
-            <p><b>Amount:</b> {bookedPackage?.price}</p>
-          </div>
+          <button style={buttonStyle} onClick={() => setPage("student-info")}>
+            Sign Up
+          </button>
 
-          <p style={mutedText}>📧 PayMongo will send the payment receipt to the student email.</p>
-
-          <button
-            style={buttonStyle}
-            onClick={() => {
-              localStorage.clear();
-              window.location.href = "/";
-            }}
-          >
-            Book Another Class
+          <button style={{ ...buttonStyle, background: "#111", color: "#fff" }} onClick={() => setPage("login")}>
+            Log In
           </button>
         </div>
       </div>
@@ -145,77 +150,43 @@ export default function App() {
     return (
       <div style={pageStyle}>
         <div style={cardStyle}>
-          <h1 style={titleStyle}>Student Login</h1>
+          <h1 style={titleStyle}>Login</h1>
 
-          <input
-            name="email"
-            placeholder="Email Address"
-            value={login.email}
-            style={inputStyle}
-            onChange={handleLoginChange}
-          />
-
-          <input
-            name="password"
-            type="password"
-            placeholder="Create Password"
-            value={login.password}
-            style={inputStyle}
-            onChange={handleLoginChange}
-          />
+          <input name="email" placeholder="Email Address" style={inputStyle} onChange={handleLoginChange} />
+          <input name="password" type="password" placeholder="Password" style={inputStyle} onChange={handleLoginChange} />
 
           <button
             disabled={!isLoginValid}
-            onClick={loginAndContinue}
-            style={{ ...buttonStyle, background: isLoginValid ? "#ec4899" : "#555" }}
+            onClick={loginStudent}
+            style={{ ...buttonStyle, background: isLoginValid ? "linear-gradient(to right,#d4b06a,#f0d8a8)" : "#ccc" }}
           >
-            Continue to Classes
+            Continue
           </button>
         </div>
       </div>
     );
   }
 
-  if (page === "packages") {
+  if (page === "student-info") {
     return (
       <div style={pageStyle}>
-        <div style={{ ...cardStyle, width: "900px", maxWidth: "95%" }}>
-          <button style={backButton} onClick={() => setPage("calendar")}>← Back to Classes</button>
-          <h1 style={titleStyle}>Choose Package</h1>
+        <div style={cardStyle}>
+          <h1 style={titleStyle}>Student Information</h1>
 
-          <p style={selectedText}>
-            Selected: <b>{selectedClass?.day} {selectedClass?.time}</b> — {selectedClass?.name}
-          </p>
+          <input name="fullName" placeholder="Full Name" style={inputStyle} onChange={handleStudentChange} />
+          <input name="email" placeholder="Email Address" style={inputStyle} onChange={handleStudentChange} />
+          <input name="phone" placeholder="Phone Number" style={inputStyle} onChange={handleStudentChange} />
+          <input name="dob" type="date" style={inputStyle} onChange={handleStudentChange} />
+          <input name="emergencyName" placeholder="Emergency Contact Name" style={inputStyle} onChange={handleStudentChange} />
+          <input name="emergencyPhone" placeholder="Emergency Contact Number" style={inputStyle} onChange={handleStudentChange} />
 
-          <div style={packageGrid}>
-            {packages.map((item) => (
-              <button key={item.name} style={packageCard} onClick={() => choosePackage(item)}>
-                <h2>{item.name}</h2>
-                <p style={priceText}>{item.price}</p>
-                <p style={noteText}>{item.note}</p>
-              </button>
-            ))}
-          </div>
-
-          {loading && <p style={mutedText}>Creating secure checkout...</p>}
-        </div>
-      </div>
-    );
-  }
-
-  if (page === "calendar") {
-    return (
-      <div style={pageStyle}>
-        <div style={{ ...cardStyle, width: "900px", maxWidth: "95%" }}>
-          <h1 style={titleStyle}>Classes</h1>
-
-          <div style={classList}>
-            {classes.map((item) => (
-              <button key={item.day} style={classRow} onClick={() => chooseClass(item)}>
-                <b>{item.day}</b> {item.time} {item.name}
-              </button>
-            ))}
-          </div>
+          <button
+            disabled={!isStudentValid}
+            onClick={saveStudent}
+            style={{ ...buttonStyle, background: isStudentValid ? "linear-gradient(to right,#d4b06a,#f0d8a8)" : "#ccc" }}
+          >
+            Continue
+          </button>
         </div>
       </div>
     );
@@ -224,10 +195,10 @@ export default function App() {
   if (page === "waiver") {
     return (
       <div style={pageStyle}>
-        <div style={{ ...cardStyle, width: "700px", maxWidth: "90%" }}>
+        <div style={{ ...cardStyle, maxWidth: "700px" }}>
           <h1 style={titleStyle}>Student Waiver & Release</h1>
 
-          <div style={waiverBox}>
+          <div style={summaryBox}>
             <p><b>Legacy Pole & Aerial Studio Waiver</b></p>
             <p>I understand pole and aerial fitness involves physical risk.</p>
             <p>I confirm I am physically fit to participate.</p>
@@ -243,7 +214,7 @@ export default function App() {
           <button
             disabled={!agreed}
             onClick={() => setPage("login")}
-            style={{ ...buttonStyle, background: agreed ? "#ec4899" : "#555" }}
+            style={{ ...buttonStyle, background: agreed ? "linear-gradient(to right,#d4b06a,#f0d8a8)" : "#ccc" }}
           >
             Accept Waiver
           </button>
@@ -251,59 +222,81 @@ export default function App() {
       </div>
     );
   }
-if (page === "home") {
-  return (
-    <div style={pageStyle}>
-      <div style={cardStyle}>
-        <h1 style={titleStyle}>LEGACY</h1>
 
-        <p style={mutedText}>
-          Pole & Aerial Studio
-        </p>
+  if (page === "classes") {
+    return (
+      <div style={pageStyle}>
+        <div style={cardStyle}>
+          <h1 style={titleStyle}>Classes</h1>
 
-        <button
-          style={buttonStyle}
-          onClick={() => setPage("signup")}
-        >
-          Sign Up
-        </button>
-
-        <button
-          style={{
-            ...buttonStyle,
-            background: "#333",
-            marginTop: "12px"
-          }}
-          onClick={() => setPage("login")}
-        >
-          Login
-        </button>
+          {classes.map((item) => (
+            <button key={item.day} style={classRow} onClick={() => chooseClass(item)}>
+              <b>{item.day}</b> {item.time} {item.name}
+            </button>
+          ))}
+        </div>
       </div>
-    </div>
-  );
-}
-  return (
-    <div style={pageStyle}>
-      <div style={cardStyle}>
-        <h1 style={titleStyle}>Student Information</h1>
+    );
+  }
 
-        <input name="fullName" placeholder="Full Name" style={inputStyle} onChange={handleChange} />
-        <input name="email" placeholder="Email Address" style={inputStyle} onChange={handleChange} />
-        <input name="phone" placeholder="Phone Number" style={inputStyle} onChange={handleChange} />
-        <input name="dob" type="date" style={inputStyle} onChange={handleChange} />
-        <input name="emergencyName" placeholder="Emergency Contact Name" style={inputStyle} onChange={handleChange} />
-        <input name="emergencyPhone" placeholder="Emergency Contact Number" style={inputStyle} onChange={handleChange} />
+  if (page === "packages") {
+    return (
+      <div style={pageStyle}>
+        <div style={{ ...cardStyle, maxWidth: "900px" }}>
+          <button style={backButton} onClick={() => setPage("classes")}>
+            ← Back to Classes
+          </button>
 
-        <button
-          disabled={!isFormValid}
-          onClick={saveAndContinue}
-          style={{ ...buttonStyle, background: isFormValid ? "#ec4899" : "#555" }}
-        >
-          Continue
-        </button>
+          <h1 style={titleStyle}>Choose Package</h1>
+
+          <p style={mutedText}>
+            Selected: <b>{selectedClass?.day} {selectedClass?.time}</b> — {selectedClass?.name}
+          </p>
+
+          <div style={packageGrid}>
+            {packages.map((pkg) => (
+              <button key={pkg.name} style={packageCard} onClick={() => choosePackage(pkg)}>
+                <h2>{pkg.name}</h2>
+                <h1 style={{ color: "#b48a3c" }}>{pkg.price}</h1>
+                <p style={{ color: "#777" }}>{pkg.note}</p>
+              </button>
+            ))}
+          </div>
+
+          {loading && <p style={mutedText}>Creating secure checkout...</p>}
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
+
+  if (page === "dashboard") {
+    const booking = JSON.parse(localStorage.getItem("legacyBooking"));
+
+    return (
+      <div style={pageStyle}>
+        <div style={{ ...cardStyle, maxWidth: "700px" }}>
+          <h1 style={titleStyle}>Student Dashboard</h1>
+
+          <div style={summaryBox}>
+            <p><b>Student:</b> {booking?.student?.fullName || "Returning Student"}</p>
+            <p><b>Email:</b> {booking?.student?.email || localStorage.getItem("legacyLoginEmail") || "No email saved"}</p>
+            <p><b>Booked Class:</b> {booking?.class?.day} {booking?.class?.time} — {booking?.class?.name}</p>
+            <p><b>Package:</b> {booking?.package?.name}</p>
+            <p><b>Amount Paid:</b> {booking?.package?.price}</p>
+            <p><b>Remaining Credits:</b> {booking?.creditsRemaining} {booking?.creditType}</p>
+            <p><b>Purchased:</b> {booking?.purchaseDate}</p>
+            <p><b>Expiry:</b> {booking?.expiryDate}</p>
+          </div>
+
+          <button style={buttonStyle} onClick={() => setPage("classes")}>
+            Book Another Class
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return null;
 }
 
 const pageStyle = {
@@ -314,25 +307,23 @@ const pageStyle = {
   justifyContent: "center",
   alignItems: "center",
   padding: "20px",
-  fontFamily: "'Poppins', sans-serif"
+  fontFamily: "Arial"
 };
 
 const cardStyle = {
   width: "100%",
   maxWidth: "520px",
-  background: "rgba(255,255,255,0.88)",
-  border: "1px solid rgba(212,176,106,0.22)",
+  background: "rgba(255,255,255,0.92)",
+  border: "1px solid rgba(212,176,106,0.25)",
   borderRadius: "32px",
   padding: "42px",
-  backdropFilter: "blur(18px)",
   boxShadow: "0 15px 45px rgba(0,0,0,0.08)"
 };
 
 const titleStyle = {
-  fontSize: "56px",
+  fontSize: "52px",
   fontWeight: "800",
-  marginBottom: "12px",
-  letterSpacing: "-2px",
+  marginBottom: "24px",
   background: "linear-gradient(to right,#111,#d4b06a)",
   WebkitBackgroundClip: "text",
   WebkitTextFillColor: "transparent"
@@ -340,90 +331,76 @@ const titleStyle = {
 
 const mutedText = {
   color: "#777",
-  marginBottom: "28px",
-  fontSize: "15px",
-  lineHeight: "1.6"
+  marginBottom: "24px"
 };
 
 const inputStyle = {
   width: "100%",
-  padding: "18px",
-  marginBottom: "16px",
+  padding: "16px",
+  marginBottom: "14px",
   background: "#fff",
-  border: "1px solid rgba(212,176,106,0.18)",
-  borderRadius: "18px",
+  border: "1px solid rgba(212,176,106,0.22)",
+  borderRadius: "16px",
   color: "#111",
   fontSize: "15px",
-  boxSizing: "border-box",
-  outline: "none",
-  transition: "0.3s",
-  boxShadow: "0 2px 8px rgba(0,0,0,0.03)"
+  boxSizing: "border-box"
 };
 
 const buttonStyle = {
   width: "100%",
-  padding: "18px",
+  padding: "16px",
   background: "linear-gradient(to right,#d4b06a,#f0d8a8)",
   color: "#111",
   border: "none",
-  borderRadius: "18px",
+  borderRadius: "16px",
   fontWeight: "700",
-  fontSize: "15px",
   cursor: "pointer",
-  marginTop: "14px",
-  transition: "0.3s",
-  boxShadow: "0 10px 25px rgba(212,176,106,0.22)"
+  marginTop: "12px"
 };
 
 const classRow = {
   background: "#fff",
-  border: "1px solid rgba(212,176,106,0.12)",
+  border: "1px solid rgba(212,176,106,0.18)",
   color: "#111",
   textAlign: "left",
   fontSize: "18px",
   cursor: "pointer",
-  borderRadius: "18px",
+  borderRadius: "16px",
   padding: "18px",
   display: "block",
-  marginBottom: "14px",
-  transition: "0.3s",
-  boxShadow: "0 4px 12px rgba(0,0,0,0.03)"
+  marginBottom: "14px"
 };
 
 const packageGrid = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))",
-  gap: "22px"
+  gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
+  gap: "20px"
 };
 
 const packageCard = {
   background: "#fff",
-  border: "1px solid rgba(212,176,106,0.14)",
-  borderRadius: "24px",
-  padding: "28px",
+  border: "1px solid rgba(212,176,106,0.18)",
+  borderRadius: "20px",
+  padding: "24px",
   color: "#111",
   textAlign: "left",
-  cursor: "pointer",
-  transition: "0.3s",
-  boxShadow: "0 4px 14px rgba(0,0,0,0.04)"
+  cursor: "pointer"
 };
 
 const summaryBox = {
   background: "#fff",
-  border: "1px solid rgba(212,176,106,0.12)",
-  borderRadius: "24px",
-  padding: "26px",
+  border: "1px solid rgba(212,176,106,0.18)",
+  borderRadius: "20px",
+  padding: "22px",
   lineHeight: "2.2",
-  color: "#222",
-  boxShadow: "0 4px 14px rgba(0,0,0,0.04)"
+  color: "#222"
 };
 
 const backButton = {
   background: "transparent",
   border: "none",
   color: "#b48a3c",
-  fontSize: "15px",
+  fontSize: "16px",
   cursor: "pointer",
-  marginBottom: "20px",
-  fontWeight: "600"
+  marginBottom: "20px"
 };
