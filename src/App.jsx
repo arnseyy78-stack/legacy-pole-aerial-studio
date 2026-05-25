@@ -31,7 +31,7 @@ export default function App() {
       name: "Single Pass",
       price: "₱850.00",
       note: "One class access",
-      link: "https://pm.link/org-VizvF8g1Lq5cvJviJRNCMyTe/geUY4Ih"
+      link: "https://pm.link/org-VizvF8g1Lq5cvJviJRNCMyTe/v2MjJM8"
     },
     {
       name: "Class Card of 5",
