@@ -195,3 +195,666 @@ export default function App() {
       setLoading(false);
     }
   }
+// PART 2
+
+  function chooseClass(classItem) {
+
+    const savedStudent =
+      JSON.parse(localStorage.getItem("legacyStudent")) || student;
+
+    const studentEmail = savedStudent.email;
+
+    const savedPackage =
+      JSON.parse(localStorage.getItem("legacyPackage")) || selectedPackage;
+
+    const isCreditPackage =
+      savedPackage?.name === "Class Card of 5" ||
+      savedPackage?.name === "TEST PACKAGE";
+
+    let updatedCredits = savedPackage?.credits || 0;
+
+    if (isCreditPackage) {
+
+      const existingCredits =
+        Number(
+          localStorage.getItem(
+            `legacyCredits_${studentEmail}`
+          )
+        ) || 0;
+
+      if (existingCredits <= 0) {
+
+        const choice = window.confirm(
+          "No credits remaining.\n\nPress OK to buy a new package.\nPress Cancel to view dashboard."
+        );
+
+        if (choice) {
+          setPage("packages");
+        } else {
+          setPage("dashboard");
+        }
+
+        return;
+      }
+
+      updatedCredits = existingCredits - 1;
+
+      localStorage.setItem(
+        `legacyCredits_${studentEmail}`,
+        updatedCredits
+      );
+
+    } else {
+      updatedCredits = 0;
+    }
+
+    const booking = {
+      student: savedStudent,
+      package: savedPackage,
+      class: classItem,
+      creditsRemaining: updatedCredits,
+      creditType: savedPackage?.type,
+      purchaseDate: new Date().toLocaleDateString(),
+      expiryDate: expiryDate(savedPackage?.expiryDays)
+    };
+
+    const existingHistory =
+      JSON.parse(
+        localStorage.getItem(
+          `legacyBookedClasses_${studentEmail}`
+        )
+      ) || [];
+
+    const updatedHistory = [
+      ...existingHistory,
+      {
+        class: classItem,
+        package: savedPackage,
+        bookedDate: new Date().toLocaleDateString()
+      }
+    ];
+
+    localStorage.setItem(
+      `legacyBookedClasses_${studentEmail}`,
+      JSON.stringify(updatedHistory)
+    );
+
+    localStorage.setItem(
+      `legacyBooking_${studentEmail}`,
+      JSON.stringify(booking)
+    );
+
+    setPage("dashboard");
+  }
+
+  const currentStudent =
+    JSON.parse(localStorage.getItem("legacyStudent")) || {};
+
+  const currentEmail = currentStudent.email || "guest";
+
+  const booking =
+    JSON.parse(
+      localStorage.getItem(
+        `legacyBooking_${currentEmail}`
+      )
+    ) || {};
+
+  const bookingHistory =
+    JSON.parse(
+      localStorage.getItem(
+        `legacyBookedClasses_${currentEmail}`
+      )
+    ) || [];
+
+  const currentCredits =
+    localStorage.getItem(
+      `legacyCredits_${currentEmail}`
+    ) || 0;
+  // PART 3
+
+  if (page === "dashboard") {
+
+    return (
+      <div style={pageStyle}>
+
+        <div style={editorialCard}>
+
+          <div style={miniLogo}>L</div>
+
+          <h1 style={editorialTitle}>
+            Student Dashboard
+          </h1>
+
+          <div style={infoCard}>
+
+            <p>
+              <b>Name:</b>{" "}
+              {booking.student?.fullName}
+            </p>
+
+            <p>
+              <b>Email:</b>{" "}
+              {booking.student?.email}
+            </p>
+
+            <p>
+              <b>Package:</b>{" "}
+              {booking.package?.name}
+            </p>
+
+            <p>
+              <b>Remaining Credits:</b>{" "}
+              {currentCredits}
+            </p>
+
+            <p>
+              <b>Expiry:</b>{" "}
+              {booking.expiryDate}
+            </p>
+
+          </div>
+
+          <h2 style={{ marginTop: "40px" }}>
+            Booked Classes
+          </h2>
+
+          <div style={infoCard}>
+
+            {bookingHistory.length === 0 ? (
+              <p>No booked classes yet.</p>
+            ) : (
+              bookingHistory.map((item, index) => (
+                <p key={index}>
+                  <b>{index + 1}.</b>{" "}
+                  {item.class.day}{" "}
+                  {item.class.time} —{" "}
+                  {item.class.name}
+                </p>
+              ))
+            )}
+
+          </div>
+
+          <button
+            style={luxuryButton}
+            onClick={() => setPage("schedule")}
+          >
+            Book Another Class
+          </button>
+
+        </div>
+
+      </div>
+    );
+  }
+  // PART 4
+
+  if (page === "schedule") {
+
+    return (
+      <div style={pageStyle}>
+
+        <div style={editorialCard}>
+
+          <div style={miniLogo}>L</div>
+
+          <h1 style={editorialTitle}>
+            Class Schedule
+          </h1>
+
+          <div style={classGrid}>
+
+            {classes.map((item) => (
+
+              <button
+                key={item.day}
+                style={classCard}
+                onClick={() => chooseClass(item)}
+              >
+
+                <h2 style={classDay}>
+                  {item.day}
+                </h2>
+
+                <p style={classTime}>
+                  {item.time}
+                </p>
+
+                <p style={className}>
+                  {item.name}
+                </p>
+
+              </button>
+
+            ))}
+
+          </div>
+
+        </div>
+
+      </div>
+    );
+  }
+  // PART 5
+
+  if (page === "packages") {
+
+    return (
+      <div style={pageStyle}>
+
+        <div style={editorialCard}>
+
+          <div style={miniLogo}>L</div>
+
+          <h1 style={editorialTitle}>
+            Packages
+          </h1>
+
+          <div style={packageGrid}>
+
+            {packages.map((pkg) => (
+
+              <button
+                key={pkg.name}
+                style={packageCard}
+                onClick={() => choosePackage(pkg)}
+              >
+
+                <h2 style={packageName}>
+                  {pkg.name}
+                </h2>
+
+                <h1 style={packagePrice}>
+                  {pkg.price}
+                </h1>
+
+                <p style={packageNote}>
+                  {pkg.note}
+                </p>
+
+              </button>
+
+            ))}
+
+          </div>
+
+        </div>
+
+      </div>
+    );
+  }
+  // PART 6
+
+  if (page === "auth") {
+
+    return (
+      <div style={pageStyle}>
+
+        <div style={editorialCard}>
+
+          <div style={miniLogo}>L</div>
+
+          <h1 style={editorialTitle}>
+            Login / Sign Up
+          </h1>
+
+          <div style={authGrid}>
+
+            <button
+              style={authCard}
+              onClick={() => setPage("student")}
+            >
+              <h2>Sign Up</h2>
+            </button>
+
+            <button
+              style={authCard}
+              onClick={() => setPage("login")}
+            >
+              <h2>Login</h2>
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+    );
+  }
+
+  if (page === "login") {
+
+    return (
+      <div style={pageStyle}>
+
+        <div style={editorialCard}>
+
+          <div style={miniLogo}>L</div>
+
+          <h1 style={editorialTitle}>
+            Login
+          </h1>
+
+          <input
+            name="email"
+            placeholder="Email Address"
+            style={inputStyle}
+            onChange={handleLoginChange}
+          />
+
+          <input
+            type="password"
+            placeholder="Password"
+            style={inputStyle}
+          />
+
+          <button
+            style={luxuryButton}
+            onClick={saveLogin}
+          >
+            Continue
+          </button>
+
+        </div>
+
+      </div>
+    );
+  }
+  // PART 7
+
+  if (page === "waiver") {
+
+    return (
+      <div style={pageStyle}>
+
+        <div style={editorialCard}>
+
+          <h1 style={editorialTitle}>
+            Waiver
+          </h1>
+
+          <div style={infoCard}>
+
+            <p>
+              I understand pole fitness involves physical activity.
+            </p>
+
+            <p>
+              I agree to participate at my own risk.
+            </p>
+
+          </div>
+
+          <label style={checkRow}>
+
+            <input
+              type="checkbox"
+              checked={agreed}
+              onChange={(e) =>
+                setAgreed(e.target.checked)
+              }
+            />
+
+            <span>
+              I agree to the waiver.
+            </span>
+
+          </label>
+
+          <button
+            disabled={!agreed}
+            style={luxuryButton}
+            onClick={() => setPage("packages")}
+          >
+            Continue
+          </button>
+
+        </div>
+
+      </div>
+    );
+  }
+
+  if (page === "student") {
+
+    return (
+      <div style={pageStyle}>
+
+        <div style={editorialCard}>
+
+          <h1 style={editorialTitle}>
+            Student Information
+          </h1>
+
+          <input
+            name="fullName"
+            placeholder="Full Name"
+            style={inputStyle}
+            onChange={handleStudentChange}
+          />
+
+          <input
+            name="email"
+            placeholder="Email"
+            style={inputStyle}
+            onChange={handleStudentChange}
+          />
+
+          <input
+            name="phone"
+            placeholder="Phone Number"
+            style={inputStyle}
+            onChange={handleStudentChange}
+          />
+
+          <button
+            style={luxuryButton}
+            onClick={saveStudent}
+          >
+            Continue
+          </button>
+
+        </div>
+
+      </div>
+    );
+  }
+
+  return (
+    <div style={pageStyle}>
+
+      <div style={heroContainer}>
+
+        <div>
+
+          <div style={logoCircle}>
+            L
+          </div>
+
+          <h1 style={mainTitle}>
+            LEGACY
+          </h1>
+
+          <p style={mainSubtitle}>
+            Pole & Aerial Studio
+          </p>
+
+          <button
+            style={luxuryButton}
+            onClick={() => setPage("auth")}
+          >
+            Start Booking
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+  );
+}
+// PART 8 STYLES
+
+const pageStyle = {
+  minHeight: "100vh",
+  background: "#efe7dc",
+  padding: "40px",
+  fontFamily: "Georgia, serif",
+  color: "#2d2015"
+};
+
+const heroContainer = {
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  minHeight: "80vh"
+};
+
+const editorialCard = {
+  maxWidth: "900px",
+  margin: "0 auto",
+  background: "#f8f4ee",
+  borderRadius: "40px",
+  padding: "50px",
+  boxShadow: "0 10px 40px rgba(0,0,0,0.06)"
+};
+
+const editorialTitle = {
+  fontSize: "68px",
+  marginBottom: "30px"
+};
+
+const luxuryButton = {
+  width: "100%",
+  padding: "18px",
+  borderRadius: "999px",
+  border: "none",
+  background: "#2d2015",
+  color: "white",
+  fontWeight: "bold",
+  cursor: "pointer",
+  marginTop: "30px"
+};
+
+const inputStyle = {
+  width: "100%",
+  padding: "18px",
+  marginBottom: "16px",
+  borderRadius: "20px",
+  border: "1px solid #ddd",
+  fontSize: "16px",
+  boxSizing: "border-box"
+};
+
+const packageGrid = {
+  display: "grid",
+  gap: "20px"
+};
+
+const packageCard = {
+  padding: "30px",
+  borderRadius: "30px",
+  background: "white",
+  border: "1px solid #ddd",
+  cursor: "pointer",
+  textAlign: "left"
+};
+
+const packageName = {
+  fontSize: "28px"
+};
+
+const packagePrice = {
+  fontSize: "40px",
+  color: "#9b6b43"
+};
+
+const packageNote = {
+  color: "#666"
+};
+
+const classGrid = {
+  display: "grid",
+  gap: "20px"
+};
+
+const classCard = {
+  padding: "30px",
+  borderRadius: "30px",
+  background: "white",
+  border: "1px solid #ddd",
+  cursor: "pointer",
+  textAlign: "left"
+};
+
+const classDay = {
+  fontSize: "40px"
+};
+
+const classTime = {
+  color: "#777"
+};
+
+const className = {
+  fontSize: "20px"
+};
+
+const authGrid = {
+  display: "grid",
+  gap: "20px"
+};
+
+const authCard = {
+  padding: "40px",
+  borderRadius: "30px",
+  background: "white",
+  border: "1px solid #ddd",
+  cursor: "pointer"
+};
+
+const infoCard = {
+  padding: "30px",
+  borderRadius: "30px",
+  background: "white",
+  border: "1px solid #ddd",
+  lineHeight: "2"
+};
+
+const logoCircle = {
+  width: "70px",
+  height: "70px",
+  borderRadius: "50%",
+  border: "1px solid #2d2015",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  fontWeight: "bold",
+  marginBottom: "20px"
+};
+
+const mainTitle = {
+  fontSize: "120px",
+  margin: 0
+};
+
+const mainSubtitle = {
+  fontSize: "28px",
+  marginBottom: "40px"
+};
+
+const miniLogo = {
+  width: "50px",
+  height: "50px",
+  borderRadius: "50%",
+  border: "1px solid #2d2015",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  marginBottom: "20px"
+};
+
+const checkRow = {
+  display: "flex",
+  gap: "10px",
+  marginTop: "20px"
+};
