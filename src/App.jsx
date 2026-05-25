@@ -26,12 +26,13 @@ export default function App() {
     { day: "Saturday", time: "6:00 PM", name: "Floor Work" }
   ];
 
-  const packages = [
-    { name: "Single Pass", price: "₱850.00", amount: 85000, note: "One class access" },
-    { name: "Class Card of 5", price: "₱4,000.00", amount: 400000, note: "Consumable within 30 days" },
-    { name: "Practice Session", price: "₱550.00", amount: 55000, note: "Open practice access" },
-    { name: "Private Class", price: "₱3,000.00", amount: 300000, note: "Can be up to 3 students" }
-  ];
+const packages = [
+  { name: "TEST PACKAGE", price: "₱1.00", amount: 100, note: "Test checkout only" },
+  { name: "Single Pass", price: "₱850.00", amount: 85000, note: "One class access" },
+  { name: "Class Card of 5", price: "₱4,000.00", amount: 400000, note: "Consumable within 30 days" },
+  { name: "Practice Session", price: "₱550.00", amount: 55000, note: "Open practice access" },
+  { name: "Private Class", price: "₱3,000.00", amount: 300000, note: "Can be up to 3 students" }
+];
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
