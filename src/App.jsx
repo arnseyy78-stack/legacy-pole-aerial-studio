@@ -9,10 +9,12 @@ export default function App() {
   const [student, setStudent] = useState({
     fullName: "",
     email: "",
-    phone: "",
-    dob: "",
-    emergencyName: "",
-    emergencyPhone: ""
+    phone: ""
+  });
+
+  const [login, setLogin] = useState({
+    email: "",
+    password: ""
   });
 
   const classes = [
@@ -25,70 +27,102 @@ export default function App() {
   ];
 
   const packages = [
-    { name: "TEST PACKAGE", price: "₱1.00", amount: 100, credits: 1, type: "Test Credit", note: "Test checkout only" },
-    { name: "Single Pass", price: "₱850", amount: 85000, credits: 1, type: "Class Credit", note: "One class access" },
-    { name: "Class Card of 5", price: "₱4,000", amount: 400000, credits: 5, type: "Class Credits", note: "Consumable within 30 days", expiryDays: 30 },
-    { name: "Practice Session", price: "₱550", amount: 55000, credits: 1, type: "Practice Credit", note: "Open practice access" },
-    { name: "Private Class", price: "₱3,000", amount: 300000, credits: 1, type: "Private Credit", note: "Can be up to 3 students" }
+    {
+      name: "Single Pass",
+      price: "₱850",
+      amount: 85000,
+      credits: 1,
+      type: "Class Credit",
+      note: "One class access"
+    },
+    {
+      name: "Class Card of 5",
+      price: "₱4,000",
+      amount: 400000,
+      credits: 5,
+      type: "Class Credits",
+      note: "Consumable within 30 days"
+    },
+    {
+      name: "Practice Session",
+      price: "₱550",
+      amount: 55000,
+      credits: 1,
+      type: "Practice Credit",
+      note: "Open practice access"
+    }
   ];
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    if (params.get("paid") === "true") setPage("dashboard");
+
+    if (params.get("paid") === "true") {
+      setPage("schedule");
+    }
   }, []);
 
-  function handleChange(e) {
-    setStudent({ ...student, [e.target.name]: e.target.value });
+  function handleStudentChange(e) {
+    setStudent({
+      ...student,
+      [e.target.name]: e.target.value
+    });
+  }
+
+  function handleLoginChange(e) {
+    setLogin({
+      ...login,
+      [e.target.name]: e.target.value
+    });
   }
 
   function saveStudent() {
-    localStorage.setItem("legacyStudent", JSON.stringify(student));
+    localStorage.setItem(
+      "legacyStudent",
+      JSON.stringify(student)
+    );
+
     setPage("waiver");
   }
 
-  function expiryDate(days) {
-    if (!days) return "No expiry";
-    const date = new Date();
-    date.setDate(date.getDate() + days);
-    return date.toLocaleDateString();
+  function saveLogin() {
+    localStorage.setItem(
+      "legacyLogin",
+      JSON.stringify(login)
+    );
+
+    setPage("packages");
   }
 
   function choosePackage(pkg) {
     setSelectedPackage(pkg);
-    localStorage.setItem("legacyPackage", JSON.stringify(pkg));
-    setPage("classes");
+
+    localStorage.setItem(
+      "legacyPackage",
+      JSON.stringify(pkg)
+    );
+
+    handlePayment(pkg);
   }
 
-  async function chooseClass(classItem) {
+  async function handlePayment(pkg) {
     setLoading(true);
 
-    const savedStudent = JSON.parse(localStorage.getItem("legacyStudent")) || student;
-    const savedPackage = selectedPackage || JSON.parse(localStorage.getItem("legacyPackage"));
-
-    const booking = {
-      student: savedStudent,
-      class: classItem,
-      package: savedPackage,
-      creditsRemaining: savedPackage.credits,
-      creditType: savedPackage.type,
-      purchaseDate: new Date().toLocaleDateString(),
-      expiryDate: expiryDate(savedPackage.expiryDays)
-    };
-
-    localStorage.setItem("legacyBooking", JSON.stringify(booking));
-
     try {
-      const response = await fetch("/api/create-checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          packageName: savedPackage.name,
-          amount: savedPackage.amount,
-          studentName: savedStudent.fullName,
-          studentEmail: savedStudent.email,
-          className: `${classItem.day} ${classItem.time} - ${classItem.name}`
-        })
-      });
+      const response = await fetch(
+        "/api/create-checkout",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            packageName: pkg.name,
+            amount: pkg.amount,
+            studentName: student.fullName,
+            studentEmail: student.email
+          })
+        }
+      );
 
       const data = await response.json();
 
@@ -96,35 +130,167 @@ export default function App() {
         window.location.href = data.checkoutUrl;
       } else {
         alert("Payment checkout failed.");
-        setLoading(false);
       }
     } catch {
       alert("Checkout error.");
-      setLoading(false);
     }
+
+    setLoading(false);
   }
 
-  const booking = JSON.parse(localStorage.getItem("legacyBooking")) || {};
+  async function chooseClass(classItem) {
+    const booking = {
+      student,
+      package: selectedPackage,
+      class: classItem
+    };
+
+    localStorage.setItem(
+      "legacyBooking",
+      JSON.stringify(booking)
+    );
+
+    setPage("dashboard");
+  }
+
+  const booking =
+    JSON.parse(
+      localStorage.getItem("legacyBooking")
+    ) || {};
 
   if (page === "dashboard") {
     return (
       <div style={pageStyle}>
         <div style={editorialCard}>
           <div style={miniLogo}>L</div>
-          <h1 style={editorialTitle}>Class Booked</h1>
+
+          <h1 style={editorialTitle}>
+            Class Booked
+          </h1>
 
           <div style={infoCard}>
-            <p><b>Name:</b> {booking.student?.fullName}</p>
-            <p><b>Email:</b> {booking.student?.email}</p>
-            <p><b>Class:</b> {booking.class?.day} {booking.class?.time} — {booking.class?.name}</p>
-            <p><b>Package:</b> {booking.package?.name}</p>
-            <p><b>Amount:</b> {booking.package?.price}</p>
-            <p><b>Remaining Credits:</b> {booking.creditsRemaining} {booking.creditType}</p>
-            <p><b>Expiry:</b> {booking.expiryDate}</p>
+            <p>
+              <b>Name:</b>{" "}
+              {booking.student?.fullName}
+            </p>
+
+            <p>
+              <b>Email:</b>{" "}
+              {booking.student?.email}
+            </p>
+
+            <p>
+              <b>Package:</b>{" "}
+              {booking.package?.name}
+            </p>
+
+            <p>
+              <b>Class:</b>{" "}
+              {booking.class?.day}{" "}
+              {booking.class?.time} —{" "}
+              {booking.class?.name}
+            </p>
           </div>
 
-          <button style={luxuryButton} onClick={() => setPage("packages")}>
+          <button
+            style={luxuryButton}
+            onClick={() => setPage("packages")}
+          >
             Book Another Class
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (page === "schedule") {
+    return (
+      <div style={pageStyle}>
+        <div style={editorialCard}>
+          <div style={miniLogo}>L</div>
+
+          <h1 style={editorialTitle}>
+            Class Schedule
+          </h1>
+
+          <div style={classGrid}>
+            {classes.map((item) => (
+              <button
+                key={item.day}
+                style={classCard}
+                onClick={() => chooseClass(item)}
+              >
+                <h2 style={classDay}>
+                  {item.day}
+                </h2>
+
+                <p style={classTime}>
+                  {item.time}
+                </p>
+
+                <p style={className}>
+                  {item.name}
+                </p>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+    if (page === "packages") {
+    return (
+      <div style={pageStyle}>
+        <div style={editorialCard}>
+          <div style={miniLogo}>L</div>
+
+          <h1 style={editorialTitle}>Packages</h1>
+
+          <div style={packageGrid}>
+            {packages.map((pkg) => (
+              <button
+                key={pkg.name}
+                style={packageCard}
+                onClick={() => choosePackage(pkg)}
+              >
+                <h2 style={packageName}>{pkg.name}</h2>
+                <h1 style={packagePrice}>{pkg.price}</h1>
+                <p style={packageNote}>{pkg.note}</p>
+              </button>
+            ))}
+          </div>
+
+          {loading && <p style={subText}>Creating secure checkout...</p>}
+        </div>
+      </div>
+    );
+  }
+
+  if (page === "auth") {
+    return (
+      <div style={pageStyle}>
+        <div style={editorialCard}>
+          <div style={miniLogo}>L</div>
+
+          <h1 style={editorialTitle}>Login / Sign Up</h1>
+
+          <input
+            name="email"
+            placeholder="Email Address"
+            style={inputStyle}
+            onChange={handleLoginChange}
+          />
+
+          <input
+            name="password"
+            type="password"
+            placeholder="Password"
+            style={inputStyle}
+            onChange={handleLoginChange}
+          />
+
+          <button style={luxuryButton} onClick={saveLogin}>
+            Continue
           </button>
         </div>
       </div>
@@ -136,73 +302,35 @@ export default function App() {
       <div style={pageStyle}>
         <div style={editorialCard}>
           <div style={miniLogo}>L</div>
+
           <h1 style={editorialTitle}>Waiver</h1>
 
           <div style={infoCard}>
             <p>I understand pole and aerial fitness involves physical risk.</p>
             <p>I confirm I am physically fit to participate.</p>
             <p>I agree to follow all safety rules and instructor instructions.</p>
-            <p>I release Legacy Pole & Aerial Studio from claims arising from participation, except where prohibited by law.</p>
+            <p>
+              I release Legacy Pole & Aerial Studio from claims arising from
+              participation, except where prohibited by law.
+            </p>
           </div>
 
           <label style={{ display: "flex", gap: "12px", marginTop: "28px" }}>
-            <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} />
+            <input
+              type="checkbox"
+              checked={agreed}
+              onChange={(e) => setAgreed(e.target.checked)}
+            />
             <span>I agree to the waiver.</span>
           </label>
 
           <button
             disabled={!agreed}
             style={{ ...luxuryButton, opacity: agreed ? 1 : 0.45 }}
-            onClick={() => setPage("packages")}
+            onClick={() => setPage("auth")}
           >
             Continue
           </button>
-        </div>
-      </div>
-    );
-  }
-
-  if (page === "packages") {
-    return (
-      <div style={pageStyle}>
-        <div style={editorialCard}>
-          <div style={miniLogo}>L</div>
-          <h1 style={editorialTitle}>Packages</h1>
-
-          <div style={packageGrid}>
-            {packages.map((pkg) => (
-              <button key={pkg.name} style={packageCard} onClick={() => choosePackage(pkg)}>
-                <h2 style={packageName}>{pkg.name}</h2>
-                <h1 style={packagePrice}>{pkg.price}</h1>
-                <p style={packageNote}>{pkg.note}</p>
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (page === "classes") {
-    return (
-      <div style={pageStyle}>
-        <div style={editorialCard}>
-          <div style={miniLogo}>L</div>
-          <h1 style={editorialTitle}>Class Schedule</h1>
-
-          <p style={subText}>Selected package: {selectedPackage?.name}</p>
-
-          <div style={classGrid}>
-            {classes.map((item) => (
-              <button key={item.day} style={classCard} onClick={() => chooseClass(item)}>
-                <h2 style={classDay}>{item.day}</h2>
-                <p style={classTime}>{item.time}</p>
-                <p style={className}>{item.name}</p>
-              </button>
-            ))}
-          </div>
-
-          {loading && <p style={subText}>Creating secure checkout...</p>}
         </div>
       </div>
     );
@@ -213,15 +341,30 @@ export default function App() {
       <div style={pageStyle}>
         <div style={editorialCard}>
           <div style={miniLogo}>L</div>
+
           <h1 style={editorialTitle}>Student Information</h1>
 
           <div style={formCard}>
-            <input name="fullName" placeholder="Full Name" style={inputStyle} onChange={handleChange} />
-            <input name="email" placeholder="Email Address" style={inputStyle} onChange={handleChange} />
-            <input name="phone" placeholder="Phone Number" style={inputStyle} onChange={handleChange} />
-            <input name="dob" type="date" style={inputStyle} onChange={handleChange} />
-            <input name="emergencyName" placeholder="Emergency Contact Name" style={inputStyle} onChange={handleChange} />
-            <input name="emergencyPhone" placeholder="Emergency Contact Number" style={inputStyle} onChange={handleChange} />
+            <input
+              name="fullName"
+              placeholder="Full Name"
+              style={inputStyle}
+              onChange={handleStudentChange}
+            />
+
+            <input
+              name="email"
+              placeholder="Email Address"
+              style={inputStyle}
+              onChange={handleStudentChange}
+            />
+
+            <input
+              name="phone"
+              placeholder="Phone Number"
+              style={inputStyle}
+              onChange={handleStudentChange}
+            />
 
             <button style={luxuryButton} onClick={saveStudent}>
               Continue
@@ -236,6 +379,7 @@ export default function App() {
     <div style={pageStyle}>
       <nav style={navStyle}>
         <div style={logoCircle}>L</div>
+
         <div style={navLinks}>
           <span>ABOUT</span>
           <span>CONTACT</span>
@@ -245,9 +389,12 @@ export default function App() {
       <div style={heroContainer}>
         <div style={leftHero}>
           <h1 style={mainTitle}>LEGACY</h1>
+
           <p style={mainSubtitle}>Pole & Aerial Studio</p>
+
           <p style={description}>
-            Premium movement experience blending strength, confidence, elegance, and feminine energy.
+            Premium movement experience blending strength, confidence, elegance,
+            and feminine energy.
           </p>
 
           <button style={luxuryButton} onClick={() => setPage("student")}>
