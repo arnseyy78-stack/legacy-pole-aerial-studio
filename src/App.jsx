@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function App() {
   const [page, setPage] = useState("signup");
   const [agreed, setAgreed] = useState(false);
   const [selectedClass, setSelectedClass] = useState(null);
+  const [selectedPackage, setSelectedPackage] = useState(null);
 
   const [form, setForm] = useState({
     fullName: "",
@@ -28,13 +29,13 @@ export default function App() {
   const packages = [
     {
       name: "Single Pass",
-      price: "₱870.00",
+      price: "₱850.00",
       note: "One class access",
       link: "https://pm.link/org-VizvF8g1Lq5cvJviJRNCMyTe/geUY4Ih"
     },
     {
       name: "Class Card of 5",
-      price: "₱4,100.00",
+      price: "₱4,000.00",
       note: "Consumable within 30 days",
       link: "https://pm.link/org-VizvF8g1Lq5cvJviJRNCMyTe/P9RbNrW"
     },
@@ -42,15 +43,23 @@ export default function App() {
       name: "Practice Session",
       price: "₱550.00",
       note: "Open practice access",
-      link: "https://pm.link/org-VizvF8g1Lq5cvJviJRNCMyTe/v2MjJM8"
+      link: "https://pm.link/org-VizvF8g1Lq5cvJviJRNCMyTe/ueZSEI4"
     },
     {
       name: "Private Class",
-      price: "₱3,100.00",
+      price: "₱3,000.00",
       note: "Can be up to 3 students",
       link: "https://pm.link/org-VizvF8g1Lq5cvJviJRNCMyTe/8FmRI3q"
     }
   ];
+
+  useEffect(() => {
+    const paid = localStorage.getItem("paymentSuccess");
+
+    if (paid === "true") {
+      setPage("success");
+    }
+  }, []);
 
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -68,8 +77,67 @@ export default function App() {
   }
 
   function choosePackage(item) {
-    localStorage.setItem("legacySelectedPackage", JSON.stringify(item));
-    window.location.href = item.link;
+    setSelectedPackage(item);
+
+    localStorage.setItem(
+      "legacyBooking",
+      JSON.stringify({
+        student: form,
+        class: selectedClass,
+        package: item
+      })
+    );
+
+    localStorage.setItem("paymentSuccess", "true");
+
+    setTimeout(() => {
+      window.location.href = item.link;
+    }, 500);
+  }
+
+  if (page === "success") {
+    const booking = JSON.parse(localStorage.getItem("legacyBooking"));
+
+    return (
+      <div style={pageStyle}>
+        <div style={{ ...cardStyle, width: "650px", textAlign: "center" }}>
+          <div style={{ fontSize: "70px", marginBottom: "20px" }}>✅</div>
+
+          <h1 style={{ ...titleStyle, textAlign: "center" }}>
+            Class Booked!
+          </h1>
+
+          <p style={{ color: "#bbb", fontSize: "18px" }}>
+            Your booking has been successfully confirmed.
+          </p>
+
+          <div style={successBox}>
+            <p><b>Student:</b> {booking?.student?.fullName}</p>
+            <p><b>Email:</b> {booking?.student?.email}</p>
+            <p><b>Class:</b> {booking?.class?.day} {booking?.class?.time}</p>
+            <p><b>Session:</b> {booking?.class?.name}</p>
+            <p><b>Package:</b> {booking?.package?.name}</p>
+            <p><b>Amount Paid:</b> {booking?.package?.price}</p>
+          </div>
+
+          <div style={emailNotice}>
+            📧 Confirmation email sent to:
+            <br />
+            <b>{booking?.student?.email}</b>
+          </div>
+
+          <button
+            style={buttonStyle}
+            onClick={() => {
+              localStorage.clear();
+              window.location.reload();
+            }}
+          >
+            Book Another Class
+          </button>
+        </div>
+      </div>
+    );
   }
 
   if (page === "packages") {
@@ -137,16 +205,39 @@ export default function App() {
           <h1 style={titleStyle}>Student Waiver & Release</h1>
 
           <div style={waiverBox}>
-            <p><b>Legacy Pole & Aerial Studio Waiver</b></p>
-            <p>I understand that pole dance, aerial fitness, flexibility training, conditioning, and related activities involve physical exertion and risk of injury.</p>
-            <p>I confirm that I am voluntarily participating and that I am physically fit to join. I agree to follow all instructor instructions, safety rules, and studio policies.</p>
-            <p>I release and hold harmless Legacy Pole & Aerial Studio, its owners, instructors, staff, representatives, and venue partners from claims arising from my participation, except where prohibited by law.</p>
-            <p>I understand that I must disclose any medical condition, injury, pregnancy, medication, or limitation that may affect my ability to participate safely.</p>
-            <p>By checking the box below, I confirm that I have read, understood, and voluntarily agree to this waiver.</p>
+            <p>
+              I understand that pole dance, aerial fitness, flexibility
+              training, conditioning, and related activities involve physical
+              exertion and risk of injury.
+            </p>
+
+            <p>
+              I confirm that I am voluntarily participating and that I am
+              physically fit to join.
+            </p>
+
+            <p>
+              I release and hold harmless Legacy Pole & Aerial Studio from
+              claims arising from participation.
+            </p>
+
+            <p>
+              I understand that I must disclose any medical conditions or
+              limitations.
+            </p>
+
+            <p>
+              By checking the box below, I voluntarily agree to this waiver.
+            </p>
           </div>
 
           <label style={{ display: "flex", gap: "10px", marginTop: "20px" }}>
-            <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} />
+            <input
+              type="checkbox"
+              checked={agreed}
+              onChange={(e) => setAgreed(e.target.checked)}
+            />
+
             <span>I have read and agree to the waiver.</span>
           </label>
 
@@ -172,12 +263,47 @@ export default function App() {
       <div style={cardStyle}>
         <h1 style={titleStyle}>Student Information</h1>
 
-        <input name="fullName" placeholder="Full Name" style={inputStyle} onChange={handleChange} />
-        <input name="email" placeholder="Email Address" style={inputStyle} onChange={handleChange} />
-        <input name="phone" placeholder="Phone Number" style={inputStyle} onChange={handleChange} />
-        <input name="dob" type="date" style={inputStyle} onChange={handleChange} />
-        <input name="emergencyName" placeholder="Emergency Contact Name" style={inputStyle} onChange={handleChange} />
-        <input name="emergencyPhone" placeholder="Emergency Contact Number" style={inputStyle} onChange={handleChange} />
+        <input
+          name="fullName"
+          placeholder="Full Name"
+          style={inputStyle}
+          onChange={handleChange}
+        />
+
+        <input
+          name="email"
+          placeholder="Email Address"
+          style={inputStyle}
+          onChange={handleChange}
+        />
+
+        <input
+          name="phone"
+          placeholder="Phone Number"
+          style={inputStyle}
+          onChange={handleChange}
+        />
+
+        <input
+          name="dob"
+          type="date"
+          style={inputStyle}
+          onChange={handleChange}
+        />
+
+        <input
+          name="emergencyName"
+          placeholder="Emergency Contact Name"
+          style={inputStyle}
+          onChange={handleChange}
+        />
+
+        <input
+          name="emergencyPhone"
+          placeholder="Emergency Contact Number"
+          style={inputStyle}
+          onChange={handleChange}
+        />
 
         <button
           disabled={!isFormValid}
@@ -192,7 +318,9 @@ export default function App() {
           Continue
         </button>
 
-        <p style={securityText}>🔒 Your information is safe and secure.</p>
+        <p style={securityText}>
+          🔒 Your information is safe and secure.
+        </p>
       </div>
     </div>
   );
@@ -218,7 +346,6 @@ const cardStyle = {
 };
 
 const titleStyle = {
-  textAlign: "left",
   marginBottom: "30px",
   fontSize: "42px",
   fontWeight: "800"
@@ -242,7 +369,9 @@ const buttonStyle = {
   border: "none",
   color: "white",
   fontWeight: "700",
-  marginTop: "16px"
+  marginTop: "16px",
+  background: "#ec4899",
+  cursor: "pointer"
 };
 
 const waiverBox = {
@@ -324,4 +453,21 @@ const backButton = {
   fontSize: "16px",
   cursor: "pointer",
   marginBottom: "20px"
+};
+
+const successBox = {
+  background: "#1c1c1c",
+  padding: "24px",
+  borderRadius: "18px",
+  textAlign: "left",
+  lineHeight: "1.8",
+  marginTop: "30px",
+  border: "1px solid rgba(255,255,255,0.08)"
+};
+
+const emailNotice = {
+  marginTop: "24px",
+  color: "#bbb",
+  lineHeight: "1.6",
+  fontSize: "16px"
 };
