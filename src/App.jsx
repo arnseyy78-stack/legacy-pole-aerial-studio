@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 export default function App() {
-  const [page, setPage] = useState("signup");
+  const [page, setPage] = useState("home");
   const [agreed, setAgreed] = useState(false);
   const [selectedClass, setSelectedClass] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -251,7 +251,37 @@ export default function App() {
       </div>
     );
   }
+if (page === "home") {
+  return (
+    <div style={pageStyle}>
+      <div style={cardStyle}>
+        <h1 style={titleStyle}>LEGACY</h1>
 
+        <p style={mutedText}>
+          Pole & Aerial Studio
+        </p>
+
+        <button
+          style={buttonStyle}
+          onClick={() => setPage("signup")}
+        >
+          Sign Up
+        </button>
+
+        <button
+          style={{
+            ...buttonStyle,
+            background: "#333",
+            marginTop: "12px"
+          }}
+          onClick={() => setPage("login")}
+        >
+          Login
+        </button>
+      </div>
+    </div>
+  );
+}
   return (
     <div style={pageStyle}>
       <div style={cardStyle}>
