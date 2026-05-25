@@ -213,9 +213,28 @@ export default function App() {
     ) {
 
       // FIRST PURCHASE
-      if (existingCredits === 0) {
-        updatedCredits = 5;
-      }
+      updatedCredits = updatedCredits - 1;
+
+if (updatedCredits < 0) {
+  alert("No credits remaining.");
+  return;
+}
+      if (existingCredits <= 0) {
+
+  const buyMore = window.confirm(
+    "No credits remaining.\n\nPress OK to buy a new package.\nPress Cancel to view dashboard."
+  );
+
+  if (buyMore) {
+    setPage("packages");
+  } else {
+    setPage("dashboard");
+  }
+
+  return;
+}
+
+updatedCredits = updatedCredits - 1;
 
       // USE CREDIT
       updatedCredits =
