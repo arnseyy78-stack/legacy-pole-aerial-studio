@@ -321,7 +321,9 @@ if (pkg.name === "Private Class") {
     localStorage.getItem(`legacyCredits_${currentEmail}`) || 0;
 
   if (page === "dashboard") {
-    const isPracticeSession = booking.package?.name === "Practice Session";
+    const isPracticeSession =
+  booking.package?.name === "Practice Session" ||
+  booking.package?.name === "Private Class";
 
     return (
       <div style={pageStyle}>
