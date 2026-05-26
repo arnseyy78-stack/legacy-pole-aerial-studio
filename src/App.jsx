@@ -6,16 +6,8 @@ export default function App() {
   const [selectedPackage, setSelectedPackage] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const [student, setStudent] = useState({
-    fullName: "",
-    email: "",
-    phone: ""
-  });
-
-  const [login, setLogin] = useState({
-    email: "",
-    password: ""
-  });
+  const [student, setStudent] = useState({ fullName: "", email: "", phone: "" });
+  const [login, setLogin] = useState({ email: "", password: "" });
 
   const classes = [
     { day: "Monday", time: "6:00 PM", name: "Pole Fitness" },
@@ -27,69 +19,24 @@ export default function App() {
   ];
 
   const packages = [
-    {
-      name: "TEST PACKAGE",
-      price: "FREE",
-      amount: 0,
-      credits: 5,
-      type: "Class Credits",
-      note: "Free testing package"
-    },
-    {
-      name: "Single Pass",
-      price: "₱850",
-      amount: 85000,
-      credits: 1,
-      type: "Class Credit",
-      note: "One class access"
-    },
-    {
-      name: "Class Card of 5",
-      price: "₱4,000",
-      amount: 400000,
-      credits: 5,
-      type: "Class Credits",
-      note: "Consumable within 30 days",
-      expiryDays: 30
-    },
-{
-  name: "Practice Session",
-  price: "₱550",
-  amount: 0,
-  credits: 1,
-  type: "Practice Session",
-  note: "Contact the studio for practice time schedule"
-},
-{
-  name: "Private Class",
-  price: "₱3,000",
-  amount: 0,
-  credits: 1,
-  type: "Private Class",
-  note: "Contact the studio for private class schedule"
-}
+    { name: "TEST PACKAGE", price: "FREE", amount: 0, credits: 5, type: "Class Credits", note: "Free testing package" },
+    { name: "Single Pass", price: "₱850", amount: 85000, credits: 1, type: "Class Credit", note: "One class access" },
+    { name: "Class Card of 5", price: "₱4,000", amount: 400000, credits: 5, type: "Class Credits", note: "Consumable within 30 days", expiryDays: 30 },
+    { name: "Practice Session", price: "₱550", amount: 0, credits: 1, type: "Practice Session", note: "Contact the studio for practice time schedule" },
+    { name: "Private Class", price: "₱3,000", amount: 0, credits: 1, type: "Private Class", note: "Contact the studio for private class schedule" }
   ];
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-
-    if (params.get("paid") === "true") {
-      setPage("schedule");
-    }
+    if (params.get("paid") === "true") setPage("schedule");
   }, []);
 
   function handleStudentChange(e) {
-    setStudent({
-      ...student,
-      [e.target.name]: e.target.value
-    });
+    setStudent({ ...student, [e.target.name]: e.target.value });
   }
 
   function handleLoginChange(e) {
-    setLogin({
-      ...login,
-      [e.target.name]: e.target.value
-    });
+    setLogin({ ...login, [e.target.name]: e.target.value });
   }
 
   function saveStudent() {
@@ -110,17 +57,33 @@ export default function App() {
 
   function expiryDate(days) {
     if (!days) return "No expiry";
-
     const date = new Date();
     date.setDate(date.getDate() + days);
-
     return date.toLocaleDateString();
+  }
+
+  function saveToHistory(studentEmail, booking, pkg) {
+    const existingHistory =
+      JSON.parse(localStorage.getItem(`legacyBookedClasses_${studentEmail}`)) || [];
+
+    const updatedHistory = [
+      ...existingHistory,
+      {
+        class: booking.class,
+        package: pkg,
+        bookedDate: new Date().toLocaleDateString()
+      }
+    ];
+
+    localStorage.setItem(
+      `legacyBookedClasses_${studentEmail}`,
+      JSON.stringify(updatedHistory)
+    );
   }
 
   async function choosePackage(pkg) {
     setLoading(true);
     setSelectedPackage(pkg);
-
     localStorage.setItem("legacyPackage", JSON.stringify(pkg));
 
     const savedStudent =
@@ -139,11 +102,7 @@ export default function App() {
         expiryDate: "No expiry"
       };
 
-      localStorage.setItem(
-        `legacyBooking_${studentEmail}`,
-        JSON.stringify(booking)
-      );
-
+      localStorage.setItem(`legacyBooking_${studentEmail}`, JSON.stringify(booking));
       localStorage.setItem(`legacyCredits_${studentEmail}`, 5);
 
       setLoading(false);
@@ -151,14 +110,17 @@ export default function App() {
       return;
     }
 
-    if (pkg.name === "Practice Session") {
+    if (pkg.name === "Practice Session" || pkg.name === "Private Class") {
       const booking = {
         student: savedStudent,
         package: pkg,
         class: {
-          day: "Practice Session",
+          day: pkg.name,
           time: "Contact Studio",
-          name: "Contact the studio for time schedule"
+          name:
+            pkg.name === "Practice Session"
+              ? "Contact the studio for practice time schedule"
+              : "Contact the studio for private class time schedule"
         },
         creditsRemaining: 1,
         creditType: pkg.type,
@@ -166,56 +128,22 @@ export default function App() {
         expiryDate: "Contact studio"
       };
 
-      localStorage.setItem(
-        `legacyBooking_${studentEmail}`,
-        JSON.stringify(booking)
-      );
-
+      localStorage.setItem(`legacyBooking_${studentEmail}`, JSON.stringify(booking));
       localStorage.setItem(`legacyCredits_${studentEmail}`, 1);
+
+      saveToHistory(studentEmail, booking, pkg);
 
       setLoading(false);
       setPage("dashboard");
       return;
     }
-if (pkg.name === "Private Class") {
 
-  const booking = {
-    student: savedStudent,
-    package: pkg,
-    class: {
-      day: "Private Class",
-      time: "Contact Studio",
-      name: "Contact the studio for private class time schedule"
-    },
-    creditsRemaining: 1,
-    creditType: pkg.type,
-    purchaseDate: new Date().toLocaleDateString(),
-    expiryDate: "Contact studio"
-  };
-
-  localStorage.setItem(
-    `legacyBooking_${studentEmail}`,
-    JSON.stringify(booking)
-  );
-
-  localStorage.setItem(
-    `legacyCredits_${studentEmail}`,
-    1
-  );
-
-  setLoading(false);
-  setPage("dashboard");
-
-  return;
-}
     localStorage.setItem(`legacyCredits_${studentEmail}`, pkg.credits);
 
     try {
       const response = await fetch("/api/create-checkout", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           packageName: pkg.name,
           amount: pkg.amount,
@@ -255,17 +183,13 @@ if (pkg.name === "Private Class") {
         "No credits remaining.\n\nPress OK to buy a new package.\nPress Cancel to view dashboard."
       );
 
-      if (choice) {
-        setPage("packages");
-      } else {
-        setPage("dashboard");
-      }
+      if (choice) setPage("packages");
+      else setPage("dashboard");
 
       return;
     }
 
     const updatedCredits = existingCredits - 1;
-
     localStorage.setItem(`legacyCredits_${studentEmail}`, updatedCredits);
 
     const booking = {
@@ -278,28 +202,8 @@ if (pkg.name === "Private Class") {
       expiryDate: expiryDate(savedPackage?.expiryDays)
     };
 
-    const existingHistory =
-      JSON.parse(localStorage.getItem(`legacyBookedClasses_${studentEmail}`)) ||
-      [];
-
-    const updatedHistory = [
-      ...existingHistory,
-      {
-        class: classItem,
-        package: savedPackage,
-        bookedDate: new Date().toLocaleDateString()
-      }
-    ];
-
-    localStorage.setItem(
-      `legacyBookedClasses_${studentEmail}`,
-      JSON.stringify(updatedHistory)
-    );
-
-    localStorage.setItem(
-      `legacyBooking_${studentEmail}`,
-      JSON.stringify(booking)
-    );
+    saveToHistory(studentEmail, booking, savedPackage);
+    localStorage.setItem(`legacyBooking_${studentEmail}`, JSON.stringify(booking));
 
     setPage("dashboard");
   }
@@ -313,80 +217,55 @@ if (pkg.name === "Private Class") {
     JSON.parse(localStorage.getItem(`legacyBooking_${currentEmail}`)) || {};
 
   const bookingHistory =
-    JSON.parse(localStorage.getItem(`legacyBookedClasses_${currentEmail}`)) ||
-    [];
+    JSON.parse(localStorage.getItem(`legacyBookedClasses_${currentEmail}`)) || [];
 
   const currentCredits =
     localStorage.getItem(`legacyCredits_${currentEmail}`) || 0;
 
   if (page === "dashboard") {
-    const isPracticeSession =
-  booking.package?.name === "Practice Session" ||
-  booking.package?.name === "Private Class";
+    const isContactSchedule =
+      booking.package?.name === "Practice Session" ||
+      booking.package?.name === "Private Class";
 
     return (
       <div style={pageStyle}>
         <div style={editorialCard}>
           <div style={miniLogo}>L</div>
-
           <h1 style={editorialTitle}>Student Dashboard</h1>
 
           <div style={infoCard}>
-            <p>
-              <b>Name:</b> {booking.student?.fullName}
-            </p>
+            <p><b>Name:</b> {booking.student?.fullName}</p>
+            <p><b>Email:</b> {booking.student?.email}</p>
+            <p><b>Package:</b> {booking.package?.name}</p>
+            <p><b>Remaining Credits:</b> {currentCredits}</p>
+            <p><b>Expiry:</b> {booking.expiryDate}</p>
 
-            <p>
-              <b>Email:</b> {booking.student?.email}
-            </p>
-
-            <p>
-              <b>Package:</b> {booking.package?.name}
-            </p>
-
-            <p>
-              <b>Remaining Credits:</b> {currentCredits}
-            </p>
-
-            <p>
-              <b>Expiry:</b> {booking.expiryDate}
-            </p>
-
-            {isPracticeSession && (
-              <p>
-                <b>Practice Schedule:</b> Contact the studio for time schedule.
-              </p>
+            {isContactSchedule && (
+              <p><b>Schedule:</b> Contact the studio for time schedule.</p>
             )}
           </div>
 
-          {!isPracticeSession && (
-            <>
-              <h2 style={{ marginTop: "40px" }}>Booked Classes</h2>
+          <h2 style={{ marginTop: "40px" }}>Booked Packages & Classes</h2>
 
-              <div style={infoCard}>
-                {bookingHistory.length === 0 ? (
-                  <p>No booked classes yet.</p>
-                ) : (
-                  bookingHistory.map((item, index) => (
-                    <p key={index}>
-                      <b>{index + 1}.</b> {item.class.day} {item.class.time} —{" "}
-                      {item.class.name}
-                    </p>
-                  ))
-                )}
-              </div>
+          <div style={infoCard}>
+            {bookingHistory.length === 0 ? (
+              <p>No bookings yet.</p>
+            ) : (
+              bookingHistory.map((item, index) => (
+                <p key={index}>
+                  <b>{index + 1}.</b> {item.package?.name} — {item.class.day}{" "}
+                  {item.class.time} — {item.class.name}
+                </p>
+              ))
+            )}
+          </div>
 
-              <button style={luxuryButton} onClick={() => setPage("schedule")}>
-                Book Another Class
-              </button>
-            </>
-          )}
-
-          {isPracticeSession && (
-            <button style={luxuryButton} onClick={() => setPage("packages")}>
-              Buy Another Package
-            </button>
-          )}
+          <button
+            style={luxuryButton}
+            onClick={() => isContactSchedule ? setPage("packages") : setPage("schedule")}
+          >
+            {isContactSchedule ? "Buy Another Package" : "Book Another Class"}
+          </button>
         </div>
       </div>
     );
@@ -397,16 +276,11 @@ if (pkg.name === "Private Class") {
       <div style={pageStyle}>
         <div style={editorialCard}>
           <div style={miniLogo}>L</div>
-
           <h1 style={editorialTitle}>Class Schedule</h1>
 
           <div style={classGrid}>
             {classes.map((item) => (
-              <button
-                key={item.day}
-                style={classCard}
-                onClick={() => chooseClass(item)}
-              >
+              <button key={item.day} style={classCard} onClick={() => chooseClass(item)}>
                 <h2 style={classDay}>{item.day}</h2>
                 <p style={classTime}>{item.time}</p>
                 <p style={className}>{item.name}</p>
@@ -423,16 +297,11 @@ if (pkg.name === "Private Class") {
       <div style={pageStyle}>
         <div style={editorialCard}>
           <div style={miniLogo}>L</div>
-
           <h1 style={editorialTitle}>Packages</h1>
 
           <div style={packageGrid}>
             {packages.map((pkg) => (
-              <button
-                key={pkg.name}
-                style={packageCard}
-                onClick={() => choosePackage(pkg)}
-              >
+              <button key={pkg.name} style={packageCard} onClick={() => choosePackage(pkg)}>
                 <h2 style={packageName}>{pkg.name}</h2>
                 <h1 style={packagePrice}>{pkg.price}</h1>
                 <p style={packageNote}>{pkg.note}</p>
@@ -451,7 +320,6 @@ if (pkg.name === "Private Class") {
       <div style={pageStyle}>
         <div style={editorialCard}>
           <div style={miniLogo}>L</div>
-
           <h1 style={editorialTitle}>Login / Sign Up</h1>
 
           <div style={authGrid}>
@@ -473,7 +341,6 @@ if (pkg.name === "Private Class") {
       <div style={pageStyle}>
         <div style={editorialCard}>
           <div style={miniLogo}>L</div>
-
           <h1 style={editorialTitle}>Login</h1>
 
           <input
@@ -566,9 +433,7 @@ if (pkg.name === "Private Class") {
       <div style={heroContainer}>
         <div>
           <div style={logoCircle}>L</div>
-
           <h1 style={mainTitle}>LEGACY</h1>
-
           <p style={mainSubtitle}>Pole & Aerial Studio</p>
 
           <button style={luxuryButton} onClick={() => setPage("auth")}>
