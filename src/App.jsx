@@ -212,7 +212,7 @@ return;
     }
   }
 
-  function chooseClass(classItem) {
+  async function chooseClass(classItem) {
     const savedStudent =
       JSON.parse(localStorage.getItem("legacyStudent")) || student;
 
