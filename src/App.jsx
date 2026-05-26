@@ -74,24 +74,6 @@ export default function App() {
     const params = new URLSearchParams(window.location.search);
 
     if (params.get("paid") === "true") {
-      const savedStudent =
-        JSON.parse(localStorage.getItem("legacyStudent")) || {};
-
-      const savedPackage =
-        JSON.parse(localStorage.getItem("legacyPackage")) || {};
-
-      const booking = {
-        student: savedStudent,
-        package: savedPackage,
-        class: {
-          name: "Awaiting Class Booking"
-        },
-        creditsRemaining: savedPackage.credits,
-        expiryDate: expiryDate(savedPackage.expiryDays)
-      };
-
-      
-
       setPage("schedule");
     }
   }, []);
@@ -144,45 +126,28 @@ export default function App() {
     return date.toLocaleDateString();
   }
 
-function saveToHistory(studentEmail, booking, pkg) {
-  const existingHistory =
-    JSON.parse(localStorage.getItem(`legacyBookedClasses_${studentEmail}`)) || [];
+  function saveToHistory(studentEmail, booking, pkg) {
+    const existingHistory =
+      JSON.parse(
+        localStorage.getItem(
+          `legacyBookedClasses_${studentEmail}`
+        )
+      ) || [];
 
-  const updatedHistory = [
-    ...existingHistory,
-    {
-      class: booking.class,
-      package: pkg,
-      bookedDate: new Date().toLocaleDateString()
-    }
-  ];
+    const updatedHistory = [
+      ...existingHistory,
+      {
+        class: booking.class,
+        package: pkg,
+        bookedDate: new Date().toLocaleDateString()
+      }
+    ];
 
-  localStorage.setItem(
-    `legacyBookedClasses_${studentEmail}`,
-    JSON.stringify(updatedHistory)
-  );
-}
-
-function sendBookingEmail(booking) {
-  fetch("/api/send-email", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      studentName: booking.student?.fullName,
-      studentEmail: booking.student?.email,
-      packageName: booking.package?.name,
-      className: booking.class?.name || "No class selected",
-      amount: booking.package?.price,
-      credits: booking.creditsRemaining,
-      expiry: booking.expiryDate
-    })
-  }).catch((error) => {
-    console.log("Email error", error);
-  });
-}
-
+    localStorage.setItem(
+      `legacyBookedClasses_${studentEmail}`,
+      JSON.stringify(updatedHistory)
+    );
+  }
 
   async function choosePackage(pkg) {
     setLoading(true);
@@ -207,8 +172,6 @@ function sendBookingEmail(booking) {
         package: pkg,
         class: null,
         creditsRemaining: 5,
-        creditType: pkg.type,
-        purchaseDate: new Date().toLocaleDateString(),
         expiryDate: "No expiry"
       };
 
@@ -221,8 +184,6 @@ function sendBookingEmail(booking) {
         `legacyCredits_${studentEmail}`,
         5
       );
-
-      
 
       setLoading(false);
       setPage("schedule");
@@ -246,8 +207,6 @@ function sendBookingEmail(booking) {
               : "Contact the studio for private class time schedule"
         },
         creditsRemaining: 1,
-        creditType: pkg.type,
-        purchaseDate: new Date().toLocaleDateString(),
         expiryDate: "Contact studio"
       };
 
@@ -263,10 +222,7 @@ function sendBookingEmail(booking) {
 
       saveToHistory(studentEmail, booking, pkg);
 
-      
-
       setLoading(false);
-
       setPage("dashboard");
 
       return;
@@ -350,8 +306,6 @@ function sendBookingEmail(booking) {
       package: savedPackage,
       class: classItem,
       creditsRemaining: updatedCredits,
-      creditType: savedPackage?.type,
-      purchaseDate: new Date().toLocaleDateString(),
       expiryDate: expiryDate(savedPackage?.expiryDays)
     };
 
@@ -365,8 +319,6 @@ function sendBookingEmail(booking) {
       `legacyBooking_${studentEmail}`,
       JSON.stringify(booking)
     );
-
-    
 
     setPage("dashboard");
   }
@@ -398,12 +350,163 @@ function sendBookingEmail(booking) {
     ) || 0;
 
   if (page === "dashboard") {
-    const isContactSchedule =
-      booking.package?.name === "Practice Session" ||
-      booking.package?.name === "Private Class";
+    return (
+      <div>
+        <h1>Dashboard</h1>
 
-    return <div>Dashboard Working</div>;
+        <p>Name: {booking.student?.fullName}</p>
+        <p>Email: {booking.student?.email}</p>
+        <p>Package: {booking.package?.name}</p>
+        <p>Credits: {currentCredits}</p>
+
+        {bookingHistory.map((item, index) => (
+          <p key={index}>
+            {item.package?.name} — {item.class?.name}
+          </p>
+        ))}
+      </div>
+    );
   }
 
-  return <div>Legacy Studio</div>;
+  if (page === "schedule") {
+    return (
+      <div>
+        <h1>Schedule</h1>
+
+        {classes.map((item) => (
+          <button
+            key={item.day}
+            onClick={() => chooseClass(item)}
+          >
+            {item.day} - {item.name}
+          </button>
+        ))}
+      </div>
+    );
+  }
+
+  if (page === "packages") {
+    return (
+      <div>
+        <h1>Packages</h1>
+
+        {packages.map((pkg) => (
+          <button
+            key={pkg.name}
+            onClick={() => choosePackage(pkg)}
+          >
+            {pkg.name} - {pkg.price}
+          </button>
+        ))}
+
+        {loading && <p>Loading...</p>}
+      </div>
+    );
+  }
+
+  if (page === "auth") {
+    return (
+      <div>
+        <h1>Login / Sign Up</h1>
+
+        <button onClick={() => setPage("student")}>
+          Sign Up
+        </button>
+
+        <button onClick={() => setPage("login")}>
+          Login
+        </button>
+      </div>
+    );
+  }
+
+  if (page === "login") {
+    return (
+      <div>
+        <h1>Login</h1>
+
+        <input
+          name="email"
+          placeholder="Email"
+          onChange={handleLoginChange}
+        />
+
+        <input
+          type="password"
+          placeholder="Password"
+        />
+
+        <button onClick={saveLogin}>
+          Continue
+        </button>
+      </div>
+    );
+  }
+
+  if (page === "waiver") {
+    return (
+      <div>
+        <h1>Waiver</h1>
+
+        <label>
+          <input
+            type="checkbox"
+            checked={agreed}
+            onChange={(e) =>
+              setAgreed(e.target.checked)
+            }
+          />
+
+          I agree
+        </label>
+
+        <button
+          disabled={!agreed}
+          onClick={() => setPage("packages")}
+        >
+          Continue
+        </button>
+      </div>
+    );
+  }
+
+  if (page === "student") {
+    return (
+      <div>
+        <h1>Student Information</h1>
+
+        <input
+          name="fullName"
+          placeholder="Full Name"
+          onChange={handleStudentChange}
+        />
+
+        <input
+          name="email"
+          placeholder="Email"
+          onChange={handleStudentChange}
+        />
+
+        <input
+          name="phone"
+          placeholder="Phone Number"
+          onChange={handleStudentChange}
+        />
+
+        <button onClick={saveStudent}>
+          Continue
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <h1>LEGACY</h1>
+
+      <button onClick={() => setPage("auth")}>
+        Start Booking
+      </button>
+    </div>
+  );
 }
