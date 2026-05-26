@@ -26,10 +26,32 @@ export default function App() {
     { name: "Private Class", price: "₱3,000", amount: 0, credits: 1, type: "Private Class", note: "Contact the studio for private class schedule" }
   ];
 
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("paid") === "true") setPage("schedule");
-  }, []);
+useEffect(() => {
+  const params = new URLSearchParams(window.location.search);
+
+  if (params.get("paid") === "true") {
+
+    const savedStudent =
+      JSON.parse(localStorage.getItem("legacyStudent")) || {};
+
+    const savedPackage =
+      JSON.parse(localStorage.getItem("legacyPackage")) || {};
+
+    const booking = {
+      student: savedStudent,
+      package: savedPackage,
+      class: {
+        name: "Awaiting Class Booking"
+      },
+      creditsRemaining: savedPackage.credits,
+      expiryDate: expiryDate(savedPackage.expiryDays)
+    };
+
+    sendBookingEmail(booking);
+
+    setPage("schedule");
+  }
+}, []);
 
   function handleStudentChange(e) {
     setStudent({ ...student, [e.target.name]: e.target.value });
@@ -73,6 +95,28 @@ export default function App() {
         package: pkg,
         bookedDate: new Date().toLocaleDateString()
       }
+      async function sendBookingEmail(booking) {
+  try {
+    await fetch("/api/send-email", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        studentName: booking.student?.fullName,
+        studentEmail: booking.student?.email,
+        packageName: booking.package?.name,
+        className:
+          booking.class?.name || "No class selected",
+        amount: booking.package?.price,
+        credits: booking.creditsRemaining,
+        expiry: booking.expiryDate
+      })
+    });
+  } catch (error) {
+    console.log("Email error", error);
+  }
+}
     ];
 
     localStorage.setItem(
@@ -131,11 +175,13 @@ export default function App() {
       localStorage.setItem(`legacyBooking_${studentEmail}`, JSON.stringify(booking));
       localStorage.setItem(`legacyCredits_${studentEmail}`, 1);
 
-      saveToHistory(studentEmail, booking, pkg);
+saveToHistory(studentEmail, booking, pkg);
 
-      setLoading(false);
-      setPage("dashboard");
-      return;
+await sendBookingEmail(booking);
+
+setLoading(false);
+setPage("dashboard");
+return;
     }
 
     localStorage.setItem(`legacyCredits_${studentEmail}`, pkg.credits);
@@ -203,9 +249,14 @@ export default function App() {
     };
 
     saveToHistory(studentEmail, booking, savedPackage);
-    localStorage.setItem(`legacyBooking_${studentEmail}`, JSON.stringify(booking));
+localStorage.setItem(
+  `legacyBooking_${studentEmail}`,
+  JSON.stringify(booking)
+);
 
-    setPage("dashboard");
+await sendBookingEmail(booking);
+
+setPage("dashboard");
   }
 
   const currentStudent =
