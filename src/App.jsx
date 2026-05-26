@@ -90,7 +90,7 @@ export default function App() {
         expiryDate: expiryDate(savedPackage.expiryDays)
       };
 
-      sendBookingEmail(booking);
+      
 
       setPage("schedule");
     }
@@ -167,26 +167,7 @@ export default function App() {
     );
   }
 
-  function sendBookingEmail(booking) {
-    fetch("/api/send-email", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        studentName: booking.student?.fullName,
-        studentEmail: booking.student?.email,
-        packageName: booking.package?.name,
-        className:
-          booking.class?.name || "No class selected",
-        amount: booking.package?.price,
-        credits: booking.creditsRemaining,
-        expiry: booking.expiryDate
-      })
-    }).catch((error) => {
-      console.log("Email error", error);
-    });
-  }
+
 
   async function choosePackage(pkg) {
     setLoading(true);
@@ -226,7 +207,7 @@ export default function App() {
         5
       );
 
-      sendBookingEmail(booking);
+      
 
       setLoading(false);
       setPage("schedule");
@@ -267,7 +248,7 @@ export default function App() {
 
       saveToHistory(studentEmail, booking, pkg);
 
-      sendBookingEmail(booking);
+      
 
       setLoading(false);
 
@@ -370,7 +351,7 @@ export default function App() {
       JSON.stringify(booking)
     );
 
-    sendBookingEmail(booking);
+    
 
     setPage("dashboard");
   }
