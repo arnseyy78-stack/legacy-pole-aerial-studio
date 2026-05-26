@@ -144,29 +144,44 @@ export default function App() {
     return date.toLocaleDateString();
   }
 
-  function saveToHistory(studentEmail, booking, pkg) {
-    const existingHistory =
-      JSON.parse(
-        localStorage.getItem(
-          `legacyBookedClasses_${studentEmail}`
-        )
-      ) || [];
+function saveToHistory(studentEmail, booking, pkg) {
+  const existingHistory =
+    JSON.parse(localStorage.getItem(`legacyBookedClasses_${studentEmail}`)) || [];
 
-    const updatedHistory = [
-      ...existingHistory,
-      {
-        class: booking.class,
-        package: pkg,
-        bookedDate: new Date().toLocaleDateString()
-      }
-    ];
+  const updatedHistory = [
+    ...existingHistory,
+    {
+      class: booking.class,
+      package: pkg,
+      bookedDate: new Date().toLocaleDateString()
+    }
+  ];
 
-    localStorage.setItem(
-      `legacyBookedClasses_${studentEmail}`,
-      JSON.stringify(updatedHistory)
-    );
-  }
+  localStorage.setItem(
+    `legacyBookedClasses_${studentEmail}`,
+    JSON.stringify(updatedHistory)
+  );
+}
 
+function sendBookingEmail(booking) {
+  fetch("/api/send-email", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      studentName: booking.student?.fullName,
+      studentEmail: booking.student?.email,
+      packageName: booking.package?.name,
+      className: booking.class?.name || "No class selected",
+      amount: booking.package?.price,
+      credits: booking.creditsRemaining,
+      expiry: booking.expiryDate
+    })
+  }).catch((error) => {
+    console.log("Email error", error);
+  });
+}
 
 
   async function choosePackage(pkg) {
