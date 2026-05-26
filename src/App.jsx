@@ -23,6 +23,14 @@ export default function App() {
 
   const packages = [
     {
+  name: "TEST PACKAGE",
+  price: "FREE",
+  amount: 0,
+  credits: 5,
+  type: "Class Credits",
+  note: "Free testing package"
+},
+    {
       name: "Single Pass",
       price: "₱850",
       amount: 85000,
