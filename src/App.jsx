@@ -177,7 +177,7 @@ useEffect(() => {
 
 saveToHistory(studentEmail, booking, pkg);
 
-await sendBookingEmail(booking);
+sendBookingEmail(booking);
 
 setLoading(false);
 setPage("dashboard");
@@ -254,7 +254,7 @@ localStorage.setItem(
   JSON.stringify(booking)
 );
 
-await sendBookingEmail(booking);
+sendBookingEmail(booking);
 
 setPage("dashboard");
   }
