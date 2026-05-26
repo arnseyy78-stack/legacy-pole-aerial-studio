@@ -156,7 +156,39 @@ export default function App() {
 
     const studentEmail =
       savedStudent.email || "guest";
+if (pkg.name === "TEST PACKAGE") {
+  const booking = {
+    student: savedStudent,
+    package: pkg,
+    class: {
+      day: "Test Package",
+      time: "Free Test",
+      name: "Test package selected"
+    },
+    creditsRemaining: 5,
+    purchaseDate: new Date().toLocaleDateString(),
+    expiryDate: "No expiry"
+  };
 
+  localStorage.setItem(
+    `legacyBooking_${studentEmail}`,
+    JSON.stringify(booking)
+  );
+
+  localStorage.setItem(
+    `legacyCredits_${studentEmail}`,
+    5
+  );
+
+  saveToHistory(studentEmail, booking, pkg);
+
+  sendBookingEmail(booking);
+
+  setLoading(false);
+  setPage("dashboard");
+
+  return;
+}
     if (
       pkg.name === "Practice Session" ||
       pkg.name === "Private Class"
