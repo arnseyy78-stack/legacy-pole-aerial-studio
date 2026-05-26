@@ -60,6 +60,15 @@ export default function App() {
       type: "Practice Session",
       note: "Contact the studio for practice time schedule"
     }
+    
+    {
+  name: "Private Class",
+  price: "₱3,000",
+  amount: 0,
+  credits: 1,
+  type: "Private Class",
+  note: "Contact the studio for private class schedule"
+}
   ];
 
   useEffect(() => {
@@ -169,7 +178,37 @@ export default function App() {
       setPage("dashboard");
       return;
     }
+if (pkg.name === "Private Class") {
 
+  const booking = {
+    student: savedStudent,
+    package: pkg,
+    class: {
+      day: "Private Class",
+      time: "Contact Studio",
+      name: "Contact the studio for private class time schedule"
+    },
+    creditsRemaining: 1,
+    creditType: pkg.type,
+    purchaseDate: new Date().toLocaleDateString(),
+    expiryDate: "Contact studio"
+  };
+
+  localStorage.setItem(
+    `legacyBooking_${studentEmail}`,
+    JSON.stringify(booking)
+  );
+
+  localStorage.setItem(
+    `legacyCredits_${studentEmail}`,
+    1
+  );
+
+  setLoading(false);
+  setPage("dashboard");
+
+  return;
+}
     localStorage.setItem(`legacyCredits_${studentEmail}`, pkg.credits);
 
     try {
