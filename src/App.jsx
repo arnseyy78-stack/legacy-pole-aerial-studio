@@ -11,7 +11,7 @@ export default function App() {
     email: "",
     phone: ""
   });
-
+  
   const classes = [
     { day: "Monday", time: "6:00 PM", name: "Pole Fitness" },
     { day: "Tuesday", time: "6:00 PM", name: "Pole Flow" },
