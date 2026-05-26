@@ -52,16 +52,15 @@ export default function App() {
       note: "Consumable within 30 days",
       expiryDays: 30
     },
-    {
-      name: "Practice Session",
-      price: "₱550",
-      amount: 0,
-      credits: 1,
-      type: "Practice Session",
-      note: "Contact the studio for practice time schedule"
-    }
-    
-    {
+{
+  name: "Practice Session",
+  price: "₱550",
+  amount: 0,
+  credits: 1,
+  type: "Practice Session",
+  note: "Contact the studio for practice time schedule"
+},
+{
   name: "Private Class",
   price: "₱3,000",
   amount: 0,
