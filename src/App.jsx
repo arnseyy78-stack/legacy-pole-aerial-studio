@@ -416,15 +416,15 @@ function loginStudent() {
           >
             <p style={goldSmallText}>CHOOSE YOUR PACKAGE</p>
 
-            <h2 style={sectionHeading}>Studio Packages</h2>
+            <h2 style={sectionHeading}>Pricing</h2>
 
             <div style={packageGrid}>
               {[
-                ["Single Pass", "₱850", "One class access"],
-                ["Class Card of 5", "₱4,000", "Five class credits"],
-                ["Practice Session", "₱550", "Contact studio for time"],
-                ["Private Class", "₱3,000", "Personal coaching"]
-              ].map((pkg) => (
+  ["Single Pass", "₱870", "One class access"],
+  ["Class Card of 5", "₱4,100", "Five class credits"],
+  ["Practice Session", "₱550", "Contact studio for time"],
+  ["Private Class", "₱3,100", "Personal coaching"]
+].map((pkg) => (
                 <button key={pkg[0]} style={packageCard}>
                   <p style={goldSmallText}>{pkg[0]}</p>
 
