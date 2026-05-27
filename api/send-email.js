@@ -4,6 +4,16 @@ export default async function handler(req, res) {
   }
 
   try {
+    const {
+      studentEmail,
+      studentName,
+      packageName,
+      className,
+      amount,
+      credits,
+      expiry
+    } = req.body;
+
     const response = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -12,13 +22,35 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         from: "Legacy Pole Studio <bookings@legacypolestudio.com>",
-        to: ["legacycavitepoleaerialstudio@gmail.com"],
-bcc: ["legacycavitepoleaerialstudio@gmail.com"],
+        reply_to: "legacycavitepoleaerialstudio@gmail.com",
+        to: [studentEmail],
+        bcc: ["legacycavitepoleaerialstudio@gmail.com"],
         subject: "Legacy Pole & Aerial Studio Booking Confirmation",
         html: `
           <h2>Legacy Pole & Aerial Studio</h2>
+
+          <p>Hi ${studentName || "Student"},</p>
+
           <p>Your booking has been confirmed.</p>
-          <p>This is a Resend test email.</p>
+
+          <p><b>Package:</b> ${packageName}</p>
+          <p><b>Class:</b> ${className}</p>
+          <p><b>Amount:</b> ${amount}</p>
+          <p><b>Credits:</b> ${credits}</p>
+          <p><b>Expiry:</b> ${expiry}</p>
+
+          <br/>
+
+          <p>
+            📍 Location:<br/>
+            The Covenant Church Building<br/>
+            2nd Floor Above Mang Mike<br/>
+            Near SM Tanza
+          </p>
+
+          <p>
+            Thank you for booking with Legacy Pole & Aerial Studio 💜
+          </p>
         `
       })
     });
