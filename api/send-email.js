@@ -45,7 +45,12 @@ export default async function handler(req, res) {
       return res.status(response.status).json(data);
     }
 
-    return res.status(200).json({ success: true, data });
+    console.log("RESEND RESPONSE:", data);
+
+return res.status(200).json({
+  success: true,
+  resendResponse: data
+});
   } catch (error) {
     console.log("Email server error:", error);
     return res.status(500).json({ error: error.message });
