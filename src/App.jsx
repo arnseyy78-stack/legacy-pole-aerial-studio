@@ -3,7 +3,8 @@ import { useState } from "react";
 export default function App() {
   const [page, setPage] = useState("home");
   const [waiverAgreed, setWaiverAgreed] = useState(false);
-
+const [loginEmail, setLoginEmail] = useState("");
+const [loginPassword, setLoginPassword] = useState("");
   const [student, setStudent] = useState({
     fullName: "",
     email: "",
@@ -20,18 +21,47 @@ export default function App() {
     });
   }
 
-  function saveStudentInfo() {
-    localStorage.setItem("legacyStudent", JSON.stringify(student));
-    setPage("waiver");
+
+
+function saveStudentInfo() {
+  localStorage.setItem("legacyStudent", JSON.stringify(student));
+  setPage("waiver");
+}
+
+function savePassword() {
+  if (!student.password) {
+    alert("Please create a password.");
+    return;
   }
 
-  function savePassword() {
-    localStorage.setItem("legacyStudent", JSON.stringify(student));
-    setPage("packages");
+  localStorage.setItem("legacyStudent", JSON.stringify(student));
+
+  localStorage.setItem(
+    `legacyPassword_${student.email}`,
+    student.password
+  );
+
+  setPage("packages");
+}
+
+function loginStudent() {
+  const savedPassword = localStorage.getItem(
+    `legacyPassword_${loginEmail}`
+  );
+
+  if (!savedPassword) {
+    alert("No account found. Please sign up first.");
+    return;
   }
 
-  return (
-    <div style={app}>
+  if (loginPassword !== savedPassword) {
+    alert("Incorrect password.");
+    return;
+  }
+
+  setPage("packages");
+}
+  return (    <div style={app}>
       {/* NAVBAR */}
       <div style={navbar}>
         <div>
@@ -346,12 +376,23 @@ export default function App() {
 
             <h2 style={sectionHeading}>Login</h2>
 
-            <input placeholder="Email Address" style={inputStyle} />
+<input
+  placeholder="Email Address"
+  value={loginEmail}
+  onChange={(e) => setLoginEmail(e.target.value)}
+  style={inputStyle}
+/>
 
-            <input type="password" placeholder="Password" style={inputStyle} />
+<input
+  type="password"
+  placeholder="Password"
+  value={loginPassword}
+  onChange={(e) => setLoginPassword(e.target.value)}
+  style={inputStyle}
+/>
 
-            <button
-              onClick={() => setPage("packages")}
+<button
+  onClick={loginStudent}
               style={{
                 ...goldButtonLarge,
                 width: "100%",
