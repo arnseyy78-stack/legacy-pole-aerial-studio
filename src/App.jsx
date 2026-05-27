@@ -61,6 +61,39 @@ function loginStudent() {
 
   setPage("packages");
 }
+  
+  async function buyPackage(pkg) {
+  try {
+    const studentData =
+      JSON.parse(localStorage.getItem("legacyStudent")) || student;
+
+    localStorage.setItem("legacySelectedPackage", JSON.stringify(pkg));
+
+    const response = await fetch("/api/create-checkout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        packageName: pkg.name,
+        amount: pkg.amount,
+        studentName: studentData.fullName,
+        studentEmail: studentData.email
+      })
+    });
+
+    const data = await response.json();
+
+    if (data.checkoutUrl) {
+      window.location.href = data.checkoutUrl;
+    } else {
+      alert("Checkout failed. Please try again.");
+    }
+  } catch (error) {
+    console.log(error);
+    alert("Payment error. Please try again.");
+  }
+}
   return (    <div style={app}>
       {/* NAVBAR */}
       <div style={navbar}>
@@ -419,20 +452,47 @@ function loginStudent() {
 
             <div style={packageGrid}>
               {[
-  ["Single Pass", "₱870", "One class access"],
-  ["Class Card of 5", "₱4,100", "Five class credits"],
-  ["Practice Session", "₱550", "Contact studio for time"],
-  ["Private Class", "₱3,100", "Personal coaching"]
+  {
+    name: "Single Pass",
+    price: "₱870",
+    description: "One class access",
+    amount: 87000
+  },
+
+  {
+    name: "Class Card of 5",
+    price: "₱4,100",
+    description: "Five class credits",
+    amount: 410000
+  },
+
+  {
+    name: "Practice Session",
+    price: "₱550",
+    description: "Contact studio for time",
+    amount: 55000
+  },
+
+  {
+    name: "Private Class",
+    price: "₱3,100",
+    description: "Personal coaching",
+    amount: 310000
+  }
 ].map((pkg) => (
-                <button key={pkg[0]} style={packageCard}>
-                  <p style={goldSmallText}>{pkg[0]}</p>
+                <button
+  key={pkg.name}
+  style={packageCard}
+  onClick={() => buyPackage(pkg)}
+>
+  <p style={goldSmallText}>{pkg.name}</p>
 
-                  <h3 style={packagePrice}>{pkg[1]}</h3>
+  <h3 style={packagePrice}>{pkg.price}</h3>
 
-                  <p style={{ color: "#999", lineHeight: "1.6" }}>
-                    {pkg[2]}
-                  </p>
-                </button>
+  <p style={{ color: "#999", lineHeight: "1.6" }}>
+    {pkg.description}
+  </p>
+</button>
               ))}
             </div>
           </div>
