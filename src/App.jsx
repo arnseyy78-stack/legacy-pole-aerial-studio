@@ -64,6 +64,29 @@ function loginStudent() {
   
   async function buyPackage(pkg) {
   try {
+  if (pkg.isTest) {
+  const studentData =
+    JSON.parse(localStorage.getItem("legacyStudent")) || student;
+
+  await fetch("/api/send-email", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      studentName: studentData.fullName,
+      studentEmail: studentData.email,
+      packageName: pkg.name,
+      className: "Test package selected",
+      amount: "FREE",
+      credits: pkg.credits,
+      expiry: "No expiry"
+    })
+  });
+
+  alert("Test package email sent.");
+  return;
+}
     const studentData =
       JSON.parse(localStorage.getItem("legacyStudent")) || student;
 
@@ -452,6 +475,14 @@ function loginStudent() {
 
             <div style={packageGrid}>
               {[
+            {
+  name: "Test Package",
+  price: "FREE",
+  description: "5 test credits",
+  amount: 0,
+  credits: 5,
+  isTest: true
+},
   {
     name: "Single Pass",
     price: "₱870",
