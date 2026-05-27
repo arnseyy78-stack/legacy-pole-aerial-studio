@@ -31,12 +31,26 @@ export default async function handler(req, res) {
 
           <p>Hi ${studentName || "Student"},</p>
 
-<p>Your purchase has been confirmed.</p>
+${
+  className && className !== "No class selected"
+    ? `
+      <p>Your booking has been confirmed.</p>
 
-<p><b>Package:</b> ${packageName}</p>
-<p><b>Amount:</b> ${amount}</p>
-<p><b>Credits:</b> ${credits}</p>
-<p><b>Expiry:</b> ${expiry}</p>
+      <p><b>Package:</b> ${packageName}</p>
+      <p><b>Class:</b> ${className}</p>
+      <p><b>Amount:</b> ${amount}</p>
+      <p><b>Credits:</b> ${credits}</p>
+      <p><b>Expiry:</b> ${expiry}</p>
+    `
+    : `
+      <p>Your purchase has been confirmed.</p>
+
+      <p><b>Package:</b> ${packageName}</p>
+      <p><b>Amount:</b> ${amount}</p>
+      <p><b>Credits:</b> ${credits}</p>
+      <p><b>Expiry:</b> ${expiry}</p>
+    `
+}
 
           <br/>
 
