@@ -84,8 +84,9 @@ function loginStudent() {
     })
   });
 
-  alert("Test package email sent.");
-  return;
+alert("Test package email sent.");
+setPage("chooseClass");
+return;
 }
     const studentData =
       JSON.parse(localStorage.getItem("legacyStudent")) || student;
