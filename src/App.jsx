@@ -461,7 +461,42 @@ return;
           </div>
         </section>
       )}
+{/* CHOOSE CLASS */}
+{page === "chooseClass" && (
+  <section style={centerPage}>
+    <div
+      style={{
+        ...formCard,
+        maxWidth: "950px"
+      }}
+    >
+      <h2 style={sectionHeading}>Choose Class</h2>
 
+      <div style={packageGrid}>
+        {[
+          "Pole Fitness",
+          "Pole Flow",
+          "Spinny Pole",
+          "Mat Flexibility",
+          "Heels and Steel",
+          "Floor Work"
+        ].map((className) => (
+          <button
+            key={className}
+            style={packageCard}
+            onClick={() => alert(`${className} selected`)}
+          >
+            <p style={goldSmallText}>{className}</p>
+
+            <p style={{ color: "#999", lineHeight: "1.6" }}>
+              Select this class
+            </p>
+          </button>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
       {/* PACKAGES */}
       {page === "packages" && (
         <section style={centerPage}>
