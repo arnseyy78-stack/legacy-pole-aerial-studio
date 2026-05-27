@@ -353,9 +353,111 @@ export default function App() {
         </div>
       )}
 
-      {/* BOOKING PAGE SAMPLE */}
+{/* STUDENT SIGN UP */}
 
-      {(page === "booking" || page === "student" || page === "login") && (
+{page === "student" && (
+  <div
+    style={{
+      minHeight: "85vh",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      padding: "60px"
+    }}
+  >
+    <div
+      style={{
+        width: "100%",
+        maxWidth: "700px",
+        background: "rgba(255,255,255,0.04)",
+        border: "1px solid rgba(200,169,107,0.25)",
+        borderRadius: "34px",
+        padding: "50px"
+      }}
+    >
+      <p style={{ color: "#c8a96b", letterSpacing: "5px", fontSize: "13px" }}>
+        STUDENT INFORMATION
+      </p>
+
+      <h2
+        style={{
+          fontSize: "58px",
+          fontWeight: "300",
+          margin: "15px 0 30px"
+        }}
+      >
+        Create Account
+      </h2>
+
+      <input placeholder="Full Name" style={inputStyle} />
+      <input placeholder="Email Address" style={inputStyle} />
+      <input placeholder="Phone Number" style={inputStyle} />
+      <input placeholder="Emergency Person" style={inputStyle} />
+      <input placeholder="Emergency Contact Number" style={inputStyle} />
+      <input type="password" placeholder="Create Password" style={inputStyle} />
+
+      <button
+        onClick={() => setPage("booking")}
+        style={{ ...goldButtonLarge, width: "100%", marginTop: "20px" }}
+      >
+        CONTINUE
+      </button>
+    </div>
+  </div>
+)}
+
+{/* LOGIN */}
+
+{page === "login" && (
+  <div
+    style={{
+      minHeight: "85vh",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      padding: "60px"
+    }}
+  >
+    <div
+      style={{
+        width: "100%",
+        maxWidth: "600px",
+        background: "rgba(255,255,255,0.04)",
+        border: "1px solid rgba(200,169,107,0.25)",
+        borderRadius: "34px",
+        padding: "50px"
+      }}
+    >
+      <p style={{ color: "#c8a96b", letterSpacing: "5px", fontSize: "13px" }}>
+        WELCOME BACK
+      </p>
+
+      <h2
+        style={{
+          fontSize: "58px",
+          fontWeight: "300",
+          margin: "15px 0 30px"
+        }}
+      >
+        Login
+      </h2>
+
+      <input placeholder="Email Address" style={inputStyle} />
+      <input type="password" placeholder="Password" style={inputStyle} />
+
+      <button
+        onClick={() => setPage("booking")}
+        style={{ ...goldButtonLarge, width: "100%", marginTop: "20px" }}
+      >
+        LOGIN
+      </button>
+    </div>
+  </div>
+)}
+
+{/* BOOKING PAGE SAMPLE */}
+
+{page === "booking" && (
         <div
           style={{
             minHeight: "85vh",
@@ -529,7 +631,17 @@ export default function App() {
 }
 
 /* BUTTON STYLES */
-
+const inputStyle = {
+  width: "100%",
+  padding: "18px",
+  marginBottom: "16px",
+  borderRadius: "14px",
+  border: "1px solid rgba(200,169,107,0.35)",
+  background: "#070707",
+  color: "#fff",
+  fontSize: "16px",
+  boxSizing: "border-box"
+};
 const navButton = {
   background: "transparent",
   border: "none",
