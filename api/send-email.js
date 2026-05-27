@@ -14,6 +14,12 @@ export default async function handler(req, res) {
       expiry
     } = req.body;
 
+    const isClassBooking =
+      className &&
+      className !== "No class selected" &&
+      className !== "Test package selected" &&
+      className !== "Awaiting Class Booking";
+
     const response = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -25,41 +31,34 @@ export default async function handler(req, res) {
         reply_to: "legacycavitepoleaerialstudio@gmail.com",
         to: [studentEmail],
         bcc: ["legacycavitepoleaerialstudio@gmail.com"],
-        subject: "Legacy Pole & Aerial Studio Booking Confirmation",
+        subject: isClassBooking
+          ? "Class Booking Confirmation"
+          : "Package Purchase Confirmation",
         html: `
           <h2>Legacy Pole & Aerial Studio</h2>
 
           <p>Hi ${studentName || "Student"},</p>
 
-${
-  className && className !== "No class selected"
-    ? `
-      <p>Your booking has been confirmed.</p>
-
-      <p><b>Package:</b> ${packageName}</p>
-      <p><b>Class:</b> ${className}</p>
-      <p><b>Amount:</b> ${amount}</p>
-      <p><b>Credits:</b> ${credits}</p>
-      <p><b>Expiry:</b> ${expiry}</p>
-    `
-    : `
-      <p>Your purchase has been confirmed.</p>
-
-      <p><b>Package:</b> ${packageName}</p>
-      <p><b>Amount:</b> ${amount}</p>
-      <p><b>Credits:</b> ${credits}</p>
-      <p><b>Expiry:</b> ${expiry}</p>
-    `
-}
+          ${
+            isClassBooking
+              ? `
+                <p>Your booking has been confirmed.</p>
+                <p><b>Package:</b> ${packageName}</p>
+                <p><b>Class:</b> ${className}</p>
+                <p><b>Amount:</b> ${amount}</p>
+                <p><b>Credits:</b> ${credits}</p>
+                <p><b>Expiry:</b> ${expiry}</p>
+              `
+              : `
+                <p>Your purchase has been confirmed.</p>
+                <p><b>Package:</b> ${packageName}</p>
+                <p><b>Amount:</b> ${amount}</p>
+                <p><b>Credits:</b> ${credits}</p>
+                <p><b>Expiry:</b> ${expiry}</p>
+              `
+          }
 
           <br/>
-
-          <p>
-            📍 Location:<br/>
-            The Covenant Church Building<br/>
-            2nd Floor Above Mang Mike<br/>
-            Near SM Tanza
-          </p>
 
           <p>
             Thank you for booking with Legacy Pole & Aerial Studio 💜
@@ -73,20 +72,11 @@ ${
     console.log("RESEND RESPONSE:", data);
 
     if (!response.ok) {
-      console.log("Resend failed:", data);
       return res.status(response.status).json(data);
     }
 
-    return res.status(200).json({
-      success: true,
-      data
-    });
-
+    return res.status(200).json({ success: true, data });
   } catch (error) {
-    console.log("Email server error:", error);
-
-    return res.status(500).json({
-      error: error.message
-    });
+    return res.status(500).json({ error: error.message });
   }
 }
