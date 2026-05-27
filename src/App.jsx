@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function App() {
   const [page, setPage] = useState("home");
@@ -11,7 +11,12 @@ export default function App() {
     email: "",
     phone: ""
   });
-  
+
+  const [login, setLogin] = useState({
+    email: "",
+    password: ""
+  });
+
   const classes = [
     { day: "Monday", time: "6:00 PM", name: "Pole Fitness" },
     { day: "Tuesday", time: "6:00 PM", name: "Pole Flow" },
@@ -23,13 +28,13 @@ export default function App() {
 
   const packages = [
     {
-  name: "TEST PACKAGE",
-  price: "FREE",
-  amount: 0,
-  credits: 5,
-  type: "Class Credits",
-  note: "Free testing package"
-},
+      name: "TEST PACKAGE",
+      price: "FREE",
+      amount: 0,
+      credits: 5,
+      type: "Class Credits",
+      note: "Free testing package"
+    },
     {
       name: "Single Pass",
       price: "₱850",
@@ -50,7 +55,7 @@ export default function App() {
     {
       name: "Practice Session",
       price: "₱550",
-      amount: 55000,
+      amount: 0,
       credits: 1,
       type: "Practice Session",
       note: "Contact the studio for practice time schedule"
@@ -58,7 +63,7 @@ export default function App() {
     {
       name: "Private Class",
       price: "₱3,000",
-      amount: 300000,
+      amount: 0,
       credits: 1,
       type: "Private Class",
       note: "Contact the studio for private class schedule"
@@ -69,24 +74,62 @@ export default function App() {
     const params = new URLSearchParams(window.location.search);
 
     if (params.get("paid") === "true") {
+      const savedStudent =
+        JSON.parse(localStorage.getItem("legacyStudent")) || {};
+
+      const savedPackage =
+        JSON.parse(localStorage.getItem("legacyPackage")) || {};
+
+      const studentEmail = savedStudent.email || "guest";
+
+      localStorage.setItem(
+        `legacyCredits_${studentEmail}`,
+        savedPackage.credits || 0
+      );
+
+      const booking = {
+        student: savedStudent,
+        package: savedPackage,
+        class: {
+          name: "Awaiting Class Booking"
+        },
+        creditsRemaining: savedPackage.credits || 0,
+        purchaseDate: new Date().toLocaleDateString(),
+        expiryDate: expiryDate(savedPackage.expiryDays)
+      };
+
+      localStorage.setItem(
+        `legacyBooking_${studentEmail}`,
+        JSON.stringify(booking)
+      );
+
+      sendBookingEmail(booking);
       setPage("schedule");
     }
   }, []);
 
   function handleStudentChange(e) {
-    setStudent({
-      ...student,
-      [e.target.name]: e.target.value
-    });
+    setStudent({ ...student, [e.target.name]: e.target.value });
+  }
+
+  function handleLoginChange(e) {
+    setLogin({ ...login, [e.target.name]: e.target.value });
   }
 
   function saveStudent() {
-    localStorage.setItem(
-      "legacyStudent",
-      JSON.stringify(student)
-    );
-
+    localStorage.setItem("legacyStudent", JSON.stringify(student));
     setPage("waiver");
+  }
+
+  function saveLogin() {
+    const returningStudent = {
+      fullName: "Returning Student",
+      email: login.email,
+      phone: ""
+    };
+
+    localStorage.setItem("legacyStudent", JSON.stringify(returningStudent));
+    setPage("packages");
   }
 
   function expiryDate(days) {
@@ -94,17 +137,13 @@ export default function App() {
 
     const date = new Date();
     date.setDate(date.getDate() + days);
-
     return date.toLocaleDateString();
   }
 
   function saveToHistory(studentEmail, booking, pkg) {
     const existingHistory =
-      JSON.parse(
-        localStorage.getItem(
-          `legacyBookedClasses_${studentEmail}`
-        )
-      ) || [];
+      JSON.parse(localStorage.getItem(`legacyBookedClasses_${studentEmail}`)) ||
+      [];
 
     const updatedHistory = [
       ...existingHistory,
@@ -143,56 +182,45 @@ export default function App() {
 
   async function choosePackage(pkg) {
     setLoading(true);
-
-    localStorage.setItem(
-      "legacyPackage",
-      JSON.stringify(pkg)
-    );
+    setSelectedPackage(pkg);
+    localStorage.setItem("legacyPackage", JSON.stringify(pkg));
 
     const savedStudent =
-      JSON.parse(
-        localStorage.getItem("legacyStudent")
-      ) || student;
+      JSON.parse(localStorage.getItem("legacyStudent")) || student;
 
-    const studentEmail =
-      savedStudent.email || "guest";
-if (pkg.name === "TEST PACKAGE") {
-  const booking = {
-    student: savedStudent,
-    package: pkg,
-    class: {
-      day: "Test Package",
-      time: "Free Test",
-      name: "Test package selected"
-    },
-    creditsRemaining: 5,
-    purchaseDate: new Date().toLocaleDateString(),
-    expiryDate: "No expiry"
-  };
+    const studentEmail = savedStudent.email || "guest";
 
-  localStorage.setItem(
-    `legacyBooking_${studentEmail}`,
-    JSON.stringify(booking)
-  );
+    if (pkg.name === "TEST PACKAGE") {
+      const booking = {
+        student: savedStudent,
+        package: pkg,
+        class: {
+          day: "Test Package",
+          time: "Free Test",
+          name: "Test package selected"
+        },
+        creditsRemaining: 5,
+        creditType: pkg.type,
+        purchaseDate: new Date().toLocaleDateString(),
+        expiryDate: "No expiry"
+      };
 
-  localStorage.setItem(
-    `legacyCredits_${studentEmail}`,
-    5
-  );
+      localStorage.setItem(
+        `legacyBooking_${studentEmail}`,
+        JSON.stringify(booking)
+      );
 
-  saveToHistory(studentEmail, booking, pkg);
+      localStorage.setItem(`legacyCredits_${studentEmail}`, 5);
 
-  sendBookingEmail(booking);
+      saveToHistory(studentEmail, booking, pkg);
+      sendBookingEmail(booking);
 
-  setLoading(false);
-  setPage("dashboard");
+      setLoading(false);
+      setPage("dashboard");
+      return;
+    }
 
-  return;
-}
-    if (
-      pkg.name === "Practice Session" ||
-      pkg.name === "Private Class"
-    ) {
+    if (pkg.name === "Practice Session" || pkg.name === "Private Class") {
       const booking = {
         student: savedStudent,
         package: pkg,
@@ -215,42 +243,31 @@ if (pkg.name === "TEST PACKAGE") {
         JSON.stringify(booking)
       );
 
-      localStorage.setItem(
-        `legacyCredits_${studentEmail}`,
-        1
-      );
+      localStorage.setItem(`legacyCredits_${studentEmail}`, 1);
 
       saveToHistory(studentEmail, booking, pkg);
-
       sendBookingEmail(booking);
 
       setLoading(false);
       setPage("dashboard");
-
       return;
     }
 
-    localStorage.setItem(
-      `legacyCredits_${studentEmail}`,
-      pkg.credits
-    );
+    localStorage.setItem(`legacyCredits_${studentEmail}`, pkg.credits);
 
     try {
-      const response = await fetch(
-        "/api/create-checkout",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            packageName: pkg.name,
-            amount: pkg.amount,
-            studentName: savedStudent.fullName,
-            studentEmail: savedStudent.email
-          })
-        }
-      );
+      const response = await fetch("/api/create-checkout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          packageName: pkg.name,
+          amount: pkg.amount,
+          studentName: savedStudent.fullName,
+          studentEmail: savedStudent.email
+        })
+      });
 
       const data = await response.json();
 
@@ -268,32 +285,29 @@ if (pkg.name === "TEST PACKAGE") {
 
   async function chooseClass(classItem) {
     const savedStudent =
-      JSON.parse(
-        localStorage.getItem("legacyStudent")
-      ) || student;
+      JSON.parse(localStorage.getItem("legacyStudent")) || student;
 
-    const studentEmail =
-      savedStudent.email || "guest";
+    const studentEmail = savedStudent.email || "guest";
 
     const savedPackage =
-      JSON.parse(
-        localStorage.getItem("legacyPackage")
-      ) || selectedPackage;
+      JSON.parse(localStorage.getItem("legacyPackage")) || selectedPackage;
 
     const existingCredits =
-      Number(
-        localStorage.getItem(
-          `legacyCredits_${studentEmail}`
-        )
-      ) || 0;
+      Number(localStorage.getItem(`legacyCredits_${studentEmail}`)) || 0;
 
-    const updatedCredits =
-      existingCredits - 1;
+    if (existingCredits <= 0) {
+      const choice = window.confirm(
+        "No credits remaining.\n\nPress OK to buy a new package.\nPress Cancel to view dashboard."
+      );
 
-    localStorage.setItem(
-      `legacyCredits_${studentEmail}`,
-      updatedCredits
-    );
+      if (choice) setPage("packages");
+      else setPage("dashboard");
+
+      return;
+    }
+
+    const updatedCredits = existingCredits - 1;
+    localStorage.setItem(`legacyCredits_${studentEmail}`, updatedCredits);
 
     const booking = {
       student: savedStudent,
@@ -302,16 +316,10 @@ if (pkg.name === "TEST PACKAGE") {
       creditsRemaining: updatedCredits,
       creditType: savedPackage?.type,
       purchaseDate: new Date().toLocaleDateString(),
-      expiryDate: expiryDate(
-        savedPackage?.expiryDays
-      )
+      expiryDate: expiryDate(savedPackage?.expiryDays)
     };
 
-    saveToHistory(
-      studentEmail,
-      booking,
-      savedPackage
-    );
+    saveToHistory(studentEmail, booking, savedPackage);
 
     localStorage.setItem(
       `legacyBooking_${studentEmail}`,
@@ -319,172 +327,173 @@ if (pkg.name === "TEST PACKAGE") {
     );
 
     sendBookingEmail(booking);
-
     setPage("dashboard");
   }
 
   const currentStudent =
-    JSON.parse(
-      localStorage.getItem("legacyStudent")
-    ) || {};
+    JSON.parse(localStorage.getItem("legacyStudent")) || {};
 
-  const currentEmail =
-    currentStudent.email || "guest";
+  const currentEmail = currentStudent.email || "guest";
 
   const booking =
-    JSON.parse(
-      localStorage.getItem(
-        `legacyBooking_${currentEmail}`
-      )
-    ) || {};
+    JSON.parse(localStorage.getItem(`legacyBooking_${currentEmail}`)) || {};
 
   const bookingHistory =
-    JSON.parse(
-      localStorage.getItem(
-        `legacyBookedClasses_${currentEmail}`
-      )
-    ) || [];
+    JSON.parse(localStorage.getItem(`legacyBookedClasses_${currentEmail}`)) ||
+    [];
 
   const currentCredits =
-    localStorage.getItem(
-      `legacyCredits_${currentEmail}`
-    ) || 0;
+    localStorage.getItem(`legacyCredits_${currentEmail}`) || 0;
 
   if (page === "dashboard") {
     return (
-      <div style={pageStyle}>
-        <div style={card}>
-          <h1>Dashboard</h1>
+      <Shell>
+        <Card>
+          <SmallLabel>Student Portal</SmallLabel>
+          <h1 style={title}>Dashboard</h1>
 
-          <p>
-            <b>Name:</b>{" "}
-            {booking.student?.fullName}
-          </p>
+          <div style={infoBox}>
+            <p><b>Name:</b> {booking.student?.fullName}</p>
+            <p><b>Email:</b> {booking.student?.email}</p>
+            <p><b>Package:</b> {booking.package?.name}</p>
+            <p><b>Credits:</b> {currentCredits}</p>
+            <p><b>Expiry:</b> {booking.expiryDate}</p>
+          </div>
 
-          <p>
-            <b>Email:</b>{" "}
-            {booking.student?.email}
-          </p>
+          <h2 style={sectionTitle}>Bookings</h2>
 
-          <p>
-            <b>Package:</b>{" "}
-            {booking.package?.name}
-          </p>
+          <div style={infoBox}>
+            {bookingHistory.length === 0 ? (
+              <p>No bookings yet.</p>
+            ) : (
+              bookingHistory.map((item, index) => (
+                <p key={index}>
+                  <b>{index + 1}.</b> {item.package?.name} —{" "}
+                  {item.class?.name}
+                </p>
+              ))
+            )}
+          </div>
 
-          <p>
-            <b>Credits:</b>{" "}
-            {currentCredits}
-          </p>
-
-          <hr />
-
-          <h2>Bookings</h2>
-
-          {bookingHistory.map((item, index) => (
-            <p key={index}>
-              {item.package?.name} —{" "}
-              {item.class?.name}
-            </p>
-          ))}
-
-          <button
-            style={button}
-            onClick={() =>
-              setPage("schedule")
-            }
-          >
+          <button style={goldButton} onClick={() => setPage("schedule")}>
             Book Class
           </button>
-        </div>
-      </div>
+
+          <button style={darkButton} onClick={() => setPage("packages")}>
+            Buy Package
+          </button>
+        </Card>
+      </Shell>
     );
   }
 
   if (page === "schedule") {
     return (
-      <div style={pageStyle}>
-        <div style={card}>
-          <h1>Schedule</h1>
+      <Shell>
+        <Card>
+          <SmallLabel>Class Schedule</SmallLabel>
+          <h1 style={title}>Choose Your Class</h1>
 
-          {classes.map((item) => (
-            <button
-              key={item.day}
-              style={button}
-              onClick={() =>
-                chooseClass(item)
-              }
-            >
-              {item.day} — {item.name}
-            </button>
-          ))}
-        </div>
-      </div>
+          <div style={grid}>
+            {classes.map((item) => (
+              <button
+                key={item.day}
+                style={luxuryCard}
+                onClick={() => chooseClass(item)}
+              >
+                <span style={goldText}>{item.day}</span>
+                <h2>{item.name}</h2>
+                <p>{item.time}</p>
+              </button>
+            ))}
+          </div>
+        </Card>
+      </Shell>
     );
   }
 
   if (page === "packages") {
     return (
-      <div style={pageStyle}>
-        <div style={card}>
-          <h1>Packages</h1>
+      <Shell>
+        <Card>
+          <SmallLabel>Membership</SmallLabel>
+          <h1 style={title}>Packages</h1>
 
-          {packages.map((pkg) => (
-            <button
-              key={pkg.name}
-              style={button}
-              onClick={() =>
-                choosePackage(pkg)
-              }
-            >
-              {pkg.name} — {pkg.price}
-            </button>
-          ))}
+          <div style={grid}>
+            {packages.map((pkg) => (
+              <button
+                key={pkg.name}
+                style={luxuryCard}
+                onClick={() => choosePackage(pkg)}
+              >
+                <span style={goldText}>{pkg.name}</span>
+                <h2>{pkg.price}</h2>
+                <p>{pkg.note}</p>
+              </button>
+            ))}
+          </div>
 
-          {loading && <p>Loading...</p>}
-        </div>
-      </div>
+          {loading && <p style={muted}>Creating secure checkout...</p>}
+        </Card>
+      </Shell>
     );
   }
 
-  if (page === "waiver") {
+  if (page === "auth") {
     return (
-      <div style={pageStyle}>
-        <div style={card}>
-          <h1>Waiver</h1>
+      <Shell>
+        <Card>
+          <SmallLabel>Begin Your Journey</SmallLabel>
+          <h1 style={title}>Login or Sign Up</h1>
 
-          <label>
-            <input
-              type="checkbox"
-              checked={agreed}
-              onChange={(e) =>
-                setAgreed(
-                  e.target.checked
-                )
-              }
-            />
+          <button style={goldButton} onClick={() => setPage("student")}>
+            New Student
+          </button>
 
-            I agree
-          </label>
+          <button style={darkButton} onClick={() => setPage("login")}>
+            Returning Student
+          </button>
+        </Card>
+      </Shell>
+    );
+  }
 
-          <button
-            disabled={!agreed}
-            style={button}
-            onClick={() =>
-              setPage("packages")
-            }
-          >
+  if (page === "login") {
+    return (
+      <Shell>
+        <Card>
+          <SmallLabel>Welcome Back</SmallLabel>
+          <h1 style={title}>Login</h1>
+
+          <input
+            name="email"
+            placeholder="Email Address"
+            style={input}
+            onChange={handleLoginChange}
+          />
+
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            style={input}
+            onChange={handleLoginChange}
+          />
+
+          <button style={goldButton} onClick={saveLogin}>
             Continue
           </button>
-        </div>
-      </div>
+        </Card>
+      </Shell>
     );
   }
 
   if (page === "student") {
     return (
-      <div style={pageStyle}>
-        <div style={card}>
-          <h1>Student Information</h1>
+      <Shell>
+        <Card>
+          <SmallLabel>Student Details</SmallLabel>
+          <h1 style={title}>Create Account</h1>
 
           <input
             name="fullName"
@@ -502,73 +511,323 @@ if (pkg.name === "TEST PACKAGE") {
 
           <input
             name="phone"
-            placeholder="Phone"
+            placeholder="Phone Number"
             style={input}
             onChange={handleStudentChange}
           />
 
+          <button style={goldButton} onClick={saveStudent}>
+            Continue
+          </button>
+        </Card>
+      </Shell>
+    );
+  }
+
+  if (page === "waiver") {
+    return (
+      <Shell>
+        <Card>
+          <SmallLabel>Studio Waiver</SmallLabel>
+          <h1 style={title}>Before You Begin</h1>
+
+          <div style={infoBox}>
+            <p>I understand pole fitness involves physical activity.</p>
+            <p>I agree to participate at my own risk.</p>
+          </div>
+
+          <label style={checkRow}>
+            <input
+              type="checkbox"
+              checked={agreed}
+              onChange={(e) => setAgreed(e.target.checked)}
+            />
+            <span>I agree to the waiver.</span>
+          </label>
+
           <button
-            style={button}
-            onClick={saveStudent}
+            disabled={!agreed}
+            style={{
+              ...goldButton,
+              opacity: agreed ? 1 : 0.4,
+              cursor: agreed ? "pointer" : "not-allowed"
+            }}
+            onClick={() => setPage("packages")}
           >
             Continue
           </button>
-        </div>
-      </div>
+        </Card>
+      </Shell>
     );
   }
 
   return (
-    <div style={pageStyle}>
-      <div style={card}>
-        <h1>LEGACY</h1>
+    <main style={homePage}>
+      <nav style={nav}>
+        <div style={brand}>
+          <div style={logo}>L</div>
+          <div>
+            <strong>LEGACY</strong>
+            <span>Pole & Aerial Studio</span>
+          </div>
+        </div>
 
-        <p>Pole & Aerial Studio</p>
-
-        <button
-          style={button}
-          onClick={() =>
-            setPage("student")
-          }
-        >
-          Start Booking
+        <button style={navButton} onClick={() => setPage("auth")}>
+          Book Now
         </button>
-      </div>
-    </div>
+      </nav>
+
+      <section style={hero}>
+        <div style={heroText}>
+          <p style={goldText}>WELCOME TO LEGACY</p>
+          <h1 style={heroTitle}>
+            Strength.
+            <br />
+            Elegance.
+            <br />
+            Legacy.
+          </h1>
+          <p style={heroSubtitle}>
+            A luxury pole and aerial studio built for confidence, movement,
+            strength, and self-expression.
+          </p>
+
+          <button style={goldButton} onClick={() => setPage("auth")}>
+            Start Booking
+          </button>
+        </div>
+
+        <div style={heroImage}>
+          <div style={imageGlow}>L</div>
+        </div>
+      </section>
+    </main>
   );
 }
 
-const pageStyle = {
+function Shell({ children }) {
+  return (
+    <main style={page}>
+      <nav style={nav}>
+        <div style={brand}>
+          <div style={logo}>L</div>
+          <div>
+            <strong>LEGACY</strong>
+            <span>Pole & Aerial Studio</span>
+          </div>
+        </div>
+      </nav>
+      {children}
+    </main>
+  );
+}
+
+function Card({ children }) {
+  return <section style={card}>{children}</section>;
+}
+
+function SmallLabel({ children }) {
+  return <p style={label}>{children}</p>;
+}
+
+const page = {
   minHeight: "100vh",
-  background: "#efe7dc",
+  background:
+    "radial-gradient(circle at top, #1b1710 0%, #0b0b0b 45%, #050505 100%)",
+  color: "#f7f1e8",
+  padding: "28px",
+  fontFamily: "Inter, Arial, sans-serif"
+};
+
+const homePage = {
+  ...page,
+  overflow: "hidden"
+};
+
+const nav = {
+  maxWidth: "1180px",
+  margin: "0 auto",
   display: "flex",
-  justifyContent: "center",
   alignItems: "center",
-  padding: "40px",
-  fontFamily: "Georgia"
+  justifyContent: "space-between",
+  padding: "20px 0"
+};
+
+const brand = {
+  display: "flex",
+  alignItems: "center",
+  gap: "14px",
+  letterSpacing: "4px",
+  textTransform: "uppercase"
+};
+
+const logo = {
+  width: "46px",
+  height: "46px",
+  borderRadius: "50%",
+  border: "1px solid #c8a96b",
+  color: "#c8a96b",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  fontFamily: "Georgia, serif",
+  fontSize: "22px"
+};
+
+const navButton = {
+  background: "#c8a96b",
+  color: "#090909",
+  border: "none",
+  padding: "14px 28px",
+  borderRadius: "999px",
+  fontWeight: "700",
+  cursor: "pointer",
+  textTransform: "uppercase",
+  letterSpacing: "1px"
+};
+
+const hero = {
+  maxWidth: "1180px",
+  margin: "70px auto 0",
+  display: "grid",
+  gridTemplateColumns: "1fr 1fr",
+  gap: "50px",
+  alignItems: "center"
+};
+
+const heroText = {
+  maxWidth: "560px"
+};
+
+const heroTitle = {
+  fontFamily: "Georgia, serif",
+  fontSize: "86px",
+  lineHeight: "0.95",
+  margin: "20px 0",
+  letterSpacing: "2px"
+};
+
+const heroSubtitle = {
+  color: "#cfc7ba",
+  fontSize: "18px",
+  lineHeight: "1.8",
+  marginBottom: "30px"
+};
+
+const heroImage = {
+  minHeight: "520px",
+  borderRadius: "40px",
+  border: "1px solid rgba(200,169,107,0.3)",
+  background:
+    "linear-gradient(145deg, rgba(200,169,107,0.18), rgba(255,255,255,0.03)), #111",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  boxShadow: "0 30px 100px rgba(0,0,0,0.6)"
+};
+
+const imageGlow = {
+  fontFamily: "Georgia, serif",
+  fontSize: "220px",
+  color: "rgba(200,169,107,0.18)"
 };
 
 const card = {
-  background: "white",
-  padding: "40px",
-  borderRadius: "30px",
-  width: "100%",
-  maxWidth: "700px"
+  maxWidth: "900px",
+  margin: "60px auto",
+  background: "rgba(255,255,255,0.04)",
+  border: "1px solid rgba(200,169,107,0.25)",
+  borderRadius: "34px",
+  padding: "44px",
+  boxShadow: "0 30px 90px rgba(0,0,0,0.45)"
 };
 
-const button = {
-  width: "100%",
-  padding: "16px",
-  marginTop: "16px",
-  borderRadius: "999px",
-  border: "none",
-  background: "#2d2015",
-  color: "white",
+const title = {
+  fontFamily: "Georgia, serif",
+  fontSize: "54px",
+  margin: "10px 0 28px"
+};
+
+const label = {
+  color: "#c8a96b",
+  letterSpacing: "3px",
+  textTransform: "uppercase",
+  fontSize: "13px"
+};
+
+const grid = {
+  display: "grid",
+  gap: "18px"
+};
+
+const luxuryCard = {
+  background: "rgba(255,255,255,0.04)",
+  border: "1px solid rgba(200,169,107,0.25)",
+  color: "#f7f1e8",
+  borderRadius: "24px",
+  padding: "26px",
+  textAlign: "left",
   cursor: "pointer"
+};
+
+const goldButton = {
+  width: "100%",
+  background: "#c8a96b",
+  color: "#090909",
+  border: "none",
+  padding: "17px",
+  borderRadius: "999px",
+  fontWeight: "800",
+  cursor: "pointer",
+  marginTop: "18px",
+  letterSpacing: "1px"
+};
+
+const darkButton = {
+  ...goldButton,
+  background: "transparent",
+  color: "#c8a96b",
+  border: "1px solid rgba(200,169,107,0.5)"
 };
 
 const input = {
   width: "100%",
-  padding: "16px",
-  marginBottom: "12px"
+  padding: "17px",
+  marginBottom: "14px",
+  borderRadius: "16px",
+  border: "1px solid rgba(200,169,107,0.3)",
+  background: "rgba(255,255,255,0.06)",
+  color: "#fff",
+  boxSizing: "border-box",
+  fontSize: "16px"
+};
+
+const infoBox = {
+  background: "rgba(255,255,255,0.04)",
+  border: "1px solid rgba(200,169,107,0.22)",
+  borderRadius: "24px",
+  padding: "24px",
+  lineHeight: "1.9"
+};
+
+const sectionTitle = {
+  fontFamily: "Georgia, serif",
+  marginTop: "34px"
+};
+
+const checkRow = {
+  display: "flex",
+  gap: "12px",
+  marginTop: "20px",
+  color: "#eee"
+};
+
+const goldText = {
+  color: "#c8a96b",
+  letterSpacing: "3px",
+  textTransform: "uppercase"
+};
+
+const muted = {
+  color: "#cfc7ba"
 };
