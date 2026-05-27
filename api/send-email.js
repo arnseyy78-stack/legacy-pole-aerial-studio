@@ -11,7 +11,7 @@ export default async function handler(req, res) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        from: "Legacy Studio <onboarding@resend.dev>",
+        from: "Legacy Pole Studio <bookings@legacypolestudio.com>",
         to: ["legacycavitepoleaerialstudio@gmail.com"],
 bcc: ["legacycavitepoleaerialstudio@gmail.com"],
         subject: "Legacy Pole & Aerial Studio Booking Confirmation",
