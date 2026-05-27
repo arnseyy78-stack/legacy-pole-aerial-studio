@@ -355,7 +355,7 @@ export default function App() {
 
       {/* BOOKING PAGE SAMPLE */}
 
-      {page === "booking" && (
+      {(page === "booking" || page === "student" || page === "login") && (
         <div
           style={{
             minHeight: "85vh",
