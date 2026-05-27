@@ -21,7 +21,7 @@ export default function App() {
 
   function saveStudentInfo() {
     localStorage.setItem("legacyStudent", JSON.stringify(student));
-    setPage("authChoice");
+    setPage("waiver")
   }
 
   function savePassword() {
@@ -326,7 +326,128 @@ export default function App() {
           </div>
         </div>
       )}
+{/* WAIVER */}
 
+{page === "waiver" && (
+  <div
+    style={{
+      minHeight: "85vh",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      padding: "60px"
+    }}
+  >
+    <div
+      style={{
+        width: "100%",
+        maxWidth: "900px",
+        background: "rgba(255,255,255,0.04)",
+        border: "1px solid rgba(200,169,107,0.25)",
+        borderRadius: "34px",
+        padding: "50px"
+      }}
+    >
+      <p style={goldSmallText}>STUDIO WAIVER</p>
+
+      <h2 style={sectionHeading}>
+        Liability Waiver
+      </h2>
+
+      <div
+        style={{
+          maxHeight: "420px",
+          overflowY: "scroll",
+          padding: "25px",
+          border: "1px solid rgba(200,169,107,0.2)",
+          borderRadius: "20px",
+          background: "#080808",
+          color: "#b8b8b8",
+          lineHeight: "1.9",
+          fontSize: "15px"
+        }}
+      >
+        <p>
+          I understand that participation in pole fitness, aerial arts,
+          flexibility training, dance, conditioning, and related physical
+          activities involves inherent risks including but not limited to:
+          falls, physical injury, muscle strain, bruising, spinal injury,
+          paralysis, permanent disability, or death.
+        </p>
+
+        <p>
+          I voluntarily assume all risks associated with participation in any
+          activity conducted by Legacy Pole & Aerial Studio.
+        </p>
+
+        <p>
+          I certify that I am physically fit and capable of participating in
+          these activities and that I have consulted a medical professional if
+          necessary.
+        </p>
+
+        <p>
+          I agree to immediately disclose any injuries, pregnancy, medical
+          conditions, or physical limitations to the studio prior to
+          participation.
+        </p>
+
+        <p>
+          I release and discharge Legacy Pole & Aerial Studio, its owners,
+          instructors, staff, contractors, and affiliates from any and all
+          liability, claims, demands, damages, actions, or causes of action
+          arising out of participation in studio activities.
+        </p>
+
+        <p>
+          I understand that all purchases are non-refundable unless otherwise
+          required by law.
+        </p>
+
+        <p>
+          I acknowledge that unauthorized recording, photography, harassment,
+          unsafe conduct, intoxication, or disruptive behavior may result in
+          immediate removal from the premises without refund.
+        </p>
+
+        <p>
+          I grant permission for photographs or videos taken during classes to
+          be used for promotional and marketing purposes unless I notify the
+          studio in writing.
+        </p>
+
+        <p>
+          By proceeding, I confirm that I have read, understood, and voluntarily
+          agree to this waiver and release of liability.
+        </p>
+      </div>
+
+      <label
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "12px",
+          marginTop: "25px",
+          color: "#ddd"
+        }}
+      >
+        <input type="checkbox" />
+        I agree to the Liability Waiver
+      </label>
+
+      <button
+        onClick={() => setPage("authChoice")}
+        style={{
+          ...goldButtonLarge,
+          width: "100%",
+          marginTop: "25px"
+        }}
+      >
+        CONTINUE
+      </button>
+    </div>
+  </div>
+)}
       {/* LOGIN OR SIGN UP */}
 
       {page === "authChoice" && (
