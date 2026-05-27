@@ -390,7 +390,10 @@ export default function App() {
       </h2>
 
       <input placeholder="Full Name" style={inputStyle} />
-      <input placeholder="Email Address" style={inputStyle} />
+      <input
+  placeholder="Email Address (Username)"
+  style={inputStyle}
+/>
       <input placeholder="Phone Number" style={inputStyle} />
       <input placeholder="Emergency Person" style={inputStyle} />
       <input placeholder="Emergency Contact Number" style={inputStyle} />
