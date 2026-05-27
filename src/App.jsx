@@ -60,7 +60,7 @@ export default function App() {
           <button style={navButton}>PACKAGES</button>
 
           <button
-            onClick={() => setPage("booking")}
+            onClick={() => setPage("auth")}
             style={goldButton}
           >
             BOOK NOW
@@ -142,7 +142,7 @@ export default function App() {
               }}
             >
               <button
-                onClick={() => setPage("booking")}
+                onClick={() => setPage("auth")}
                 style={goldButtonLarge}
               >
                 BOOK YOUR CLASS
@@ -468,6 +468,22 @@ export default function App() {
           </div>
         </div>
       )}
+      {page === "auth" && (
+  <div style={{ minHeight: "85vh", display: "flex", justifyContent: "center", alignItems: "center", padding: "60px" }}>
+    <div style={{ maxWidth: "700px", width: "100%", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(200,169,107,0.25)", borderRadius: "34px", padding: "50px" }}>
+      <p style={{ color: "#c8a96b", letterSpacing: "5px", fontSize: "13px" }}>BEGIN YOUR JOURNEY</p>
+      <h2 style={{ fontSize: "58px", fontWeight: "300" }}>Login / Sign Up</h2>
+
+      <button style={goldButtonLarge} onClick={() => setPage("student")}>
+        SIGN UP
+      </button>
+
+      <button style={{ ...outlineButton, width: "100%", marginTop: "20px" }} onClick={() => setPage("login")}>
+        LOGIN
+      </button>
+    </div>
+  </div>
+)}
             {/* FOOTER */}
 
       <div
