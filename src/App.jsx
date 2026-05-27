@@ -414,8 +414,7 @@ function loginStudent() {
               maxWidth: "950px"
             }}
           >
-            <p style={goldSmallText}>CHOOSE YOUR PACKAGE</p>
-
+            
             <h2 style={sectionHeading}>Pricing</h2>
 
             <div style={packageGrid}>
