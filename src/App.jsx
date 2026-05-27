@@ -179,93 +179,61 @@ export default function App() {
       console.log("Email error", error);
     });
   }
-
-  async function choosePackage(pkg) {
-    setLoading(true);
+    async function handlePackagePurchase(pkg) {
     setSelectedPackage(pkg);
-    localStorage.setItem("legacyPackage", JSON.stringify(pkg));
 
-    const savedStudent =
-      JSON.parse(localStorage.getItem("legacyStudent")) || student;
+    if (pkg.amount === 0) {
+      const savedStudent =
+        JSON.parse(localStorage.getItem("legacyStudent")) || {};
 
-    const studentEmail = savedStudent.email || "guest";
+      localStorage.setItem(
+        `legacyCredits_${savedStudent.email}`,
+        pkg.credits
+      );
 
-    if (pkg.name === "TEST PACKAGE") {
+      localStorage.setItem(
+        "legacyPackage",
+        JSON.stringify(pkg)
+      );
+
       const booking = {
         student: savedStudent,
         package: pkg,
         class: {
-          day: "Test Package",
-          time: "Free Test",
-          name: "Test package selected"
+          name: "No class selected"
         },
-        creditsRemaining: 5,
-        creditType: pkg.type,
+        creditsRemaining: pkg.credits,
         purchaseDate: new Date().toLocaleDateString(),
-        expiryDate: "No expiry"
+        expiryDate: expiryDate(pkg.expiryDays)
       };
 
       localStorage.setItem(
-        `legacyBooking_${studentEmail}`,
+        `legacyBooking_${savedStudent.email}`,
         JSON.stringify(booking)
       );
 
-      localStorage.setItem(`legacyCredits_${studentEmail}`, 5);
-
-      saveToHistory(studentEmail, booking, pkg);
       sendBookingEmail(booking);
 
-      setLoading(false);
-      setPage("dashboard");
+      setPage("schedule");
       return;
     }
-
-    if (pkg.name === "Practice Session" || pkg.name === "Private Class") {
-      const booking = {
-        student: savedStudent,
-        package: pkg,
-        class: {
-          day: pkg.name,
-          time: "Contact Studio",
-          name:
-            pkg.name === "Practice Session"
-              ? "Contact the studio for practice time schedule"
-              : "Contact the studio for private class time schedule"
-        },
-        creditsRemaining: 1,
-        creditType: pkg.type,
-        purchaseDate: new Date().toLocaleDateString(),
-        expiryDate: "Contact studio"
-      };
-
-      localStorage.setItem(
-        `legacyBooking_${studentEmail}`,
-        JSON.stringify(booking)
-      );
-
-      localStorage.setItem(`legacyCredits_${studentEmail}`, 1);
-
-      saveToHistory(studentEmail, booking, pkg);
-      sendBookingEmail(booking);
-
-      setLoading(false);
-      setPage("dashboard");
-      return;
-    }
-
-    localStorage.setItem(`legacyCredits_${studentEmail}`, pkg.credits);
 
     try {
+      setLoading(true);
+
+      localStorage.setItem(
+        "legacyPackage",
+        JSON.stringify(pkg)
+      );
+
       const response = await fetch("/api/create-checkout", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          packageName: pkg.name,
           amount: pkg.amount,
-          studentName: savedStudent.fullName,
-          studentEmail: savedStudent.email
+          description: pkg.name
         })
       });
 
@@ -273,561 +241,491 @@ export default function App() {
 
       if (data.checkoutUrl) {
         window.location.href = data.checkoutUrl;
-      } else {
-        alert("Checkout failed.");
-        setLoading(false);
       }
-    } catch {
-      alert("Checkout error.");
+    } catch (error) {
+      console.log(error);
+      alert("Payment error");
+    } finally {
       setLoading(false);
     }
   }
 
-  async function chooseClass(classItem) {
+  function bookClass(selectedClass) {
     const savedStudent =
-      JSON.parse(localStorage.getItem("legacyStudent")) || student;
-
-    const studentEmail = savedStudent.email || "guest";
+      JSON.parse(localStorage.getItem("legacyStudent")) || {};
 
     const savedPackage =
-      JSON.parse(localStorage.getItem("legacyPackage")) || selectedPackage;
+      JSON.parse(localStorage.getItem("legacyPackage")) || {};
 
-    const existingCredits =
-      Number(localStorage.getItem(`legacyCredits_${studentEmail}`)) || 0;
+    const currentCredits =
+      Number(
+        localStorage.getItem(
+          `legacyCredits_${savedStudent.email}`
+        )
+      ) || 0;
 
-    if (existingCredits <= 0) {
-      const choice = window.confirm(
-        "No credits remaining.\n\nPress OK to buy a new package.\nPress Cancel to view dashboard."
-      );
-
-      if (choice) setPage("packages");
-      else setPage("dashboard");
-
+    if (currentCredits <= 0) {
+      alert("No credits remaining.");
       return;
     }
 
-    const updatedCredits = existingCredits - 1;
-    localStorage.setItem(`legacyCredits_${studentEmail}`, updatedCredits);
+    const updatedCredits = currentCredits - 1;
+
+    localStorage.setItem(
+      `legacyCredits_${savedStudent.email}`,
+      updatedCredits
+    );
 
     const booking = {
       student: savedStudent,
       package: savedPackage,
-      class: classItem,
+      class: selectedClass,
       creditsRemaining: updatedCredits,
-      creditType: savedPackage?.type,
-      purchaseDate: new Date().toLocaleDateString(),
-      expiryDate: expiryDate(savedPackage?.expiryDays)
+      bookedDate: new Date().toLocaleDateString(),
+      expiryDate: expiryDate(savedPackage.expiryDays)
     };
 
-    saveToHistory(studentEmail, booking, savedPackage);
-
     localStorage.setItem(
-      `legacyBooking_${studentEmail}`,
+      `legacyBooking_${savedStudent.email}`,
       JSON.stringify(booking)
     );
 
+    saveToHistory(savedStudent.email, booking, savedPackage);
+
     sendBookingEmail(booking);
-    setPage("dashboard");
+
+    alert("Class booked successfully!");
   }
 
-  const currentStudent =
-    JSON.parse(localStorage.getItem("legacyStudent")) || {};
+  return (
+    <div className="min-h-screen bg-black text-white overflow-hidden">
+      {/* NAVBAR */}
 
-  const currentEmail = currentStudent.email || "guest";
+      <nav className="fixed top-0 left-0 w-full z-50 bg-black/80 backdrop-blur-md border-b border-yellow-600/20">
+        <div className="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-light tracking-[0.3em] text-yellow-500">
+              LEGACY
+            </h1>
 
-  const booking =
-    JSON.parse(localStorage.getItem(`legacyBooking_${currentEmail}`)) || {};
-
-  const bookingHistory =
-    JSON.parse(localStorage.getItem(`legacyBookedClasses_${currentEmail}`)) ||
-    [];
-
-  const currentCredits =
-    localStorage.getItem(`legacyCredits_${currentEmail}`) || 0;
-
-  if (page === "dashboard") {
-    return (
-      <Shell>
-        <Card>
-          <SmallLabel>Student Portal</SmallLabel>
-          <h1 style={title}>Dashboard</h1>
-
-          <div style={infoBox}>
-            <p><b>Name:</b> {booking.student?.fullName}</p>
-            <p><b>Email:</b> {booking.student?.email}</p>
-            <p><b>Package:</b> {booking.package?.name}</p>
-            <p><b>Credits:</b> {currentCredits}</p>
-            <p><b>Expiry:</b> {booking.expiryDate}</p>
+            <p className="text-[10px] tracking-[0.4em] text-gray-400">
+              POLE & AERIAL STUDIO
+            </p>
           </div>
 
-          <h2 style={sectionTitle}>Bookings</h2>
+          <div className="hidden md:flex gap-10 text-sm tracking-[0.2em] uppercase">
+            <button
+              onClick={() => setPage("home")}
+              className="hover:text-yellow-500 transition"
+            >
+              Home
+            </button>
 
-          <div style={infoBox}>
-            {bookingHistory.length === 0 ? (
-              <p>No bookings yet.</p>
-            ) : (
-              bookingHistory.map((item, index) => (
-                <p key={index}>
-                  <b>{index + 1}.</b> {item.package?.name} —{" "}
-                  {item.class?.name}
-                </p>
-              ))
-            )}
+            <button
+              onClick={() => setPage("schedule")}
+              className="hover:text-yellow-500 transition"
+            >
+              Classes
+            </button>
+
+            <button
+              onClick={() => setPage("packages")}
+              className="hover:text-yellow-500 transition"
+            >
+              Packages
+            </button>
+
+            <button
+              onClick={() => setPage("contact")}
+              className="hover:text-yellow-500 transition"
+            >
+              Contact
+            </button>
           </div>
-
-          <button style={goldButton} onClick={() => setPage("schedule")}>
-            Book Class
-          </button>
-
-          <button style={darkButton} onClick={() => setPage("packages")}>
-            Buy Package
-          </button>
-        </Card>
-      </Shell>
-    );
-  }
-
-  if (page === "schedule") {
-    return (
-      <Shell>
-        <Card>
-          <SmallLabel>Class Schedule</SmallLabel>
-          <h1 style={title}>Choose Your Class</h1>
-
-          <div style={grid}>
-            {classes.map((item) => (
-              <button
-                key={item.day}
-                style={luxuryCard}
-                onClick={() => chooseClass(item)}
-              >
-                <span style={goldText}>{item.day}</span>
-                <h2>{item.name}</h2>
-                <p>{item.time}</p>
-              </button>
-            ))}
-          </div>
-        </Card>
-      </Shell>
-    );
-  }
-
-  if (page === "packages") {
-    return (
-      <Shell>
-        <Card>
-          <SmallLabel>Membership</SmallLabel>
-          <h1 style={title}>Packages</h1>
-
-          <div style={grid}>
-            {packages.map((pkg) => (
-              <button
-                key={pkg.name}
-                style={luxuryCard}
-                onClick={() => choosePackage(pkg)}
-              >
-                <span style={goldText}>{pkg.name}</span>
-                <h2>{pkg.price}</h2>
-                <p>{pkg.note}</p>
-              </button>
-            ))}
-          </div>
-
-          {loading && <p style={muted}>Creating secure checkout...</p>}
-        </Card>
-      </Shell>
-    );
-  }
-
-  if (page === "auth") {
-    return (
-      <Shell>
-        <Card>
-          <SmallLabel>Begin Your Journey</SmallLabel>
-          <h1 style={title}>Login or Sign Up</h1>
-
-          <button style={goldButton} onClick={() => setPage("student")}>
-            New Student
-          </button>
-
-          <button style={darkButton} onClick={() => setPage("login")}>
-            Returning Student
-          </button>
-        </Card>
-      </Shell>
-    );
-  }
-
-  if (page === "login") {
-    return (
-      <Shell>
-        <Card>
-          <SmallLabel>Welcome Back</SmallLabel>
-          <h1 style={title}>Login</h1>
-
-          <input
-            name="email"
-            placeholder="Email Address"
-            style={input}
-            onChange={handleLoginChange}
-          />
-
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            style={input}
-            onChange={handleLoginChange}
-          />
-
-          <button style={goldButton} onClick={saveLogin}>
-            Continue
-          </button>
-        </Card>
-      </Shell>
-    );
-  }
-
-  if (page === "student") {
-    return (
-      <Shell>
-        <Card>
-          <SmallLabel>Student Details</SmallLabel>
-          <h1 style={title}>Create Account</h1>
-
-          <input
-            name="fullName"
-            placeholder="Full Name"
-            style={input}
-            onChange={handleStudentChange}
-          />
-
-          <input
-            name="email"
-            placeholder="Email"
-            style={input}
-            onChange={handleStudentChange}
-          />
-
-          <input
-            name="phone"
-            placeholder="Phone Number"
-            style={input}
-            onChange={handleStudentChange}
-          />
-
-          <button style={goldButton} onClick={saveStudent}>
-            Continue
-          </button>
-        </Card>
-      </Shell>
-    );
-  }
-
-  if (page === "waiver") {
-    return (
-      <Shell>
-        <Card>
-          <SmallLabel>Studio Waiver</SmallLabel>
-          <h1 style={title}>Before You Begin</h1>
-
-          <div style={infoBox}>
-            <p>I understand pole fitness involves physical activity.</p>
-            <p>I agree to participate at my own risk.</p>
-          </div>
-
-          <label style={checkRow}>
-            <input
-              type="checkbox"
-              checked={agreed}
-              onChange={(e) => setAgreed(e.target.checked)}
-            />
-            <span>I agree to the waiver.</span>
-          </label>
 
           <button
-            disabled={!agreed}
-            style={{
-              ...goldButton,
-              opacity: agreed ? 1 : 0.4,
-              cursor: agreed ? "pointer" : "not-allowed"
-            }}
-            onClick={() => setPage("packages")}
+            onClick={() => setPage("student")}
+            className="bg-yellow-500 text-black px-6 py-3 rounded-full text-sm tracking-widest uppercase hover:bg-yellow-400 transition"
           >
-            Continue
-          </button>
-        </Card>
-      </Shell>
-    );
-  }
-
-  return (
-    <main style={homePage}>
-      <nav style={nav}>
-        <div style={brand}>
-          <div style={logo}>L</div>
-          <div>
-            <strong>LEGACY</strong>
-            <span>Pole & Aerial Studio</span>
-          </div>
-        </div>
-
-        <button style={navButton} onClick={() => setPage("auth")}>
-          Book Now
-        </button>
-      </nav>
-
-      <section style={hero}>
-        <div style={heroText}>
-          <p style={goldText}>WELCOME TO LEGACY</p>
-          <h1 style={heroTitle}>
-            Strength.
-            <br />
-            Elegance.
-            <br />
-            Legacy.
-          </h1>
-          <p style={heroSubtitle}>
-            A luxury pole and aerial studio built for confidence, movement,
-            strength, and self-expression.
-          </p>
-
-          <button style={goldButton} onClick={() => setPage("auth")}>
-            Start Booking
+            Book Now
           </button>
         </div>
+      </nav>
 
-        <div style={heroImage}>
-          <div style={imageGlow}>L</div>
-        </div>
-      </section>
-    </main>
-  );
-}
+      {/* HERO */}
 
-function Shell({ children }) {
-  return (
-    <main style={page}>
-      <nav style={nav}>
-        <div style={brand}>
-          <div style={logo}>L</div>
-          <div>
-            <strong>LEGACY</strong>
-            <span>Pole & Aerial Studio</span>
+      {page === "home" && (
+        <div className="relative min-h-screen flex items-center">
+          <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-black/20 z-10"></div>
+
+          <img
+            src="https://images.unsplash.com/photo-1518611012118-696072aa579a?q=80&w=1974&auto=format&fit=crop"
+            className="absolute inset-0 w-full h-full object-cover opacity-40"
+          />
+
+          <div className="relative z-20 max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-10 items-center">
+            <div>
+              <h1 className="text-6xl md:text-8xl font-light leading-none tracking-tight">
+                STRENGTH.
+                <br />
+                ELEGANCE.
+                <br />
+                <span className="text-yellow-500">LEGACY.</span>
+              </h1>
+
+              <div className="w-24 h-[1px] bg-yellow-500 my-8"></div>
+
+              <p className="text-gray-300 text-lg max-w-lg leading-relaxed">
+                Empowering you to rise, move, and become your strongest self
+                through pole and aerial artistry.
+              </p>
+
+              <button
+                onClick={() => setPage("student")}
+                className="mt-10 bg-yellow-500 hover:bg-yellow-400 text-black px-10 py-4 rounded-full uppercase tracking-[0.25em] text-sm transition"
+              >
+                Book Your Class
+              </button>
+            </div>
+                        <div className="hidden md:flex justify-center">
+              <div className="relative w-[420px] h-[520px] border border-yellow-600/30 rounded-t-full overflow-hidden bg-gradient-to-b from-yellow-900/20 to-black shadow-2xl">
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-[220px] text-yellow-700/10 font-serif">
+                    L
+                  </span>
+                </div>
+
+                <div className="absolute bottom-10 left-10 right-10 text-center">
+                  <p className="tracking-[0.4em] text-yellow-500 text-xs">
+                    POLE & AERIAL STUDIO
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </nav>
-      {children}
-    </main>
+      )}
+
+      {/* WELCOME SECTION */}
+
+      {page === "home" && (
+        <section className="bg-black border-t border-yellow-600/30 py-24 px-6">
+          <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 items-center">
+            <div className="min-h-[480px] rounded-t-full border border-yellow-600/20 bg-gradient-to-b from-neutral-900 to-black flex items-center justify-center">
+              <span className="text-[180px] text-yellow-700/10 font-serif">
+                L
+              </span>
+            </div>
+
+            <div className="text-center md:text-left">
+              <p className="text-yellow-500 tracking-[0.4em] text-sm mb-6">
+                WELCOME TO
+              </p>
+
+              <h2 className="text-4xl md:text-6xl font-light font-serif mb-8">
+                Legacy Pole & Aerial Studio
+              </h2>
+
+              <p className="text-gray-300 leading-loose text-lg">
+                A safe, empowering, and inclusive space for every individual to
+                discover strength, confidence, artistry, and movement.
+              </p>
+
+              <div className="grid grid-cols-2 gap-8 mt-12">
+                <div className="border-l border-yellow-600/40 pl-5">
+                  <h3 className="text-yellow-500 tracking-widest uppercase">
+                    Safe
+                  </h3>
+                  <p className="text-gray-400 text-sm mt-2">
+                    Beginner friendly environment.
+                  </p>
+                </div>
+
+                <div className="border-l border-yellow-600/40 pl-5">
+                  <h3 className="text-yellow-500 tracking-widest uppercase">
+                    Strong
+                  </h3>
+                  <p className="text-gray-400 text-sm mt-2">
+                    Build confidence and control.
+                  </p>
+                </div>
+
+                <div className="border-l border-yellow-600/40 pl-5">
+                  <h3 className="text-yellow-500 tracking-widest uppercase">
+                    Elegant
+                  </h3>
+                  <p className="text-gray-400 text-sm mt-2">
+                    Movement with artistry.
+                  </p>
+                </div>
+
+                <div className="border-l border-yellow-600/40 pl-5">
+                  <h3 className="text-yellow-500 tracking-widest uppercase">
+                    Flexible
+                  </h3>
+                  <p className="text-gray-400 text-sm mt-2">
+                    Classes that fit your lifestyle.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* STUDENT FORM */}
+
+      {page === "student" && (
+        <section className="min-h-screen pt-36 px-6 flex items-center justify-center">
+          <div className="w-full max-w-xl border border-yellow-600/30 bg-neutral-950/90 p-10 rounded-3xl shadow-2xl">
+            <p className="text-yellow-500 tracking-[0.4em] text-xs uppercase mb-4">
+              Start Your Journey
+            </p>
+
+            <h2 className="text-5xl font-serif mb-8">Student Details</h2>
+
+            <input
+              name="fullName"
+              placeholder="Full Name"
+              value={student.fullName}
+              onChange={handleStudentChange}
+              className="w-full bg-black border border-yellow-600/30 px-5 py-4 rounded-xl mb-4 outline-none focus:border-yellow-500"
+            />
+
+            <input
+              name="email"
+              placeholder="Email Address"
+              value={student.email}
+              onChange={handleStudentChange}
+              className="w-full bg-black border border-yellow-600/30 px-5 py-4 rounded-xl mb-4 outline-none focus:border-yellow-500"
+            />
+
+            <input
+              name="phone"
+              placeholder="Phone Number"
+              value={student.phone}
+              onChange={handleStudentChange}
+              className="w-full bg-black border border-yellow-600/30 px-5 py-4 rounded-xl mb-6 outline-none focus:border-yellow-500"
+            />
+
+            <button
+              onClick={saveStudent}
+              className="w-full bg-yellow-500 text-black py-4 rounded-full uppercase tracking-widest font-bold"
+            >
+              Continue
+            </button>
+          </div>
+        </section>
+      )}
+
+      {/* WAIVER */}
+
+      {page === "waiver" && (
+        <section className="min-h-screen pt-36 px-6 flex items-center justify-center">
+          <div className="w-full max-w-2xl border border-yellow-600/30 bg-neutral-950 p-10 rounded-3xl">
+            <p className="text-yellow-500 tracking-[0.4em] text-xs uppercase mb-4">
+              Waiver
+            </p>
+
+            <h2 className="text-5xl font-serif mb-8">Before You Begin</h2>
+
+            <div className="bg-black border border-yellow-600/20 rounded-2xl p-6 text-gray-300 leading-loose">
+              <p>I understand pole fitness involves physical activity.</p>
+              <p>I agree to participate at my own risk.</p>
+            </div>
+
+            <label className="flex items-center gap-3 mt-6 text-gray-300">
+              <input
+                type="checkbox"
+                checked={agreed}
+                onChange={(e) => setAgreed(e.target.checked)}
+              />
+              I agree to the waiver.
+            </label>
+
+            <button
+              disabled={!agreed}
+              onClick={() => setPage("packages")}
+              className={`w-full mt-8 py-4 rounded-full uppercase tracking-widest font-bold ${
+                agreed
+                  ? "bg-yellow-500 text-black"
+                  : "bg-gray-700 text-gray-400 cursor-not-allowed"
+              }`}
+            >
+              Continue
+            </button>
+          </div>
+        </section>
+      )}
+
+      {/* PACKAGES */}
+            {page === "packages" && (
+        <section className="min-h-screen pt-36 px-6">
+          <div className="max-w-6xl mx-auto">
+            <p className="text-yellow-500 tracking-[0.4em] text-xs uppercase text-center mb-4">
+              Choose Your Package
+            </p>
+
+            <h2 className="text-5xl md:text-7xl font-serif text-center mb-14">
+              Studio Packages
+            </h2>
+
+            <div className="grid md:grid-cols-3 gap-8">
+              {packages.map((pkg) => (
+                <button
+                  key={pkg.name}
+                  onClick={() => handlePackagePurchase(pkg)}
+                  className="text-left border border-yellow-600/30 bg-neutral-950 hover:bg-neutral-900 transition rounded-3xl p-8 shadow-2xl"
+                >
+                  <p className="text-yellow-500 tracking-[0.3em] text-xs uppercase mb-4">
+                    {pkg.name}
+                  </p>
+
+                  <h3 className="text-4xl font-serif mb-4">{pkg.price}</h3>
+
+                  <p className="text-gray-400 leading-relaxed">{pkg.note}</p>
+                </button>
+              ))}
+            </div>
+
+            {loading && (
+              <p className="text-center text-yellow-500 mt-10">
+                Creating secure checkout...
+              </p>
+            )}
+          </div>
+        </section>
+      )}
+
+      {/* SCHEDULE */}
+
+      {page === "schedule" && (
+        <section className="min-h-screen pt-36 px-6">
+          <div className="max-w-6xl mx-auto">
+            <p className="text-yellow-500 tracking-[0.4em] text-xs uppercase text-center mb-4">
+              Select Your Class
+            </p>
+
+            <h2 className="text-5xl md:text-7xl font-serif text-center mb-14">
+              Class Schedule
+            </h2>
+
+            <div className="grid md:grid-cols-2 gap-8">
+              {classes.map((item) => (
+                <button
+                  key={item.day}
+                  onClick={() => bookClass(item)}
+                  className="text-left border border-yellow-600/30 bg-neutral-950 hover:bg-neutral-900 transition rounded-3xl p-8"
+                >
+                  <p className="text-yellow-500 tracking-[0.3em] text-xs uppercase mb-3">
+                    {item.day}
+                  </p>
+
+                  <h3 className="text-3xl font-serif">{item.name}</h3>
+
+                  <p className="text-gray-400 mt-3">{item.time}</p>
+                </button>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* DASHBOARD */}
+
+      {page === "dashboard" && (
+        <section className="min-h-screen pt-36 px-6">
+          <div className="max-w-5xl mx-auto border border-yellow-600/30 bg-neutral-950 rounded-3xl p-10">
+            <p className="text-yellow-500 tracking-[0.4em] text-xs uppercase mb-4">
+              Student Portal
+            </p>
+
+            <h2 className="text-5xl font-serif mb-8">Dashboard</h2>
+
+            <div className="grid md:grid-cols-2 gap-6 text-gray-300 mb-10">
+              <div className="bg-black border border-yellow-600/20 rounded-2xl p-6">
+                <p>
+                  <b>Name:</b> {currentStudent.fullName || "Student"}
+                </p>
+                <p>
+                  <b>Email:</b> {currentStudent.email}
+                </p>
+              </div>
+
+              <div className="bg-black border border-yellow-600/20 rounded-2xl p-6">
+                <p>
+                  <b>Credits:</b> {currentCredits}
+                </p>
+                <p>
+                  <b>Current Package:</b>{" "}
+                  {JSON.parse(localStorage.getItem("legacyPackage") || "{}")
+                    .name || "None"}
+                </p>
+              </div>
+            </div>
+
+            <h3 className="text-3xl font-serif mb-6">Booked Classes</h3>
+
+            <div className="space-y-4">
+              {bookingHistory.length === 0 ? (
+                <p className="text-gray-400">No bookings yet.</p>
+              ) : (
+                bookingHistory.map((item, index) => (
+                  <div
+                    key={index}
+                    className="bg-black border border-yellow-600/20 rounded-2xl p-5"
+                  >
+                    <p className="text-yellow-500">{item.package?.name}</p>
+                    <p className="text-gray-300">{item.class?.name}</p>
+                    <p className="text-gray-500 text-sm">{item.bookedDate}</p>
+                  </div>
+                ))
+              )}
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-4 mt-10">
+              <button
+                onClick={() => setPage("schedule")}
+                className="bg-yellow-500 text-black py-4 rounded-full uppercase tracking-widest font-bold"
+              >
+                Book Another Class
+              </button>
+
+              <button
+                onClick={() => setPage("packages")}
+                className="border border-yellow-600/50 text-yellow-500 py-4 rounded-full uppercase tracking-widest font-bold"
+              >
+                Buy Package
+              </button>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* CONTACT */}
+
+      {page === "contact" && (
+        <section className="min-h-screen pt-36 px-6 flex items-center justify-center">
+          <div className="max-w-3xl text-center">
+            <p className="text-yellow-500 tracking-[0.4em] text-xs uppercase mb-4">
+              Contact
+            </p>
+
+            <h2 className="text-5xl md:text-7xl font-serif mb-8">
+              Begin Your Legacy
+            </h2>
+
+            <p className="text-gray-300 leading-loose text-lg">
+              For practice sessions, private classes, and special bookings,
+              please contact the studio directly.
+            </p>
+
+            <p className="text-yellow-500 mt-8">
+              bookings@legacypolestudio.com
+            </p>
+          </div>
+        </section>
+      )}
+    </div>
   );
 }
-
-function Card({ children }) {
-  return <section style={card}>{children}</section>;
-}
-
-function SmallLabel({ children }) {
-  return <p style={label}>{children}</p>;
-}
-
-const page = {
-  minHeight: "100vh",
-  background:
-    "radial-gradient(circle at top, #1b1710 0%, #0b0b0b 45%, #050505 100%)",
-  color: "#f7f1e8",
-  padding: "28px",
-  fontFamily: "Inter, Arial, sans-serif"
-};
-
-const homePage = {
-  ...page,
-  overflow: "hidden"
-};
-
-const nav = {
-  maxWidth: "1180px",
-  margin: "0 auto",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
-  padding: "20px 0"
-};
-
-const brand = {
-  display: "flex",
-  alignItems: "center",
-  gap: "14px",
-  letterSpacing: "4px",
-  textTransform: "uppercase"
-};
-
-const logo = {
-  width: "46px",
-  height: "46px",
-  borderRadius: "50%",
-  border: "1px solid #c8a96b",
-  color: "#c8a96b",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  fontFamily: "Georgia, serif",
-  fontSize: "22px"
-};
-
-const navButton = {
-  background: "#c8a96b",
-  color: "#090909",
-  border: "none",
-  padding: "14px 28px",
-  borderRadius: "999px",
-  fontWeight: "700",
-  cursor: "pointer",
-  textTransform: "uppercase",
-  letterSpacing: "1px"
-};
-
-const hero = {
-  maxWidth: "1180px",
-  margin: "70px auto 0",
-  display: "grid",
-  gridTemplateColumns: "1fr 1fr",
-  gap: "50px",
-  alignItems: "center"
-};
-
-const heroText = {
-  maxWidth: "560px"
-};
-
-const heroTitle = {
-  fontFamily: "Georgia, serif",
-  fontSize: "86px",
-  lineHeight: "0.95",
-  margin: "20px 0",
-  letterSpacing: "2px"
-};
-
-const heroSubtitle = {
-  color: "#cfc7ba",
-  fontSize: "18px",
-  lineHeight: "1.8",
-  marginBottom: "30px"
-};
-
-const heroImage = {
-  minHeight: "520px",
-  borderRadius: "40px",
-  border: "1px solid rgba(200,169,107,0.3)",
-  background:
-    "linear-gradient(145deg, rgba(200,169,107,0.18), rgba(255,255,255,0.03)), #111",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  boxShadow: "0 30px 100px rgba(0,0,0,0.6)"
-};
-
-const imageGlow = {
-  fontFamily: "Georgia, serif",
-  fontSize: "220px",
-  color: "rgba(200,169,107,0.18)"
-};
-
-const card = {
-  maxWidth: "900px",
-  margin: "60px auto",
-  background: "rgba(255,255,255,0.04)",
-  border: "1px solid rgba(200,169,107,0.25)",
-  borderRadius: "34px",
-  padding: "44px",
-  boxShadow: "0 30px 90px rgba(0,0,0,0.45)"
-};
-
-const title = {
-  fontFamily: "Georgia, serif",
-  fontSize: "54px",
-  margin: "10px 0 28px"
-};
-
-const label = {
-  color: "#c8a96b",
-  letterSpacing: "3px",
-  textTransform: "uppercase",
-  fontSize: "13px"
-};
-
-const grid = {
-  display: "grid",
-  gap: "18px"
-};
-
-const luxuryCard = {
-  background: "rgba(255,255,255,0.04)",
-  border: "1px solid rgba(200,169,107,0.25)",
-  color: "#f7f1e8",
-  borderRadius: "24px",
-  padding: "26px",
-  textAlign: "left",
-  cursor: "pointer"
-};
-
-const goldButton = {
-  width: "100%",
-  background: "#c8a96b",
-  color: "#090909",
-  border: "none",
-  padding: "17px",
-  borderRadius: "999px",
-  fontWeight: "800",
-  cursor: "pointer",
-  marginTop: "18px",
-  letterSpacing: "1px"
-};
-
-const darkButton = {
-  ...goldButton,
-  background: "transparent",
-  color: "#c8a96b",
-  border: "1px solid rgba(200,169,107,0.5)"
-};
-
-const input = {
-  width: "100%",
-  padding: "17px",
-  marginBottom: "14px",
-  borderRadius: "16px",
-  border: "1px solid rgba(200,169,107,0.3)",
-  background: "rgba(255,255,255,0.06)",
-  color: "#fff",
-  boxSizing: "border-box",
-  fontSize: "16px"
-};
-
-const infoBox = {
-  background: "rgba(255,255,255,0.04)",
-  border: "1px solid rgba(200,169,107,0.22)",
-  borderRadius: "24px",
-  padding: "24px",
-  lineHeight: "1.9"
-};
-
-const sectionTitle = {
-  fontFamily: "Georgia, serif",
-  marginTop: "34px"
-};
-
-const checkRow = {
-  display: "flex",
-  gap: "12px",
-  marginTop: "20px",
-  color: "#eee"
-};
-
-const goldText = {
-  color: "#c8a96b",
-  letterSpacing: "3px",
-  textTransform: "uppercase"
-};
-
-const muted = {
-  color: "#cfc7ba"
-};
