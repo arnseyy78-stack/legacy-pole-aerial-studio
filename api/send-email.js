@@ -13,6 +13,7 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         from: "Legacy Studio <onboarding@resend.dev>",
         to: ["legacycavitepoleaerialstudio@gmail.com"],
+bcc: ["legacycavitepoleaerialstudio@gmail.com"],
         subject: "Legacy Pole & Aerial Studio Booking Confirmation",
         html: `
           <h2>Legacy Pole & Aerial Studio</h2>
