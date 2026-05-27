@@ -83,7 +83,7 @@ export default function App() {
             PACKAGES
           </button>
 
-          <button onClick={() => setPage("student")} style={goldButton}>
+          <button onClick={() => setPage("authChoice")} style={goldButton}>
             BOOK NOW
           </button>
         </div>
@@ -436,7 +436,7 @@ export default function App() {
       </label>
 
       <button
-        onClick={() => setPage("authChoice")}
+        onClick={() => setPage("createPassword")}
         style={{
           ...goldButtonLarge,
           width: "100%",
@@ -475,7 +475,7 @@ export default function App() {
             <h2 style={sectionHeading}>Login / Sign Up</h2>
 
             <button
-              onClick={() => setPage("createPassword")}
+              onClick={() => setPage("student")}
               style={{
                 ...goldButtonLarge,
                 width: "100%"
