@@ -1,7 +1,29 @@
-import { useState } from "react";
-
+import { useEffect, useState } from "react";
+import { supabase } from "./supabase";
 export default function App() {
   const [page, setPage] = useState("home");
+  useEffect(() => {
+  loadBookings();
+
+  const channel = supabase
+    .channel("bookings-realtime")
+    .on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "bookings"
+      },
+      () => {
+        loadBookings();
+      }
+    )
+    .subscribe();
+
+  return () => {
+    supabase.removeChannel(channel);
+  };
+}, []);
   const [waiverAgreed, setWaiverAgreed] = useState(false);
 const [loginEmail, setLoginEmail] = useState("");
 const [loginPassword, setLoginPassword] = useState("");
@@ -16,12 +38,33 @@ const [loginPassword, setLoginPassword] = useState("");
     password: ""
   });
 
-  function handleStudentChange(e) {
-    setStudent({
-      ...student,
-      [e.target.name]: e.target.value
-    });
+function handleStudentChange(e) {
+  setStudent({
+    ...student,
+    [e.target.name]: e.target.value
+  });
+}
+
+async function loadBookings() {
+  const { data, error } = await supabase
+    .from("bookings")
+    .select("*");
+
+  if (error) {
+    console.log(error);
+    return;
   }
+
+  const slotMap = {};
+
+  data.forEach((booking) => {
+    const key = `${booking.booking_date}-${booking.class_name}`;
+
+    slotMap[key] = (slotMap[key] || 0) + 1;
+  });
+
+  setBookedSlots(slotMap);
+}
 
 
 
