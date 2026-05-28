@@ -466,7 +466,7 @@ return;
 {page === "chooseClass" && (
   <section style={centerPage}>
     <div style={{ ...formCard, maxWidth: "950px" }}>
-      <h2 style={sectionHeading}>Choose Class</h2>
+      <h2 style={sectionHeading}>Schedule</h2>
 
       <div style={calendarBox}>
         <h3 style={{ color: "#c8a96b", textAlign: "center" }}>May 2026</h3>
