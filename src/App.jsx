@@ -847,7 +847,11 @@ const weekday = actualSelectedDate.getDay();
     0: []
   };
 
-  return classes[weekday] || [];
+  if (calendarMonthOffset > 1) {
+  return [];
+}
+
+return classes[weekday] || [];
 })().map((item) => (
               <button
                 key={item[0]}
