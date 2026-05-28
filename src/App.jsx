@@ -32,6 +32,7 @@ const [loginPassword, setLoginPassword] = useState("");
   const [selectedDate, setSelectedDate] = useState(null);
   const [bookedSlots, setBookedSlots] = useState({});
   const [studentBookings, setStudentBookings] = useState([]);
+  const [adminBookings, setAdminBookings] = useState([]);
 const [credits, setCredits] = useState(0);
   const [student, setStudent] = useState({
     fullName: "",
@@ -69,6 +70,20 @@ async function loadBookings() {
 
   setBookedSlots(slotMap);
 }
+async function loadAdminBookings() {
+  const { data, error } = await supabase
+    .from("Bookings")
+    .select("*")
+    .order("Booking_date", { ascending: true });
+
+  if (error) {
+    console.log(error);
+    return;
+  }
+
+  setAdminBookings(data || []);
+}
+
 async function loadStudentBookings() {
 const studentData = JSON.parse(
   localStorage.getItem("legacyStudent")
@@ -600,8 +615,9 @@ return;
 
       <button
         onClick={() => {
-          if (loginPassword === "Pdas2026$") {
-            setPage("adminDashboard");
+if (loginPassword === "Pdas2026$") {
+  loadAdminBookings();
+  setPage("adminDashboard");
           } else {
             alert("Incorrect admin password.");
           }
@@ -844,9 +860,34 @@ loadStudentBookings();
 
       <h2 style={sectionHeading}>Today’s Class Bookings</h2>
 
-      <p style={{ color: "#999" }}>
-        Admin system connected successfully.
+{adminBookings.length === 0 ? (
+  <p style={{ color: "#999" }}>No bookings yet.</p>
+) : (
+  adminBookings.map((booking) => (
+    <div
+      key={booking.id}
+      style={{
+        borderTop: "1px solid rgba(200,169,107,0.25)",
+        paddingTop: "18px",
+        marginTop: "18px"
+      }}
+    >
+      <p style={goldSmallText}>{booking.Booking_date}</p>
+
+      <h3 style={{ color: "#fff", margin: "8px 0" }}>
+        {booking.Class_name} · 6:00 PM
+      </h3>
+
+      <p style={{ color: "#bbb", margin: "6px 0" }}>
+        Student: {booking.Student_name}
       </p>
+
+      <p style={{ color: "#777", margin: "6px 0" }}>
+        Email: {booking.Student_email}
+      </p>
+    </div>
+  ))
+)}
     </div>
   </section>
 )}
