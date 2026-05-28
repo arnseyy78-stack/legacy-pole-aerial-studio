@@ -30,25 +30,34 @@ loadStudentBookings();
 const [loginEmail, setLoginEmail] = useState("");
 const [loginPassword, setLoginPassword] = useState("");
   const [selectedDate, setSelectedDate] = useState(null);
+  const [calendarMonthOffset, setCalendarMonthOffset] = useState(0);
   const [bookedSlots, setBookedSlots] = useState({});
   const [studentBookings, setStudentBookings] = useState([]);
   const [adminBookings, setAdminBookings] = useState([]);
 const [credits, setCredits] = useState(0);
   const today = new Date();
 
-const currentMonthName = today.toLocaleString("default", {
+const displayedDate = new Date(
+  today.getFullYear(),
+  today.getMonth() + calendarMonthOffset,
+  1
+);
+
+const currentMonthName = displayedDate.toLocaleString("default", {
   month: "long"
 });
 
-const currentYear = today.getFullYear();
+const currentYear = displayedDate.getFullYear();
+
 const daysInCurrentMonth = new Date(
   currentYear,
-  today.getMonth() + 1,
+  displayedDate.getMonth() + 1,
   0
 ).getDate();
-  const firstDayOfMonth = new Date(
+
+const firstDayOfMonth = new Date(
   currentYear,
-  today.getMonth(),
+  displayedDate.getMonth(),
   1
 ).getDay();
 
@@ -706,7 +715,27 @@ if (loginPassword === "Pdas2026$") {
 </div>
 </div>
       <div style={calendarBox}>
-        <h3 style={{ color: "#c8a96b", textAlign: "center" }}>{currentMonthName} {currentYear}</h3>
+        <div
+  style={{
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center"
+  }}
+>
+  <h3 style={{ color: "#c8a96b", textAlign: "center" }}>
+    {currentMonthName} {currentYear}
+  </h3>
+
+  <button
+    onClick={() => {
+      setSelectedDate(null);
+      setCalendarMonthOffset(calendarMonthOffset + 1);
+    }}
+    style={outlineButton}
+  >
+    NEXT
+  </button>
+</div>
 
         <div style={calendarGrid}>
           {["M", "T", "W", "T", "F", "S", "S"].map((d) => (
@@ -734,14 +763,17 @@ const todayDate = new Date().getDate();
 
 const actualDate = new Date(
   currentYear,
-  today.getMonth(),
+  displayedDate.getMonth(),
   day
 );
 
 const isSunday = actualDate.getDay() === 0;
 
+const isCurrentDisplayedMonth =
+  calendarMonthOffset === 0;
+
 const disabledDays =
-  day < todayDate || isSunday;
+  (isCurrentDisplayedMonth && day < todayDate) || isSunday;
 
 return (
   <button
@@ -778,7 +810,7 @@ return (
             {(() => {
   const actualSelectedDate = new Date(
   currentYear,
-  today.getMonth(),
+  displayedDate.getMonth(),
   selectedDate
 );
 
@@ -800,11 +832,7 @@ const weekday = actualSelectedDate.getDay();
                 key={item[0]}
                 style={packageCard}
                 onClick={async () => {
-const monthName = new Date().toLocaleString("default", {
-  month: "long"
-});
-
-const bookingDate = `${monthName}-${selectedDate}`;
+const bookingDate = `${currentMonthName}-${selectedDate}`;
 
 const bookingKey =
   `${bookingDate}-${item[1]}`;
@@ -899,9 +927,7 @@ Slots remaining: {
   5 -
   (
 bookedSlots[
-  `${new Date().toLocaleString("default", {
-    month: "long"
-  })}-${selectedDate}-${item[1]}`
+  `${currentMonthName}-${selectedDate}-${item[1]}`
 ] || 0
   )
 }/5
