@@ -46,6 +46,14 @@ const daysInCurrentMonth = new Date(
   today.getMonth() + 1,
   0
 ).getDate();
+  const firstDayOfMonth = new Date(
+  currentYear,
+  today.getMonth(),
+  1
+).getDay();
+
+const adjustedFirstDay =
+  firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
   const [student, setStudent] = useState({
     fullName: "",
     email: "",
@@ -710,8 +718,17 @@ if (loginPassword === "Pdas2026$") {
 </strong>
           ))}
 
-          {[...Array(daysInCurrentMonth)].map((_, i) => {
-const day = i + 1;
+          {[
+  ...Array(adjustedFirstDay).fill(null),
+  ...Array(daysInCurrentMonth)
+].map((_, i) => {
+
+if (i < adjustedFirstDay) {
+  return <div key={`empty-${i}`}></div>;
+}
+
+const day = i - adjustedFirstDay + 1;
+
 
 const todayDate = new Date().getDate();
 
