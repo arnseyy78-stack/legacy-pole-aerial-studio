@@ -582,7 +582,7 @@ return (
               <button
                 key={item[0]}
                 style={packageCard}
-                onClick={() => {
+                onClick={async () => {
   const bookingKey =
     `May-${selectedDate}-${item[1]}`;
 
@@ -594,14 +594,34 @@ return (
     return;
   }
 
-  setBookedSlots({
-    ...bookedSlots,
-    [bookingKey]: currentBooked + 1
-  });
+const studentData =
+  JSON.parse(localStorage.getItem("legacyStudent")) || student;
 
-  alert(
-    `${item[1]} booked for May ${selectedDate}`
-  );
+const { error } = await supabase
+  .from("bookings")
+  .insert([
+    {
+      student_name: studentData.fullName,
+      student_email: studentData.email,
+      class_name: item[1],
+      booking_date: `May-${selectedDate}`,
+      slots: 1
+    }
+  ]);
+
+if (error) {
+  console.log(error);
+  alert("Booking failed. Please try again.");
+  return;
+}
+
+alert(
+  `${item[1]} booked for May ${selectedDate}`
+);
+
+loadBookings();
+
+
 }}
               >
                 <p style={goldSmallText}>{item[0]}</p>
