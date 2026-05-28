@@ -863,28 +863,65 @@ loadStudentBookings();
 {adminBookings.length === 0 ? (
   <p style={{ color: "#999" }}>No bookings yet.</p>
 ) : (
-  adminBookings.map((booking) => (
+  Object.entries(
+    adminBookings.reduce((groups, booking) => {
+      const key =
+        `${booking.Booking_date}-${booking.Class_name}`;
+
+      if (!groups[key]) {
+        groups[key] = [];
+      }
+
+      groups[key].push(booking);
+
+      return groups;
+    }, {})
+  ).map(([groupKey, bookings]) => (
     <div
-      key={booking.id}
+      key={groupKey}
       style={{
         borderTop: "1px solid rgba(200,169,107,0.25)",
-        paddingTop: "18px",
-        marginTop: "18px"
+        paddingTop: "22px",
+        marginTop: "22px"
       }}
     >
-      <p style={goldSmallText}>{booking.Booking_date}</p>
+      <p style={goldSmallText}>
+        {bookings[0].Booking_date}
+      </p>
 
-      <h3 style={{ color: "#fff", margin: "8px 0" }}>
-        {booking.Class_name} · 6:00 PM
+      <h3 style={{ color: "#fff", margin: "10px 0" }}>
+        {bookings[0].Class_name} · 6:00 PM
       </h3>
 
-      <p style={{ color: "#bbb", margin: "6px 0" }}>
-        Student: {booking.Student_name}
+      <p style={{ color: "#c8a96b" }}>
+        Slots Filled: {bookings.length}/5
       </p>
 
-      <p style={{ color: "#777", margin: "6px 0" }}>
-        Email: {booking.Student_email}
-      </p>
+      <div style={{ marginTop: "15px" }}>
+        {bookings.map((student) => (
+          <div
+            key={student.id}
+            style={{
+              padding: "10px 0",
+              borderBottom:
+                "1px solid rgba(255,255,255,0.05)"
+            }}
+          >
+            <p style={{ color: "#fff", margin: 0 }}>
+              {student.Student_name}
+            </p>
+
+            <p
+              style={{
+                color: "#777",
+                margin: "5px 0 0"
+              }}
+            >
+              {student.Student_email}
+            </p>
+          </div>
+        ))}
+      </div>
     </div>
   ))
 )}
