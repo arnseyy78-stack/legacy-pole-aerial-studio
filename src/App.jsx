@@ -310,6 +310,7 @@ return;
         </>
       )}
             {/* LOGIN / SIGN UP CHOICE */}
+    
       {page === "authChoice" && (
         <section style={centerPage}>
           <div style={formCard}>
@@ -337,6 +338,18 @@ return;
             >
               LOGIN
             </button>
+            <button
+  onClick={() => setPage("adminLogin")}
+  style={{
+    ...outlineButton,
+    width: "100%",
+    marginTop: "20px",
+    border: "1px solid rgba(255,255,255,0.2)",
+    color: "#fff"
+  }}
+>
+  ADMIN LOGIN
+</button>
           </div>
         </section>
       )}
@@ -569,6 +582,41 @@ return;
           </div>
         </section>
       )}
+    {/* ADMIN LOGIN */}
+{page === "adminLogin" && (
+  <section style={centerPage}>
+    <div style={formCard}>
+      <p style={goldSmallText}>ADMIN ACCESS</p>
+
+      <h2 style={sectionHeading}>Admin Login</h2>
+
+      <input
+        placeholder="Admin Password"
+        type="password"
+        value={loginPassword}
+        onChange={(e) => setLoginPassword(e.target.value)}
+        style={inputStyle}
+      />
+
+      <button
+        onClick={() => {
+          if (loginPassword === "legacyadmin") {
+            setPage("adminDashboard");
+          } else {
+            alert("Incorrect admin password.");
+          }
+        }}
+        style={{
+          ...goldButtonLarge,
+          width: "100%",
+          marginTop: "10px"
+        }}
+      >
+        LOGIN
+      </button>
+    </div>
+  </section>
+)}
 {/* CHOOSE CLASS */}
 {page === "chooseClass" && (
   <section style={centerPage}>
@@ -785,6 +833,20 @@ loadStudentBookings();
           </div>
         </>
       )}
+    </div>
+  </section>
+)}
+    {/* ADMIN DASHBOARD */}
+{page === "adminDashboard" && (
+  <section style={centerPage}>
+    <div style={{ ...formCard, maxWidth: "1100px" }}>
+      <p style={goldSmallText}>ADMIN DASHBOARD</p>
+
+      <h2 style={sectionHeading}>Today’s Class Bookings</h2>
+
+      <p style={{ color: "#999" }}>
+        Admin system connected successfully.
+      </p>
     </div>
   </section>
 )}
