@@ -6,6 +6,7 @@ export default function App() {
 const [loginEmail, setLoginEmail] = useState("");
 const [loginPassword, setLoginPassword] = useState("");
   const [selectedDate, setSelectedDate] = useState(null);
+  const [bookedSlots, setBookedSlots] = useState({});
   const [student, setStudent] = useState({
     fullName: "",
     email: "",
@@ -538,11 +539,46 @@ return (
               <button
                 key={item[0]}
                 style={packageCard}
-                onClick={() => alert(`${item[1]} booked for May ${selectedDate}`)}
+                onClick={() => {
+  const bookingKey =
+    `May-${selectedDate}-${item[1]}`;
+
+  const currentBooked =
+    bookedSlots[bookingKey] || 0;
+
+  if (currentBooked >= 5) {
+    alert("This class is fully booked.");
+    return;
+  }
+
+  setBookedSlots({
+    ...bookedSlots,
+    [bookingKey]: currentBooked + 1
+  });
+
+  alert(
+    `${item[1]} booked for May ${selectedDate}`
+  );
+}}
               >
                 <p style={goldSmallText}>{item[0]}</p>
                 <h3 style={packagePrice}>{item[1]}</h3>
                 <p style={{ color: "#999" }}>Tap to book this class</p>
+                <p
+  style={{
+    color: "#c8a96b",
+    marginTop: "12px"
+  }}
+>
+  Slots remaining: {
+    5 -
+    (
+      bookedSlots[
+        `May-${selectedDate}-${item[1]}`
+      ] || 0
+    )
+  }/5
+</p>
               </button>
             ))}
           </div>
