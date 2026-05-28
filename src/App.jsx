@@ -483,7 +483,10 @@ return;
 
           {[...Array(31)].map((_, i) => {
 const day = i + 1;
-const disabledDays = day < 25;
+const isSunday = day % 7 === 0;
+
+const disabledDays =
+  day < 25 || isSunday;
 
 return (
   <button
@@ -517,12 +520,21 @@ return (
           </h3>
 
           <div style={packageGrid}>
-            {[
-              ["10:00 AM", "Static Pole"],
-              ["1:00 PM", "Spinny Heels Pole"],
-              ["4:00 PM", "Static Pole"],
-              ["7:00 PM", "Spinny Heels Pole"]
-            ].map((item) => (
+            {(() => {
+  const weekday = selectedDate % 7;
+
+  const classes = {
+    1: [["6:00 PM", "Pole Fitness"]],
+    2: [["6:00 PM", "Pole Flow"]],
+    3: [["6:00 PM", "Spinny Pole"]],
+    4: [["6:00 PM", "Intro to Pole"]],
+    5: [["6:00 PM", "Exo"]],
+    6: [["6:00 PM", "Floor Work"]],
+    0: []
+  };
+
+  return classes[weekday] || [];
+})().map((item) => (
               <button
                 key={item[0]}
                 style={packageCard}
