@@ -756,8 +756,14 @@ return (
                 key={item[0]}
                 style={packageCard}
                 onClick={async () => {
-  const bookingKey =
-    `May-${selectedDate}-${item[1]}`;
+const monthName = new Date().toLocaleString("default", {
+  month: "long"
+});
+
+const bookingDate = `${monthName}-${selectedDate}`;
+
+const bookingKey =
+  `${bookingDate}-${item[1]}`;
 
   const currentBooked =
     bookedSlots[bookingKey] || 0;
@@ -779,7 +785,7 @@ const { data: existingBooking } = await supabase
   .select("*")
   .eq("Student_email", studentData.email)
   .eq("Class_name", item[1])
-  .eq("Booking_date", `May-${selectedDate}`)
+  .eq("Booking_date", bookingDate)
   .maybeSingle();
 
 if (existingBooking) {
@@ -795,7 +801,7 @@ const { error } = await supabase
       Student_name: studentData.fullName,
       Student_email: studentData.email,
       Class_name: item[1],
-      Booking_date: `May-${selectedDate}`,
+      Booking_date: bookingDate,
       Slots: 1
     }
   ]);
@@ -848,9 +854,9 @@ loadStudentBookings();
   Slots remaining: {
     5 -
     (
-      bookedSlots[
-        `May-${selectedDate}-${item[1]}`
-      ] || 0
+bookedSlots[
+  `${bookingDate}-${item[1]}`
+] || 0
     )
   }/5
 </p>
