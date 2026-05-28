@@ -71,10 +71,20 @@ async function loadBookings() {
   setBookedSlots(slotMap);
 }
 async function loadAdminBookings() {
-  const { data, error } = await supabase
-    .from("Bookings")
-    .select("*")
-    .order("Booking_date", { ascending: true });
+const today = new Date();
+
+const monthName = today.toLocaleString("default", {
+  month: "long"
+});
+
+const todayKey = `${monthName}-${today.getDate()}`;
+
+  
+const { data, error } = await supabase
+  .from("Bookings")
+  .select("*")
+  .eq("Booking_date", todayKey)
+  .order("Booking_date", { ascending: true });
 
   if (error) {
     console.log(error);
@@ -859,7 +869,15 @@ loadStudentBookings();
       <p style={goldSmallText}>ADMIN DASHBOARD</p>
 
       <h2 style={sectionHeading}>Today’s Class Bookings</h2>
-
+<button
+  onClick={loadAdminBookings}
+  style={{
+    ...outlineButton,
+    marginBottom: "25px"
+  }}
+>
+  REFRESH BOOKINGS
+</button>
 {adminBookings.length === 0 ? (
   <p style={{ color: "#999" }}>No bookings yet.</p>
 ) : (
