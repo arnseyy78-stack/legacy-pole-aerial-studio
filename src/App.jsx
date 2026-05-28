@@ -5,6 +5,7 @@ export default function App() {
   const [waiverAgreed, setWaiverAgreed] = useState(false);
 const [loginEmail, setLoginEmail] = useState("");
 const [loginPassword, setLoginPassword] = useState("");
+  const [selectedDate, setSelectedDate] = useState(null);
   const [student, setStudent] = useState({
     fullName: "",
     email: "",
@@ -464,36 +465,63 @@ return;
 {/* CHOOSE CLASS */}
 {page === "chooseClass" && (
   <section style={centerPage}>
-    <div
-      style={{
-        ...formCard,
-        maxWidth: "950px"
-      }}
-    >
+    <div style={{ ...formCard, maxWidth: "950px" }}>
       <h2 style={sectionHeading}>Choose Class</h2>
 
-      <div style={packageGrid}>
-        {[
-          "Pole Fitness",
-          "Pole Flow",
-          "Spinny Pole",
-          "Mat Flexibility",
-          "Heels and Steel",
-          "Floor Work"
-        ].map((className) => (
-          <button
-            key={className}
-            style={packageCard}
-            onClick={() => alert(`${className} selected`)}
-          >
-            <p style={goldSmallText}>{className}</p>
+      <div style={calendarBox}>
+        <h3 style={{ color: "#c8a96b", textAlign: "center" }}>May 2026</h3>
 
-            <p style={{ color: "#999", lineHeight: "1.6" }}>
-              Select this class
-            </p>
-          </button>
-        ))}
+        <div style={calendarGrid}>
+          {["M", "T", "W", "T", "F", "S", "S"].map((d) => (
+            <strong key={d}>{d}</strong>
+          ))}
+
+          {[...Array(31)].map((_, i) => {
+            const day = i + 1;
+            return (
+              <button
+                key={day}
+                onClick={() => setSelectedDate(day)}
+                style={{
+                  ...dateButton,
+                  background:
+                    selectedDate === day ? "#c8a96b" : "rgba(255,255,255,0.05)",
+                  color: selectedDate === day ? "#050505" : "#f5f1ea"
+                }}
+              >
+                {day}
+              </button>
+            );
+          })}
+        </div>
       </div>
+
+      {selectedDate && (
+        <>
+          <h3 style={{ color: "#fff", marginTop: "35px" }}>
+            Available classes for May {selectedDate}
+          </h3>
+
+          <div style={packageGrid}>
+            {[
+              ["10:00 AM", "Static Pole"],
+              ["1:00 PM", "Spinny Heels Pole"],
+              ["4:00 PM", "Static Pole"],
+              ["7:00 PM", "Spinny Heels Pole"]
+            ].map((item) => (
+              <button
+                key={item[0]}
+                style={packageCard}
+                onClick={() => alert(`${item[1]} booked for May ${selectedDate}`)}
+              >
+                <p style={goldSmallText}>{item[0]}</p>
+                <h3 style={packagePrice}>{item[1]}</h3>
+                <p style={{ color: "#999" }}>Tap to book this class</p>
+              </button>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   </section>
 )}
@@ -855,4 +883,25 @@ const footerSub = {
   color: "#777",
   letterSpacing: "3px",
   fontSize: "12px"
+};
+const calendarBox = {
+  background: "#efe3c8",
+  borderRadius: "30px",
+  padding: "30px",
+  marginTop: "20px"
+};
+
+const calendarGrid = {
+  display: "grid",
+  gridTemplateColumns: "repeat(7, 1fr)",
+  gap: "14px",
+  textAlign: "center"
+};
+
+const dateButton = {
+  border: "none",
+  borderRadius: "999px",
+  padding: "16px",
+  fontSize: "16px",
+  cursor: "pointer"
 };
