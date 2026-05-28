@@ -34,6 +34,18 @@ const [loginPassword, setLoginPassword] = useState("");
   const [studentBookings, setStudentBookings] = useState([]);
   const [adminBookings, setAdminBookings] = useState([]);
 const [credits, setCredits] = useState(0);
+  const today = new Date();
+
+const currentMonthName = today.toLocaleString("default", {
+  month: "long"
+});
+
+const currentYear = today.getFullYear();
+const daysInCurrentMonth = new Date(
+  currentYear,
+  today.getMonth() + 1,
+  0
+).getDate();
   const [student, setStudent] = useState({
     fullName: "",
     email: "",
@@ -686,7 +698,7 @@ if (loginPassword === "Pdas2026$") {
 </div>
 </div>
       <div style={calendarBox}>
-        <h3 style={{ color: "#c8a96b", textAlign: "center" }}>May 2026</h3>
+        <h3 style={{ color: "#c8a96b", textAlign: "center" }}>{currentMonthName} {currentYear}</h3>
 
         <div style={calendarGrid}>
           {["M", "T", "W", "T", "F", "S", "S"].map((d) => (
@@ -698,7 +710,7 @@ if (loginPassword === "Pdas2026$") {
 </strong>
           ))}
 
-          {[...Array(31)].map((_, i) => {
+          {[...Array(daysInCurrentMonth)].map((_, i) => {
 const day = i + 1;
 const isSunday = day % 7 === 0;
 
@@ -733,7 +745,7 @@ return (
       {selectedDate && (
         <>
           <h3 style={{ color: "#fff", marginTop: "35px" }}>
-            Available classes for May {selectedDate}
+            Available classes for {currentMonthName} {selectedDate}
           </h3>
 
           <div style={packageGrid}>
@@ -824,7 +836,7 @@ await fetch("/api/send-email", {
     className: item[1],
     amount: "Booked",
     credits: "1 credit used",
-    expiry: `May ${selectedDate}, 2026 at ${item[0]}`
+    expiry: `${bookingDate}, 2026 at ${item[0]}`
   })
 });
 
@@ -834,7 +846,7 @@ setCredits(newCredits);
 localStorage.setItem(`legacyCredits_${studentData.email}`, newCredits);
 
 alert(
-  `${item[1]} booked for May ${selectedDate}`
+  `${item[1]} booked for ${bookingDate}`
 );
 
 loadBookings();
@@ -851,14 +863,16 @@ loadStudentBookings();
     marginTop: "12px"
   }}
 >
-  Slots remaining: {
-    5 -
-    (
+Slots remaining: {
+  5 -
+  (
 bookedSlots[
-  `${bookingDate}-${item[1]}`
+  `${new Date().toLocaleString("default", {
+    month: "long"
+  })}-${selectedDate}-${item[1]}`
 ] || 0
-    )
-  }/5
+  )
+}/5
 </p>
               </button>
             ))}
