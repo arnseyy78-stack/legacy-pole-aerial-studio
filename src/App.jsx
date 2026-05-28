@@ -600,7 +600,7 @@ return;
 
       <button
         onClick={() => {
-          if (loginPassword === "legacyadmin") {
+          if (loginPassword === "Pdas2026$") {
             setPage("adminDashboard");
           } else {
             alert("Incorrect admin password.");
