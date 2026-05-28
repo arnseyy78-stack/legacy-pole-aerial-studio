@@ -6,13 +6,13 @@ export default function App() {
   loadBookings();
 
   const channel = supabase
-    .channel("bookings-realtime")
+    .channel("Bookings-realtime")
     .on(
       "postgres_changes",
       {
         event: "*",
         schema: "public",
-        table: "bookings"
+        table: "Bookings"
       },
       () => {
         loadBookings();
@@ -47,7 +47,7 @@ function handleStudentChange(e) {
 
 async function loadBookings() {
   const { data, error } = await supabase
-    .from("bookings")
+    .from("Bookings")
     .select("*");
 
   if (error) {
@@ -58,7 +58,7 @@ async function loadBookings() {
   const slotMap = {};
 
   data.forEach((booking) => {
-    const key = `${booking.booking_date}-${booking.class_name}`;
+    const key = `${booking.Booking_date}-${booking.Class_name}`;
 
     slotMap[key] = (slotMap[key] || 0) + 1;
   });
@@ -598,14 +598,14 @@ const studentData =
   JSON.parse(localStorage.getItem("legacyStudent")) || student;
 
 const { error } = await supabase
-  .from("bookings")
+  .from("Bookings")
   .insert([
     {
-      student_name: studentData.fullName,
-      student_email: studentData.email,
-      class_name: item[1],
-      booking_date: `May-${selectedDate}`,
-      slots: 1
+      Student_name: studentData.fullName,
+     Student_email: studentData.email,
+      Class_name: item[1],
+      Booking_date: `May-${selectedDate}`,
+      Slots: 1
     }
   ]);
 
@@ -730,7 +730,7 @@ loadBookings();
         <p style={footerSub}>POLE & AERIAL STUDIO</p>
 
         <p style={{ color: "#999", marginTop: "25px" }}>
-          bookings@legacypolestudio.com
+          Bookings@legacypolestudio.com
         </p>
       </footer>
     </div>
