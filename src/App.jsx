@@ -73,37 +73,64 @@ function saveStudentInfo() {
   setPage("waiver");
 }
 
-function savePassword() {
+async function savePassword() {
   if (!student.password) {
     alert("Please create a password.");
     return;
   }
 
-  localStorage.setItem("legacyStudent", JSON.stringify(student));
+const { error } = await supabase
+  .from("students")
+  .insert([
+    {
+      full_name: student.fullName,
+      email: student.email,
+      phone: student.phone,
+      emergency_person: student.emergencyPerson,
+      emergency_phone: student.emergencyPhone,
+      password: student.password
+    }
+  ]);
 
-  localStorage.setItem(
-    `legacyPassword_${student.email}`,
-    student.password
-  );
-
-  setPage("packages");
+if (error) {
+  console.log(error);
+  alert("Account could not be created.");
+  return;
 }
 
-function loginStudent() {
-  const savedPassword = localStorage.getItem(
-    `legacyPassword_${loginEmail}`
-  );
+localStorage.setItem("legacyStudent", JSON.stringify(student));
+setPage("packages");
+}
 
-  if (!savedPassword) {
+async function loginStudent() {
+  const { data, error } = await supabase
+    .from("students")
+    .select("*")
+    .eq("email", loginEmail)
+    .single();
+
+  if (error || !data) {
     alert("No account found. Please sign up first.");
     return;
   }
 
-  if (loginPassword !== savedPassword) {
+  if (loginPassword !== data.password) {
     alert("Incorrect password.");
     return;
   }
 
+  localStorage.setItem(
+    "legacyStudent",
+    JSON.stringify({
+      fullName: data.full_name,
+      email: data.email,
+      phone: data.phone,
+      emergencyPerson: data.emergency_person,
+      emergencyPhone: data.emergency_phone
+    })
+  );
+
+  alert("Login successful!");
   setPage("packages");
 }
   
