@@ -29,6 +29,9 @@ const [loginEmail, setLoginEmail] = useState("");
 const [loginPassword, setLoginPassword] = useState("");
   const [selectedDate, setSelectedDate] = useState(null);
   const [bookedSlots, setBookedSlots] = useState({});
+  const [credits, setCredits] = useState(
+  Number(localStorage.getItem("legacyCredits")) || 0
+);
   const [student, setStudent] = useState({
     fullName: "",
     email: "",
@@ -156,7 +159,12 @@ async function loginStudent() {
     })
   });
 
-alert("Test package email sent.");
+const packageCredits = pkg.credits || 0;
+
+setCredits(packageCredits);
+localStorage.setItem("legacyCredits", packageCredits);
+
+alert(`${pkg.name} confirmed. ${packageCredits} credits added.`);
 setPage("chooseClass");
 return;
 }
@@ -538,7 +546,17 @@ return;
   <section style={centerPage}>
     <div style={{ ...formCard, maxWidth: "950px" }}>
       <h2 style={sectionHeading}>Schedule</h2>
+<div style={dashboardBox}>
+  <p style={goldSmallText}>STUDENT DASHBOARD</p>
 
+  <h3 style={{ color: "#fff", fontSize: "30px", margin: "10px 0" }}>
+    Credits Remaining: {credits}
+  </h3>
+
+  <p style={{ color: "#999" }}>
+    Use 1 credit per class booking
+  </p>
+</div>
       <div style={calendarBox}>
         <h3 style={{ color: "#c8a96b", textAlign: "center" }}>May 2026</h3>
 
@@ -796,7 +814,13 @@ loadBookings();
 }
 
 /* STYLES */
-
+const dashboardBox = {
+  border: "1px solid rgba(200,169,107,0.25)",
+  background: "rgba(255,255,255,0.035)",
+  borderRadius: "24px",
+  padding: "24px",
+  marginBottom: "28px"
+};
 const app = {
   minHeight: "100vh",
   backgroundColor: "#050505",
