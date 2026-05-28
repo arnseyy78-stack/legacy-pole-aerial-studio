@@ -473,7 +473,12 @@ return;
 
         <div style={calendarGrid}>
           {["M", "T", "W", "T", "F", "S", "S"].map((d) => (
-            <strong key={d}>{d}</strong>
+            <strong
+  key={d}
+  style={{ color: "#777" }}
+>
+  {d}
+</strong>
           ))}
 
           {[...Array(31)].map((_, i) => {
