@@ -190,7 +190,7 @@ loadStudentBookings();
 const packageCredits = pkg.credits || 0;
 
 setCredits(packageCredits);
-localStorage.setItem(`legacyCredits_${studentData.email}`, newCredits);
+localStorage.setItem(`legacyCredits_${studentData.email}`, packageCredits);
 
 alert(`${pkg.name} confirmed. ${packageCredits} credits added.`);
 setPage("chooseClass");
@@ -693,7 +693,8 @@ return (
     return;
   }
 if (credits <= 0) {
-  alert("You do not have enough credits to book a class.");
+  alert("You do not have enough credits. Please choose a package first.");
+  setPage("packages");
   return;
 }
 const studentData =
@@ -750,7 +751,7 @@ await fetch("/api/send-email", {
 const newCredits = credits - 1;
 
 setCredits(newCredits);
-localStorage.setItem(`legacyCredits_${studentData.email}`, packageCredits);
+localStorage.setItem(`legacyCredits_${studentData.email}`, newCredits);
 
 alert(
   `${item[1]} booked for May ${selectedDate}`
@@ -801,14 +802,6 @@ loadStudentBookings();
 
             <div style={packageGrid}>
               {[
-            {
-  name: "Test Package",
-  price: "FREE",
-  description: "5 test credits",
-  amount: 0,
-  credits: 5,
-  isTest: true
-},
   {
     name: "Single Pass",
     price: "₱870",
