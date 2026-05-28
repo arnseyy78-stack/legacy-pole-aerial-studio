@@ -284,9 +284,15 @@ return;
       {/* NAVBAR */}
       <div style={navbar}>
         <div>
-          <h1 style={logoText}>LEGACY</h1>
-          <p style={logoSubText}>POLE & AERIAL STUDIO</p>
-        </div>
+  <img
+    src="/legacy-logo.png"
+    alt="Legacy Pole & Aerial Dance Studio"
+    style={{
+      height: "80px",
+      objectFit: "contain"
+    }}
+  />
+</div>
 
         <div style={navLinks}>
           <button onClick={() => setPage("home")} style={navButton}>
