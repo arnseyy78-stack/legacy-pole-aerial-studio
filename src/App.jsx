@@ -486,7 +486,7 @@ return;
                   ...dateButton,
                   background:
                     selectedDate === day ? "#c8a96b" : "rgba(255,255,255,0.05)",
-                  color: selectedDate === day ? "#050505" : "#f5f1ea"
+                  color: "#050505"
                 }}
               >
                 {day}
