@@ -613,7 +613,7 @@ return (
     name: "Single Pass",
     price: "₱870",
     description: "One class access",
-    amount: 87000
+    amount: 87000,
     expiry: "30 Days"
   },
 
@@ -621,7 +621,7 @@ return (
     name: "Class Card",
     price: "₱4,100",
     description: "Five class credits",
-    amount: 410000
+    amount: 410000,
     expiry: "30 Days"
   },
 
@@ -629,7 +629,7 @@ return (
     name: "Practice Session",
     price: "₱550",
     description: "Contact studio for time",
-    amount: 55000
+    amount: 55000,
     expiry: "30 Days"
   },
 
@@ -637,7 +637,7 @@ return (
     name: "Private Class",
     price: "₱3,100",
     description: "Personal coaching",
-    amount: 310000
+    amount: 310000,
     expiry: "30 Days"
   }
 ].map((pkg) => (
