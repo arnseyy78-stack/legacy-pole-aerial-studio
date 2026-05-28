@@ -712,10 +712,19 @@ if (loginPassword === "Pdas2026$") {
 
           {[...Array(daysInCurrentMonth)].map((_, i) => {
 const day = i + 1;
-const isSunday = day % 7 === 0;
+
+const todayDate = new Date().getDate();
+
+const actualDate = new Date(
+  currentYear,
+  today.getMonth(),
+  day
+);
+
+const isSunday = actualDate.getDay() === 0;
 
 const disabledDays =
-  day < 25 || isSunday;
+  day < todayDate || isSunday;
 
 return (
   <button
@@ -750,7 +759,13 @@ return (
 
           <div style={packageGrid}>
             {(() => {
-  const weekday = selectedDate % 7;
+  const actualSelectedDate = new Date(
+  currentYear,
+  today.getMonth(),
+  selectedDate
+);
+
+const weekday = actualSelectedDate.getDay();
 
   const classes = {
     1: [["6:00 PM", "Pole Fitness"]],
