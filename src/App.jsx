@@ -736,13 +736,15 @@ loadBookings();
     expiry: "30 Days"
   },
 
-  {
-    name: "Class Card",
-    price: "₱4,100",
-    description: "Five class credits",
-    amount: 410000,
-    expiry: "30 Days"
-  },
+{
+  name: "Class Card",
+  price: "₱4,100",
+  description: "Five class credits",
+  amount: 0,
+  credits: 5,
+  expiry: "30 Days",
+  isTest: true
+},
 
   {
     name: "Practice Session",
