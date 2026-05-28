@@ -722,6 +722,22 @@ if (loginPassword === "Pdas2026$") {
     alignItems: "center"
   }}
 >
+          {calendarMonthOffset > 0 && (
+  <button
+    onClick={() => {
+      setSelectedDate(null);
+      setCalendarMonthOffset(calendarMonthOffset - 1);
+    }}
+    style={{
+  ...outlineButton,
+  background: "#050505",
+  color: "#c8a96b",
+  border: "1px solid rgba(200,169,107,0.35)"
+}}
+  >
+    BACK
+  </button>
+)}
   <h3 style={{ color: "#c8a96b", textAlign: "center" }}>
     {currentMonthName} {currentYear}
   </h3>
@@ -731,7 +747,12 @@ if (loginPassword === "Pdas2026$") {
       setSelectedDate(null);
       setCalendarMonthOffset(calendarMonthOffset + 1);
     }}
-    style={outlineButton}
+    style={{
+  ...outlineButton,
+  background: "#050505",
+  color: "#c8a96b",
+  border: "1px solid rgba(200,169,107,0.35)"
+}}
   >
     NEXT
   </button>
