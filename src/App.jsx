@@ -615,6 +615,22 @@ if (error) {
   return;
 }
 
+await fetch("/api/send-email", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    studentName: studentData.fullName,
+    studentEmail: studentData.email,
+    packageName: "Class Booking",
+    className: item[1],
+    amount: "Booked",
+    credits: "1 credit used",
+    expiry: `May ${selectedDate}, 2026 at ${item[0]}`
+  })
+});
+
 alert(
   `${item[1]} booked for May ${selectedDate}`
 );
