@@ -32,9 +32,7 @@ const [loginPassword, setLoginPassword] = useState("");
   const [selectedDate, setSelectedDate] = useState(null);
   const [bookedSlots, setBookedSlots] = useState({});
   const [studentBookings, setStudentBookings] = useState([]);
-  const [credits, setCredits] = useState(
-  Number(localStorage.getItem("legacyCredits")) || 0
-);
+const [credits, setCredits] = useState(0);
   const [student, setStudent] = useState({
     fullName: "",
     email: "",
@@ -155,6 +153,13 @@ async function loginStudent() {
     })
   );
 
+setStudentBookings([]);
+
+const savedCredits =
+  Number(localStorage.getItem(`legacyCredits_${data.email}`)) || 0;
+
+setCredits(savedCredits);
+
 alert("Login successful!");
 setPage("chooseClass");
 loadStudentBookings();
@@ -185,7 +190,7 @@ loadStudentBookings();
 const packageCredits = pkg.credits || 0;
 
 setCredits(packageCredits);
-localStorage.setItem("legacyCredits", packageCredits);
+localStorage.setItem(`legacyCredits_${studentData.email}`, newCredits);
 
 alert(`${pkg.name} confirmed. ${packageCredits} credits added.`);
 setPage("chooseClass");
@@ -745,7 +750,7 @@ await fetch("/api/send-email", {
 const newCredits = credits - 1;
 
 setCredits(newCredits);
-localStorage.setItem("legacyCredits", newCredits);
+localStorage.setItem(`legacyCredits_${studentData.email}`, packageCredits);
 
 alert(
   `${item[1]} booked for May ${selectedDate}`
