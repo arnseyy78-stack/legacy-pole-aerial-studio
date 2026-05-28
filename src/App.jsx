@@ -620,9 +620,22 @@ return (
     alert("This class is fully booked.");
     return;
   }
-
 const studentData =
   JSON.parse(localStorage.getItem("legacyStudent")) || student;
+
+const { data: existingBooking } = await supabase
+  .from("Bookings")
+  .select("*")
+  .eq("Student_email", studentData.email)
+  .eq("Class_name", item[1])
+  .eq("Booking_date", `May-${selectedDate}`)
+  .maybeSingle();
+
+if (existingBooking) {
+  alert("You have already booked this class.");
+  return;
+}
+
 
 const { error } = await supabase
   .from("Bookings")
