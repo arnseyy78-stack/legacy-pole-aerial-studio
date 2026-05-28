@@ -4,6 +4,7 @@ export default function App() {
   const [page, setPage] = useState("home");
   useEffect(() => {
   loadBookings();
+loadStudentBookings();
 
   const channel = supabase
     .channel("Bookings-realtime")
@@ -16,6 +17,7 @@ export default function App() {
       },
       () => {
         loadBookings();
+        loadStudentBookings();
       }
     )
     .subscribe();
@@ -29,6 +31,7 @@ const [loginEmail, setLoginEmail] = useState("");
 const [loginPassword, setLoginPassword] = useState("");
   const [selectedDate, setSelectedDate] = useState(null);
   const [bookedSlots, setBookedSlots] = useState({});
+  const [studentBookings, setStudentBookings] = useState([]);
   const [credits, setCredits] = useState(
   Number(localStorage.getItem("legacyCredits")) || 0
 );
@@ -68,7 +71,25 @@ async function loadBookings() {
 
   setBookedSlots(slotMap);
 }
+async function loadStudentBookings() {
+  const studentData =
+    JSON.parse(localStorage.getItem("legacyStudent")) || student;
 
+  if (!studentData.email) return;
+
+  const { data, error } = await supabase
+    .from("Bookings")
+    .select("*")
+    .eq("Student_email", studentData.email)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.log(error);
+    return;
+  }
+
+  setStudentBookings(data || []);
+}
 
 
 function saveStudentInfo() {
@@ -556,6 +577,32 @@ return;
   <p style={{ color: "#999" }}>
     Use 1 credit per class booking
   </p>
+  <div style={{ marginTop: "20px" }}>
+  <p style={goldSmallText}>BOOKED CLASSES</p>
+
+  {studentBookings.length === 0 ? (
+    <p style={{ color: "#999" }}>No classes booked yet.</p>
+  ) : (
+    studentBookings.map((booking) => (
+      <div
+        key={booking.id}
+        style={{
+          borderTop: "1px solid rgba(200,169,107,0.2)",
+          paddingTop: "12px",
+          marginTop: "12px"
+        }}
+      >
+        <p style={{ color: "#fff", margin: 0 }}>
+          {booking.Class_name}
+        </p>
+
+        <p style={{ color: "#999", margin: "6px 0 0" }}>
+          {booking.Booking_date} · 6:00 PM
+        </p>
+      </div>
+    ))
+  )}
+</div>
 </div>
       <div style={calendarBox}>
         <h3 style={{ color: "#c8a96b", textAlign: "center" }}>May 2026</h3>
@@ -703,7 +750,7 @@ alert(
 );
 
 loadBookings();
-
+loadStudentBookings();
 
 }}
               >
