@@ -72,11 +72,12 @@ async function loadBookings() {
   setBookedSlots(slotMap);
 }
 async function loadStudentBookings() {
-  const studentData =
-    JSON.parse(localStorage.getItem("legacyStudent")) || student;
+const studentData = JSON.parse(
+  localStorage.getItem("legacyStudent")
+);
 
-  if (!studentData.email) return;
-
+if (!studentData) return;
+console.log(studentData);
   const { data, error } = await supabase
     .from("Bookings")
     .select("*")
@@ -154,8 +155,9 @@ async function loginStudent() {
     })
   );
 
-  alert("Login successful!");
-  setPage("packages");
+alert("Login successful!");
+setPage("chooseClass");
+loadStudentBookings();
 }
   
   async function buyPackage(pkg) {
