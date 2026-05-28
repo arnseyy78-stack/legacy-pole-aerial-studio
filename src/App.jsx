@@ -482,17 +482,26 @@ return;
           ))}
 
           {[...Array(31)].map((_, i) => {
-            const day = i + 1;
-            return (
-              <button
+const day = i + 1;
+const disabledDays = day < 25;
+
+return (
+  <button
+    disabled={disabledDays}
                 key={day}
                 onClick={() => setSelectedDate(day)}
-                style={{
-                  ...dateButton,
-                  background:
-                    selectedDate === day ? "#c8a96b" : "rgba(255,255,255,0.05)",
-                  color: "#050505"
-                }}
+               style={{
+  ...dateButton,
+  background: disabledDays
+    ? "rgba(0,0,0,0.08)"
+    : selectedDate === day
+    ? "#c8a96b"
+    : "rgba(255,255,255,0.45)",
+
+  color: disabledDays ? "#999" : "#050505",
+  cursor: disabledDays ? "not-allowed" : "pointer",
+  opacity: disabledDays ? 0.45 : 1
+}}
               >
                 {day}
               </button>
