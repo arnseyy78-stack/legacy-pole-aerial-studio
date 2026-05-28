@@ -58,7 +58,7 @@ async function loadBookings() {
   const slotMap = {};
 
   data.forEach((booking) => {
-    const key = `${booking.booking_date}-${booking.class_name}`;
+    const key = `${booking.Booking_date}-${booking.Class_name}`;
 
     slotMap[key] = (slotMap[key] || 0) + 1;
   });
@@ -601,11 +601,11 @@ const { error } = await supabase
   .from("Bookings")
   .insert([
     {
-      student_name: studentData.fullName,
-     student_email: studentData.email,
-      class_name: item[1],
-      booking_date: `May-${selectedDate}`,
-      slots: 1
+      Student_name: studentData.fullName,
+      Student_email: studentData.email,
+      Class_name: item[1],
+      Booking_date: `May-${selectedDate}`,
+      Slots: 1
     }
   ]);
 
