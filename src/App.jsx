@@ -614,13 +614,15 @@ return (
     price: "₱870",
     description: "One class access",
     amount: 87000
+    expiry: "30 Days"
   },
 
   {
-    name: "Class Card of 5",
+    name: "Class Card",
     price: "₱4,100",
     description: "Five class credits",
     amount: 410000
+    expiry: "30 Days"
   },
 
   {
@@ -628,6 +630,7 @@ return (
     price: "₱550",
     description: "Contact studio for time",
     amount: 55000
+    expiry: "30 Days"
   },
 
   {
@@ -635,6 +638,7 @@ return (
     price: "₱3,100",
     description: "Personal coaching",
     amount: 310000
+    expiry: "30 Days"
   }
 ].map((pkg) => (
                 <button
