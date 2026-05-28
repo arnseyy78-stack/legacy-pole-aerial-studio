@@ -638,6 +638,10 @@ return (
     alert("This class is fully booked.");
     return;
   }
+if (credits <= 0) {
+  alert("You do not have enough credits to book a class.");
+  return;
+}
 const studentData =
   JSON.parse(localStorage.getItem("legacyStudent")) || student;
 
@@ -688,6 +692,11 @@ await fetch("/api/send-email", {
     expiry: `May ${selectedDate}, 2026 at ${item[0]}`
   })
 });
+
+const newCredits = credits - 1;
+
+setCredits(newCredits);
+localStorage.setItem("legacyCredits", newCredits);
 
 alert(
   `${item[1]} booked for May ${selectedDate}`
