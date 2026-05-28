@@ -799,7 +799,15 @@ loadStudentBookings();
           >
             
             <h2 style={sectionHeading}>Pricing</h2>
-
+<button
+  onClick={() => setPage("chooseClass")}
+  style={{
+    ...outlineButton,
+    marginBottom: "25px"
+  }}
+>
+  DASHBOARD
+</button>
             <div style={packageGrid}>
               {[
   {
