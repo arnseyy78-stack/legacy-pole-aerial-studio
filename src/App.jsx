@@ -421,9 +421,14 @@ return;
                 BOOK YOUR CLASS
               </button>
             </div>
-
-            <div style={heroRight}>
-  <div>
+           <div style={heroRight}>
+  <div
+    style={{
+      width: "520px",
+      height: "680px"
+    }}
+  >
+  >
     <img
   src="/publicimageshero-model.jpg"
   alt="Legacy Pole & Aerial Studio"
@@ -432,7 +437,7 @@ return;
     height: "100%",
     objectFit: "cover",
     objectPosition: "center",
-    borderRadius: "260px 260px 30px 30px"
+    borderRadius: "300px 300px 40px 40px"
   }}
 />
   </div>
