@@ -423,9 +423,8 @@ return;
             </div>
 
             <div style={heroRight}>
-  <div style={glowCircle}>
-   
-<img
+  <div>
+    <img
   src="/publicimageshero-model.jpg"
   alt="Legacy Pole & Aerial Studio"
   style={{
