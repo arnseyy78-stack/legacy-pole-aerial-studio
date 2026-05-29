@@ -428,8 +428,8 @@ return;
   src="/publicimageshero-model.jpg"
   alt="Legacy Pole & Aerial Studio"
   style={{
-    width: "520px",
-    height: "620px",
+    width: "100%",
+    height: "100%",
     objectFit: "cover",
     objectPosition: "center",
     borderRadius: "260px 260px 30px 30px"
