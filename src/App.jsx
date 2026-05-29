@@ -429,7 +429,7 @@ return;
       borderRadius: "300px 300px 40px 40px",
       padding: "2px",
       background: "linear-gradient(180deg, rgba(200,169,107,0.8), rgba(200,169,107,0.18))",
-      boxShadow: "0 0 60px rgba(200,169,107,0.25), 0 40px 120px rgba(0,0,0,0.9)",
+      boxShadow: "0 0 30px rgba(200,169,107,0.18), 0 20px 50px rgba(0,0,0,0.6)",
       overflow: "hidden"
     }}
   >
@@ -1376,7 +1376,7 @@ const heroRight = {
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
-  minHeight: "650px"
+  overflow: "hidden"
 };
 
 const glowCircle = {
