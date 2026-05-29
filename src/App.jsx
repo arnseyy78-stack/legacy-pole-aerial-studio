@@ -424,8 +424,8 @@ return;
 <div style={heroRight}>
   <div
     style={{
-      width: "520px",
-      height: "680px",
+      width: "min(460px, 85vw)",
+      height: "min(620px, 70vh)",
       borderRadius: "300px 300px 40px 40px",
       padding: "2px",
       background: "linear-gradient(180deg, rgba(200,169,107,0.8), rgba(200,169,107,0.18))",
