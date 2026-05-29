@@ -196,28 +196,6 @@ async function loadAdminBookings() {
 
   setAdminBookings(futureBookings);
 }
-const today = new Date();
-
-const monthName = today.toLocaleString("default", {
-  month: "long"
-});
-
-const todayKey = `${monthName}-${today.getDate()}`;
-
-  
-const { data, error } = await supabase
-  .from("Bookings")
-  .select("*")
-  .eq("Booking_date", todayKey)
-  .order("Booking_date", { ascending: true });
-
-  if (error) {
-    console.log(error);
-    return;
-  }
-
-  setAdminBookings(data || []);
-}
 
 async function loadStudentBookings(emailOverride = null) {
   const studentData = JSON.parse(localStorage.getItem("legacyStudent"));
