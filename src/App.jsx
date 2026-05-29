@@ -1038,9 +1038,42 @@ const bookingKey =
     bookedSlots[bookingKey] || 0;
 
   if (currentBooked >= 5) {
-    alert("This class is fully booked.");
+  const studentData =
+    JSON.parse(localStorage.getItem("legacyStudent")) || student;
+
+  const { data: existingWaitlist } = await supabase
+    .from("Waitlist")
+    .select("*")
+    .eq("Student_email", studentData.email)
+    .eq("Class_name", item[1])
+    .eq("Booking_date", bookingDate)
+    .maybeSingle();
+
+  if (existingWaitlist) {
+    alert("You are already on the waitlist for this class.");
     return;
   }
+
+  const { error } = await supabase
+    .from("Waitlist")
+    .insert([
+      {
+        Student_name: studentData.fullName,
+        Student_email: studentData.email,
+        Class_name: item[1],
+        Booking_date: bookingDate
+      }
+    ]);
+
+  if (error) {
+    console.log(error);
+    alert("Could not join waitlist. Please try again.");
+    return;
+  }
+
+  alert("This class is full. You have been added to the waitlist.");
+  return;
+}
 if (credits <= 0) {
   alert("You do not have enough credits. Please choose a package first.");
   setPage("packages");
