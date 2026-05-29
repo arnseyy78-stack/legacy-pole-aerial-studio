@@ -4,7 +4,9 @@ export default function App() {
   const [page, setPage] = useState("home");
 useEffect(() => {
   loadBookings();
-loadStudentBookings();
+  loadStudentBookings();
+  loadStudentWaitlist();
+  loadAdminWaitlist();
 
   const channel = supabase
     .channel("Bookings-realtime")
@@ -18,6 +20,8 @@ loadStudentBookings();
       () => {
         loadBookings();
         loadStudentBookings();
+        loadStudentWaitlist();
+        loadAdminWaitlist();
       }
     )
     .subscribe();
@@ -369,7 +373,7 @@ const savedCredits =
 setCredits(savedCredits);
 
 await loadStudentBookings(data.email);
-
+await loadStudentWaitlist(data.email);
 alert("Login successful!");
 setPage("chooseClass");
 }
@@ -922,6 +926,31 @@ if (result.success) {
   )}
 </div>
 </div>
+
+<div style={{ marginTop: "25px" }}>
+  <p style={goldSmallText}>WAITLIST</p>
+
+  {studentWaitlist.length === 0 ? (
+    <p style={{ color: "#999" }}>No waitlist classes.</p>
+  ) : (
+    studentWaitlist.map((item) => (
+      <div
+        key={item.id}
+        style={{
+          borderTop: "1px solid rgba(200,169,107,0.2)",
+          paddingTop: "12px",
+          marginTop: "12px"
+        }}
+      >
+        <p style={{ color: "#fff", margin: 0 }}>{item.Class_name}</p>
+        <p style={{ color: "#999", margin: "6px 0 0" }}>
+          {item.Booking_date} · Waitlisted
+        </p>
+      </div>
+    ))
+  )}
+</div>
+</div>
       <div style={calendarBox}>
         <div
   style={{
@@ -1177,6 +1206,8 @@ alert(
 
 loadBookings();
 loadStudentBookings();
+loadStudentWaitlist();
+loadAdminWaitlist();
 
 }}
               >
