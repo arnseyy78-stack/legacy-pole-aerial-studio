@@ -1368,13 +1368,10 @@ const heroLeft = {
 };
 
 const heroRight = {
-  position: "relative",
-  overflow: "hidden",
-  background:
-    "linear-gradient(135deg, rgba(200,169,107,0.12), rgba(0,0,0,0.95))",
   display: "flex",
+  justifyContent: "center",
   alignItems: "center",
-  justifyContent: "center"
+  minHeight: "650px"
 };
 
 const glowCircle = {
