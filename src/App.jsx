@@ -1416,7 +1416,7 @@ const goldSmallText = {
 };
 
 const goldLine = {
-  width: "160px",
+  width: "220px",
   height: "2px",
   background:
     "linear-gradient(90deg, rgba(200,169,107,1) 0%, rgba(200,169,107,0.4) 100%)",
