@@ -284,12 +284,11 @@ return;
       {/* NAVBAR */}
       <div style={navbar}>
         <div>
-  <img
+<img
   src="/legacy-logo.png"
   alt="Legacy Pole & Aerial Studio"
   style={{
-    height: "130px",
-    padding: "25px 40px"
+    height: "220px",
     width: "auto",
     objectFit: "contain"
   }}
@@ -1165,7 +1164,8 @@ const navbar = {
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
-  padding: "30px 60px",
+  padding: "10px 60px",
+  minHeight: "220px",
   borderBottom: "1px solid rgba(200,169,107,0.2)"
 };
 
