@@ -432,10 +432,7 @@ return;
     height: "620px",
     objectFit: "cover",
     objectPosition: "center",
-    borderRadius: "320px 320px 40px 40px",
-    border: "1px solid rgba(200,169,107,0.35)",
-    boxShadow: "0 40px 120px rgba(0,0,0,0.8)",
-    display: "block"
+    borderRadius: "260px 260px 30px 30px"
   }}
 />
   </div>
