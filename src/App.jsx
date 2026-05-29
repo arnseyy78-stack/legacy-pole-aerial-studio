@@ -447,7 +447,17 @@ return;
           <section style={aboutSection}>
             <div style={aboutGrid}>
               <div style={archedPanel}>
-                <span style={bigLetterSmall}>L</span>
+                <img
+  src="/aerial-hoop-model.jpg"
+  alt="Legacy Aerial Artist"
+  style={{
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+    objectPosition: "center",
+    borderRadius: "260px 260px 30px 30px"
+  }}
+/>
               </div>
 
               <div>
