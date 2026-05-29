@@ -209,8 +209,7 @@ async function loadStudentBookings(emailOverride = null) {
   const { data, error } = await supabase
     .from("Bookings")
     .select("*")
-    .eq("Student_email", email)
-    .order("created_at", { ascending: false });
+    .eq("Student_email", email);
 
   if (error) {
     console.log(error);
@@ -218,9 +217,49 @@ async function loadStudentBookings(emailOverride = null) {
     return;
   }
 
-  setStudentBookings(data || []);
-}
+  const monthOrder = {
+    January: 1,
+    February: 2,
+    March: 3,
+    April: 4,
+    May: 5,
+    June: 6,
+    July: 7,
+    August: 8,
+    September: 9,
+    October: 10,
+    November: 11,
+    December: 12
+  };
 
+  const today = new Date();
+  const currentMonth = today.toLocaleString("default", { month: "long" });
+  const currentDay = today.getDate();
+
+  const upcomingBookings = (data || []).filter((booking) => {
+    const [month, day] = booking.Booking_date.split("-");
+    const bookingMonthNumber = monthOrder[month];
+    const currentMonthNumber = monthOrder[currentMonth];
+
+    return (
+      bookingMonthNumber > currentMonthNumber ||
+      (bookingMonthNumber === currentMonthNumber && Number(day) >= currentDay)
+    );
+  });
+
+  upcomingBookings.sort((a, b) => {
+    const [monthA, dayA] = a.Booking_date.split("-");
+    const [monthB, dayB] = b.Booking_date.split("-");
+
+    if (monthOrder[monthA] !== monthOrder[monthB]) {
+      return monthOrder[monthA] - monthOrder[monthB];
+    }
+
+    return Number(dayA) - Number(dayB);
+  });
+
+  setStudentBookings(upcomingBookings);
+}
 
 function saveStudentInfo() {
   setPage("waiver");
@@ -821,7 +860,7 @@ if (result.success) {
     Use 1 credit per class booking
   </p>
   <div style={{ marginTop: "20px" }}>
-  <p style={goldSmallText}>BOOKED CLASSES</p>
+  <p style={goldSmallText}>UPCOMING CLASSES</p>
 
   {studentBookings.length === 0 ? (
     <p style={{ color: "#999" }}>No classes booked yet.</p>
