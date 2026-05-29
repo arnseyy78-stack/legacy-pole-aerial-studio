@@ -286,10 +286,11 @@ return;
         <div>
   <img
   src="/legacy-logo.png"
-  alt="Legacy Pole & Aerial Dance Studio"
+  alt="Legacy Pole & Aerial Studio"
   style={{
-    height: "80px",
-    width: "auto"
+    height: "140px",
+    width: "auto",
+    objectFit: "contain"
   }}
 />
 </div>
