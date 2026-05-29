@@ -288,7 +288,7 @@ return;
   src="/legacy-logo.png"
   alt="Legacy Pole & Aerial Studio"
   style={{
-    height: "220px",
+    height: "120px",
     width: "auto",
     objectFit: "contain"
   }}
