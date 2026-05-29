@@ -421,24 +421,31 @@ return;
                 BOOK YOUR CLASS
               </button>
             </div>
-           <div style={heroRight}>
-             <div style={archedPanel}>
-  <img
-    src="/publicimageshero-model.jpg"
-    alt="Legacy Pole & Aerial Studio"
-style={{
-  width: "520px",
-  height: "680px",
-  objectFit: "cover",
-  objectPosition: "center",
-  borderRadius: "300px 300px 40px 40px",
-
-  border: "1px solid rgba(200,169,107,0.4)",
-
-  boxShadow:
-    "0 0 60px rgba(200,169,107,0.25), 0 0 120px rgba(200,169,107,0.12), 0 40px 120px rgba(0,0,0,0.8)"
-}}
-  />
+<div style={heroRight}>
+  <div
+    style={{
+      width: "520px",
+      height: "680px",
+      borderRadius: "300px 300px 40px 40px",
+      padding: "2px",
+      background: "linear-gradient(180deg, rgba(200,169,107,0.8), rgba(200,169,107,0.18))",
+      boxShadow: "0 0 60px rgba(200,169,107,0.25), 0 40px 120px rgba(0,0,0,0.9)",
+      overflow: "hidden"
+    }}
+  >
+    <img
+      src="/publicimageshero-model.jpg"
+      alt="Legacy Pole & Aerial Studio"
+      style={{
+        width: "100%",
+        height: "100%",
+        objectFit: "cover",
+        objectPosition: "center",
+        borderRadius: "298px 298px 38px 38px",
+        display: "block"
+      }}
+    />
+  </div>
 </div>
 
 </section>
