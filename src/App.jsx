@@ -1114,10 +1114,11 @@ const bookingKey =
     .eq("Booking_date", bookingDate)
     .maybeSingle();
 
-  if (existingWaitlist) {
-    alert("You are already on the waitlist for this class.");
-    return;
-  }
+if (existingWaitlist) {
+  await loadStudentWaitlist(studentData.email);
+  alert("You are already on the waitlist for this class.");
+  return;
+}
 
   const { error } = await supabase
     .from("Waitlist")
@@ -1136,8 +1137,9 @@ const bookingKey =
     return;
   }
 
-  alert("This class is full. You have been added to the waitlist.");
-  return;
+await loadStudentWaitlist(studentData.email);
+alert("This class is full. You have been added to the waitlist.");
+return;
 }
 if (credits <= 0) {
   alert("You do not have enough credits. Please choose a package first.");
