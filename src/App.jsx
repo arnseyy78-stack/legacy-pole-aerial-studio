@@ -152,7 +152,6 @@ async function loadStudentBookings(emailOverride = null) {
 
 
 function saveStudentInfo() {
-  localStorage.setItem("legacyStudent", JSON.stringify(student));
   setPage("waiver");
 }
 
@@ -202,7 +201,9 @@ async function loginStudent() {
     alert("Incorrect password.");
     return;
   }
-
+localStorage.removeItem("legacyStudent");
+setStudentBookings([]);
+setCredits(0);
   localStorage.setItem(
     "legacyStudent",
     JSON.stringify({
