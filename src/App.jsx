@@ -144,6 +144,58 @@ async function loadBookings() {
   setBookedSlots(slotMap);
 }
 async function loadAdminBookings() {
+  const { data, error } = await supabase
+    .from("Bookings")
+    .select("*");
+
+  if (error) {
+    console.log(error);
+    return;
+  }
+
+  const monthOrder = {
+    January: 1,
+    February: 2,
+    March: 3,
+    April: 4,
+    May: 5,
+    June: 6,
+    July: 7,
+    August: 8,
+    September: 9,
+    October: 10,
+    November: 11,
+    December: 12
+  };
+
+  const today = new Date();
+  const currentMonth = today.toLocaleString("default", { month: "long" });
+  const currentDay = today.getDate();
+
+  const futureBookings = (data || []).filter((booking) => {
+    const [month, day] = booking.Booking_date.split("-");
+    const bookingMonthNumber = monthOrder[month];
+    const currentMonthNumber = monthOrder[currentMonth];
+
+    return (
+      bookingMonthNumber > currentMonthNumber ||
+      (bookingMonthNumber === currentMonthNumber && Number(day) >= currentDay)
+    );
+  });
+
+  futureBookings.sort((a, b) => {
+    const [monthA, dayA] = a.Booking_date.split("-");
+    const [monthB, dayB] = b.Booking_date.split("-");
+
+    if (monthOrder[monthA] !== monthOrder[monthB]) {
+      return monthOrder[monthA] - monthOrder[monthB];
+    }
+
+    return Number(dayA) - Number(dayB);
+  });
+
+  setAdminBookings(futureBookings);
+}
 const today = new Date();
 
 const monthName = today.toLocaleString("default", {
@@ -1044,7 +1096,7 @@ bookedSlots[
     <div style={{ ...formCard, maxWidth: "1100px" }}>
       <p style={goldSmallText}>ADMIN DASHBOARD</p>
 
-      <h2 style={sectionHeading}>Today’s Class Bookings</h2>
+      <h2 style={sectionHeading}>Upcoming Class Bookings</h2>
 <button
   onClick={loadAdminBookings}
   style={{
