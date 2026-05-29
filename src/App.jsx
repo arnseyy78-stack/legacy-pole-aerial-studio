@@ -423,7 +423,7 @@ return;
             </div>
 
             <div style={heroRight}>
-              minHeight: "650px",
+              
 display: "flex",
 alignItems: "center",
 justifyContent: "center",
@@ -433,10 +433,13 @@ justifyContent: "center",
   src="/publicimageshero-model.jpg"
   alt="Legacy Pole & Aerial Studio"
   style={{
-    width: "100%",
-    height: "600px",
+    width: "430px",
+    height: "560px",
     objectFit: "cover",
-    borderRadius: "50px",
+    objectPosition: "center",
+    borderRadius: "260px 260px 40px 40px",
+    border: "1px solid rgba(200,169,107,0.35)",
+    boxShadow: "0 40px 120px rgba(0,0,0,0.8)",
     display: "block"
   }}
 />
