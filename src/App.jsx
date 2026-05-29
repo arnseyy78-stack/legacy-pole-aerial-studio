@@ -425,17 +425,17 @@ return;
             <div style={heroRight}>
   <div style={glowCircle}>
    
-    <img
-      src="/publicimageshero-model.jpg"
-      alt="Legacy Pole & Aerial Studio"
-      style={{
-        width: "100%",
-        height: "100%",
-        objectFit: "cover",
-        borderRadius: "50px",
-        filter: "brightness(0.95) contrast(1.05)"
-      }}
-    />
+<img
+  src="/publicimageshero-model.jpg"
+  alt="Legacy Pole & Aerial Studio"
+  style={{
+    width: "100%",
+    height: "600px",
+    objectFit: "cover",
+    borderRadius: "50px",
+    display: "block"
+  }}
+/>
   </div>
 </div>
 
