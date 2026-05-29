@@ -423,11 +423,11 @@ return;
             </div>
 
             <div style={heroRight}>
-              <div style={glowCircle}>
-                <span style={bigLetter}>L</span>
-              </div>
-            </div>
-          </section>
+  <div style={glowCircle}>
+    <img ... />
+  </div>
+</div>
+</section>
 
           <section style={aboutSection}>
             <div style={aboutGrid}>
