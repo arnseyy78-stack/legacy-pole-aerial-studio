@@ -28,7 +28,7 @@ loadStudentBookings();
 }, []);
   const [waiverAgreed, setWaiverAgreed] = useState(false);
 const [loginEmail, setLoginEmail] = useState("");
-const [loginPassword, setLoginPassword] = useState("");
+const isLoggedIn = !!localStorage.getItem("legacyStudent");
   const [selectedDate, setSelectedDate] = useState(null);
   const [calendarMonthOffset, setCalendarMonthOffset] = useState(0);
   const [bookedSlots, setBookedSlots] = useState({});
@@ -300,9 +300,11 @@ return;
             HOME
           </button>
 
-          <button onClick={() => setPage("packages")} style={navButton}>
-            PACKAGES
-          </button>
+          {isLoggedIn && (
+  <button onClick={() => setPage("packages")} style={navButton}>
+    PACKAGES
+  </button>
+)}
 
           <button onClick={() => setPage("authChoice")} style={goldButton}>
             BOOK NOW
@@ -680,7 +682,7 @@ if (loginPassword === "Pdas2026$") {
   </section>
 )}
 {/* CHOOSE CLASS */}
-{page === "chooseClass" && (
+{page === "chooseClass" && isLoggedIn && (
   <section style={centerPage}>
     <div style={{ ...formCard, maxWidth: "950px" }}>
       <h2 style={sectionHeading}>Schedule</h2>
@@ -973,7 +975,7 @@ bookedSlots[
   </section>
 )}
     {/* ADMIN DASHBOARD */}
-{page === "adminDashboard" && (
+{page === "adminDashboard" && loginPassword === "Pdas2026$" && (
   <section style={centerPage}>
     <div style={{ ...formCard, maxWidth: "1100px" }}>
       <p style={goldSmallText}>ADMIN DASHBOARD</p>
@@ -1057,7 +1059,7 @@ bookedSlots[
   </section>
 )}
       {/* PACKAGES */}
-      {page === "packages" && (
+      {page === "packages" && isLoggedIn && (
         <section style={centerPage}>
           <div
             style={{
