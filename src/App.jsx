@@ -1165,7 +1165,7 @@ const navbar = {
   justifyContent: "space-between",
   alignItems: "center",
   padding: "15px 60px",
-  minHeight: "220px",
+  minHeight: "90px",
   borderBottom: "1px solid rgba(200,169,107,0.2)"
 };
 
