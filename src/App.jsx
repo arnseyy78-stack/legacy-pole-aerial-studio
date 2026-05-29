@@ -1323,7 +1323,38 @@ bookedSlots[
       </div>
     </div>
   ))
-)}
+}
+      <div style={{ marginTop: "50px" }}>
+  <p style={goldSmallText}>WAITLIST</p>
+
+  {adminWaitlist.length === 0 ? (
+    <p style={{ color: "#999" }}>No waitlist entries.</p>
+  ) : (
+    adminWaitlist.map((item) => (
+      <div
+        key={item.id}
+        style={{
+          borderTop: "1px solid rgba(200,169,107,0.25)",
+          paddingTop: "15px",
+          marginTop: "15px"
+        }}
+      >
+        <p style={{ color: "#fff", margin: 0 }}>
+          {item.Student_name}
+        </p>
+
+        <p style={{ color: "#777", margin: "5px 0" }}>
+          {item.Student_email}
+        </p>
+
+        <p style={{ color: "#c8a96b", margin: 0 }}>
+          {item.Class_name} · {item.Booking_date}
+        </p>
+      </div>
+    ))
+  )}
+</div>
+      
     </div>
   </section>
 )}
