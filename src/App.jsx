@@ -422,25 +422,18 @@ return;
               </button>
             </div>
            <div style={heroRight}>
-  <div
+  <img
+    src="/publicimageshero-model.jpg"
+    alt="Legacy Pole & Aerial Studio"
     style={{
       width: "520px",
-      height: "680px"
+      height: "680px",
+      objectFit: "cover",
+      objectPosition: "center",
+      borderRadius: "300px 300px 40px 40px",
+      boxShadow: "0 40px 120px rgba(0,0,0,0.8)"
     }}
-  >
-  >
-    <img
-  src="/publicimageshero-model.jpg"
-  alt="Legacy Pole & Aerial Studio"
-  style={{
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
-    objectPosition: "center",
-    borderRadius: "300px 300px 40px 40px"
-  }}
-/>
-  </div>
+  />
 </div>
 
 </section>
