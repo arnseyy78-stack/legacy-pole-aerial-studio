@@ -288,7 +288,7 @@ return;
   src="/legacy-logo.png"
   alt="Legacy Pole & Aerial Studio"
   style={{
-    height: "100px",
+    height: "80px",
     width: "auto",
     objectFit: "contain"
   }}
@@ -1164,7 +1164,7 @@ const navbar = {
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
-  padding: "10px 60px",
+  padding: "15px 60px",
   minHeight: "220px",
   borderBottom: "1px solid rgba(200,169,107,0.2)"
 };
