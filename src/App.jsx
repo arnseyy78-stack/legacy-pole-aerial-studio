@@ -260,9 +260,43 @@ async function loadStudentBookings(emailOverride = null) {
     return Number(dayA) - Number(dayB);
   });
 
-  setStudentBookings(upcomingBookings);
+setStudentBookings(upcomingBookings);
 }
 
+async function loadStudentWaitlist(emailOverride = null) {
+  const studentData = JSON.parse(localStorage.getItem("legacyStudent"));
+  const email = emailOverride || studentData?.email;
+
+  if (!email) {
+    setStudentWaitlist([]);
+    return;
+  }
+
+  const { data, error } = await supabase
+    .from("Waitlist")
+    .select("*")
+    .eq("Student_email", email);
+
+  if (error) {
+    console.log(error);
+    setStudentWaitlist([]);
+    return;
+  }
+
+  setStudentWaitlist(data || []);
+}
+async function loadAdminWaitlist() {
+  const { data, error } = await supabase
+    .from("Waitlist")
+    .select("*");
+
+  if (error) {
+    console.log(error);
+    return;
+  }
+
+  setAdminWaitlist(data || []);
+}
 function saveStudentInfo() {
   setPage("waiver");
 }
