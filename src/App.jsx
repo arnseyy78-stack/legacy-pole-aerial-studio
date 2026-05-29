@@ -29,7 +29,9 @@ loadStudentBookings();
   const [waiverAgreed, setWaiverAgreed] = useState(false);
 const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
-const isLoggedIn = !!localStorage.getItem("legacyStudent");
+const [isLoggedIn, setIsLoggedIn] = useState(
+  !!localStorage.getItem("legacyStudent")
+);
   const [selectedDate, setSelectedDate] = useState(null);
   const [calendarMonthOffset, setCalendarMonthOffset] = useState(0);
   const [bookedSlots, setBookedSlots] = useState({});
@@ -124,21 +126,24 @@ const { data, error } = await supabase
   setAdminBookings(data || []);
 }
 
-async function loadStudentBookings() {
-const studentData = JSON.parse(
-  localStorage.getItem("legacyStudent")
-);
+async function loadStudentBookings(emailOverride = null) {
+  const studentData = JSON.parse(localStorage.getItem("legacyStudent"));
+  const email = emailOverride || studentData?.email;
 
-if (!studentData) return;
-console.log(studentData);
+  if (!email) {
+    setStudentBookings([]);
+    return;
+  }
+
   const { data, error } = await supabase
     .from("Bookings")
     .select("*")
-    .eq("Student_email", studentData.email)
+    .eq("Student_email", email)
     .order("created_at", { ascending: false });
 
   if (error) {
     console.log(error);
+    setStudentBookings([]);
     return;
   }
 
@@ -177,6 +182,7 @@ if (error) {
 }
 
 localStorage.setItem("legacyStudent", JSON.stringify(student));
+  setIsLoggedIn(true);
 setPage("packages");
 }
 
@@ -207,7 +213,7 @@ async function loginStudent() {
       emergencyPhone: data.emergency_phone
     })
   );
-
+setIsLoggedIn(true);
 setStudentBookings([]);
 
 const savedCredits =
@@ -215,9 +221,10 @@ const savedCredits =
 
 setCredits(savedCredits);
 
+await loadStudentBookings(data.email);
+
 alert("Login successful!");
 setPage("chooseClass");
-loadStudentBookings();
 }
   
   async function buyPackage(pkg) {
