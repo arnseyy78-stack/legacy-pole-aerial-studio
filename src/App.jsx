@@ -1416,10 +1416,12 @@ const goldSmallText = {
 };
 
 const goldLine = {
-  width: "120px",
-  height: "1px",
-  background: "#c8a96b",
-  margin: "30px 0"
+  width: "160px",
+  height: "2px",
+  background:
+    "linear-gradient(90deg, rgba(200,169,107,1) 0%, rgba(200,169,107,0.4) 100%)",
+  marginTop: "32px",
+  marginBottom: "32px"
 };
 
 const paragraph = {
