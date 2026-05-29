@@ -28,6 +28,7 @@ loadStudentBookings();
 }, []);
   const [waiverAgreed, setWaiverAgreed] = useState(false);
 const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
 const isLoggedIn = !!localStorage.getItem("legacyStudent");
   const [selectedDate, setSelectedDate] = useState(null);
   const [calendarMonthOffset, setCalendarMonthOffset] = useState(0);
@@ -662,7 +663,7 @@ return;
       />
 
       <button
-        onClick={() => {
+        onClick={async () => {
 const response = await fetch("/api/admin-login", {
   method: "POST",
   headers: {
@@ -765,7 +766,7 @@ if (result.success) {
   </h3>
 
   <button
-    onClick={() => {
+    onClick={async () => {
       setSelectedDate(null);
       setCalendarMonthOffset(calendarMonthOffset + 1);
     }}
@@ -988,7 +989,8 @@ bookedSlots[
   </section>
 )}
     {/* ADMIN DASHBOARD */}
-{page === "adminDashboard" && loginPassword === "Pdas2026$" && (
+{page === "adminDashboard" &&
+  localStorage.getItem("legacyAdmin") === "true" && (
   <section style={centerPage}>
     <div style={{ ...formCard, maxWidth: "1100px" }}>
       <p style={goldSmallText}>ADMIN DASHBOARD</p>
