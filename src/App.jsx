@@ -441,7 +441,7 @@ return;
         height: "100%",
         objectFit: "cover",
         objectPosition: "center",
-        borderRadius: "298px 298px 38px 38px",
+        borderRadius: "260px 260px 30px 30px",
         display: "block"
       }}
     />
