@@ -663,12 +663,25 @@ return;
 
       <button
         onClick={() => {
-if (loginPassword === "Pdas2026$") {
+const response = await fetch("/api/admin-login", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    password: loginPassword
+  })
+});
+
+const result = await response.json();
+
+if (result.success) {
+  localStorage.setItem("legacyAdmin", "true");
   loadAdminBookings();
   setPage("adminDashboard");
-          } else {
-            alert("Incorrect admin password.");
-          }
+} else {
+  alert("Incorrect admin password.");
+}
         }}
         style={{
           ...goldButtonLarge,
@@ -733,7 +746,7 @@ if (loginPassword === "Pdas2026$") {
 >
           {calendarMonthOffset > 0 && (
   <button
-    onClick={() => {
+    onClick={async () => {
       setSelectedDate(null);
       setCalendarMonthOffset(calendarMonthOffset - 1);
     }}
