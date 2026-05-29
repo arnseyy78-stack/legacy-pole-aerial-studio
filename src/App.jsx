@@ -285,13 +285,13 @@ return;
       <div style={navbar}>
         <div>
   <img
-    src="/legacy-logo.png"
-    alt="Legacy Pole & Aerial Dance Studio"
-    style={{
-      height: "80px",
-      objectFit: "contain"
-    }}
-  />
+  src="/legacy-logo.png"
+  alt="Legacy Pole & Aerial Dance Studio"
+  style={{
+    height: "80px",
+    width: "auto"
+  }}
+/>
 </div>
 
         <div style={navLinks}>
