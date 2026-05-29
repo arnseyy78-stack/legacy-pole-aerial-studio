@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "./supabase";
 export default function App() {
   const [page, setPage] = useState("home");
-  useEffect(() => {
+useEffect(() => {
   loadBookings();
 loadStudentBookings();
 
@@ -32,6 +32,47 @@ const [loginEmail, setLoginEmail] = useState("");
 const [isLoggedIn, setIsLoggedIn] = useState(
   !!localStorage.getItem("legacyStudent")
 );
+  const [lastActivity, setLastActivity] = useState(Date.now());
+  useEffect(() => {
+  const updateActivity = () => {
+    setLastActivity(Date.now());
+  };
+
+  window.addEventListener("mousemove", updateActivity);
+  window.addEventListener("keydown", updateActivity);
+  window.addEventListener("click", updateActivity);
+  window.addEventListener("scroll", updateActivity);
+
+  return () => {
+    window.removeEventListener("mousemove", updateActivity);
+    window.removeEventListener("keydown", updateActivity);
+    window.removeEventListener("click", updateActivity);
+    window.removeEventListener("scroll", updateActivity);
+  };
+}, []);
+  useEffect(() => {
+  const interval = setInterval(() => {
+    const inactiveTime = Date.now() - lastActivity;
+
+    if (
+  inactiveTime > 180000 &&
+  (localStorage.getItem("legacyStudent") || localStorage.getItem("legacyAdmin"))
+) {
+      localStorage.removeItem("legacyStudent");
+      localStorage.removeItem("legacyAdmin");
+
+setIsLoggedIn(false);
+setStudentBookings([]);
+setAdminBookings([]);
+setCredits(0);
+
+      alert("Session expired due to inactivity.");
+      setPage("home");
+    }
+  }, 10000);
+
+  return () => clearInterval(interval);
+}, [lastActivity]);
   const [selectedDate, setSelectedDate] = useState(null);
   const [calendarMonthOffset, setCalendarMonthOffset] = useState(0);
   const [bookedSlots, setBookedSlots] = useState({});
