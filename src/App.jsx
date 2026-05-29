@@ -78,6 +78,8 @@ setCredits(0);
   const [bookedSlots, setBookedSlots] = useState({});
   const [studentBookings, setStudentBookings] = useState([]);
   const [adminBookings, setAdminBookings] = useState([]);
+  const [studentWaitlist, setStudentWaitlist] = useState([]);
+const [adminWaitlist, setAdminWaitlist] = useState([]);
 const [credits, setCredits] = useState(0);
   const today = new Date();
 
