@@ -1433,7 +1433,7 @@ const paragraph = {
 const aboutSection = {
   padding: "100px 70px",
   borderTop: "1px solid rgba(200,169,107,0.25)",
-  background: "#080808"
+  background: "#000"
 };
 
 const aboutGrid = {
