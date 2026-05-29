@@ -423,6 +423,10 @@ return;
             </div>
 
             <div style={heroRight}>
+              minHeight: "650px",
+display: "flex",
+alignItems: "center",
+justifyContent: "center",
   <div style={glowCircle}>
    
 <img
