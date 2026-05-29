@@ -424,7 +424,7 @@ return;
 <div style={heroRight}>
   <div
     style={{
-      width: "420px",
+      width: "370px",
       height: "580px",
       borderRadius: "300px 300px 40px 40px",
       padding: "2px",
