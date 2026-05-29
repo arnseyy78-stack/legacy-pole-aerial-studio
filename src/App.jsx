@@ -426,7 +426,7 @@ return;
   <div style={glowCircle}>
    
     <img
-      src="/images/hero-model.jpg"
+      src="/publicimageshero-model.jpg"
       alt="Legacy Pole & Aerial Studio"
       style={{
         width: "100%",
