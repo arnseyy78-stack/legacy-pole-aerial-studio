@@ -423,10 +423,6 @@ return;
             </div>
 
             <div style={heroRight}>
-              
-display: "flex",
-alignItems: "center",
-justifyContent: "center",
   <div style={glowCircle}>
    
 <img
