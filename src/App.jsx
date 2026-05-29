@@ -424,9 +424,21 @@ return;
 
             <div style={heroRight}>
   <div style={glowCircle}>
-    <img ... />
+   
+    <img
+      src="/images/hero-model.jpg"
+      alt="Legacy Pole & Aerial Studio"
+      style={{
+        width: "100%",
+        height: "100%",
+        objectFit: "cover",
+        borderRadius: "50px",
+        filter: "brightness(0.95) contrast(1.05)"
+      }}
+    />
   </div>
 </div>
+
 </section>
 
           <section style={aboutSection}>
