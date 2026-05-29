@@ -867,8 +867,9 @@ const result = await response.json();
 
 if (result.success) {
   localStorage.setItem("legacyAdmin", "true");
-  loadAdminBookings();
-  setPage("adminDashboard");
+loadAdminBookings();
+loadAdminWaitlist();
+setPage("adminDashboard");
 } else {
   alert("Incorrect admin password.");
 }
@@ -1106,9 +1107,20 @@ const bookingKey =
     .maybeSingle();
 
 if (existingWaitlist) {
-  await loadStudentWaitlist(studentData.email);
-  alert("You are already on the waitlist for this class.");
-  return;
+  const newWaitlistItem = {
+  id: Date.now(),
+  Student_name: studentData.fullName,
+  Student_email: studentData.email,
+  Class_name: item[1],
+  Booking_date: bookingDate
+};
+
+setStudentWaitlist((prev) => [...prev, newWaitlistItem]);
+
+await loadStudentWaitlist(studentData.email);
+
+alert("This class is full. You have been added to the waitlist.");
+return;
 }
 
   const { error } = await supabase
