@@ -1379,8 +1379,6 @@ const glowCircle = {
   height: "560px",
   borderRadius: "260px 260px 40px 40px",
   border: "1px solid rgba(200,169,107,0.35)",
-  background:
-    "linear-gradient(180deg, rgba(255,255,255,0.08), rgba(200,169,107,0.05), rgba(0,0,0,0.9))",
   boxShadow: "0 40px 120px rgba(0,0,0,0.8)",
   display: "flex",
   alignItems: "center",
