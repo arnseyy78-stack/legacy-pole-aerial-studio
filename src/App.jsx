@@ -426,14 +426,18 @@ return;
   <img
     src="/publicimageshero-model.jpg"
     alt="Legacy Pole & Aerial Studio"
-    style={{
-      width: "520px",
-      height: "680px",
-      objectFit: "cover",
-      objectPosition: "center",
-      borderRadius: "300px 300px 40px 40px",
-      boxShadow: "0 40px 120px rgba(0,0,0,0.8)"
-    }}
+style={{
+  width: "520px",
+  height: "680px",
+  objectFit: "cover",
+  objectPosition: "center",
+  borderRadius: "300px 300px 40px 40px",
+
+  border: "1px solid rgba(200,169,107,0.4)",
+
+  boxShadow:
+    "0 0 60px rgba(200,169,107,0.25), 0 0 120px rgba(200,169,107,0.12), 0 40px 120px rgba(0,0,0,0.8)"
+}}
   />
 </div>
 
