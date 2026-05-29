@@ -422,6 +422,7 @@ return;
               </button>
             </div>
            <div style={heroRight}>
+             <div style={archedPanel}>
   <img
     src="/publicimageshero-model.jpg"
     alt="Legacy Pole & Aerial Studio"
