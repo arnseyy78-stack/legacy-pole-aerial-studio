@@ -377,7 +377,10 @@ if (savedExpiry && new Date(savedExpiry) < new Date()) {
   localStorage.setItem(`legacyCredits_${data.email}`, 0);
   localStorage.removeItem(`legacyExpiry_${data.email}`);
   setCredits(0);
-  alert("Your package has expired. Please purchase a new package.");
+  localStorage.setItem(
+  "legacyExpiryWarning",
+  "Your package has expired. Please purchase a new package."
+);
 } else {
   setCredits(savedCredits);
 }
@@ -385,6 +388,14 @@ if (savedExpiry && new Date(savedExpiry) < new Date()) {
 await loadStudentBookings(data.email);
 await loadStudentWaitlist(data.email);
 alert("Login successful!");
+  const expiryWarning = localStorage.getItem("legacyExpiryWarning");
+
+if (expiryWarning) {
+  setTimeout(() => {
+    alert(expiryWarning);
+    localStorage.removeItem("legacyExpiryWarning");
+  }, 1500);
+}
 setPage("chooseClass");
 }
   function checkPackageExpiry(email) {
