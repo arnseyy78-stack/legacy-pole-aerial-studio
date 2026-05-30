@@ -387,7 +387,20 @@ await loadStudentWaitlist(data.email);
 alert("Login successful!");
 setPage("chooseClass");
 }
-  
+  function checkPackageExpiry(email) {
+  const savedExpiry = localStorage.getItem(`legacyExpiry_${email}`);
+
+  if (savedExpiry && new Date(savedExpiry) < new Date()) {
+    localStorage.setItem(`legacyCredits_${email}`, 0);
+    localStorage.removeItem(`legacyExpiry_${email}`);
+    setCredits(0);
+    alert("Your package has expired. Please purchase a new package.");
+    setPage("packages");
+    return true;
+  }
+
+  return false;
+}
   async function buyPackage(pkg) {
   try {
   if (pkg.isTest) {
@@ -1177,13 +1190,19 @@ await loadStudentWaitlist(studentData.email);
 alert("This class is full. You have been added to the waitlist.");
 return;
 }
+                  const studentData =
+  JSON.parse(localStorage.getItem("legacyStudent")) || student;
+
+if (checkPackageExpiry(studentData.email)) {
+  return;
+}
+
 if (credits <= 0) {
   alert("You do not have enough credits. Please choose a package first.");
   setPage("packages");
   return;
 }
-const studentData =
-  JSON.parse(localStorage.getItem("legacyStudent")) || student;
+
 
 const { data: existingBooking } = await supabase
   .from("Bookings")
