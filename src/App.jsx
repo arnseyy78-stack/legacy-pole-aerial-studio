@@ -7,6 +7,7 @@ useEffect(() => {
   loadStudentBookings();
   loadStudentWaitlist();
   loadAdminWaitlist();
+  loadTotalStudents();
 
   const channel = supabase
     .channel("Bookings-realtime")
@@ -22,6 +23,7 @@ useEffect(() => {
         loadStudentBookings();
         loadStudentWaitlist();
         loadAdminWaitlist();
+        loadTotalStudents();
       }
     )
     .subscribe();
@@ -90,7 +92,11 @@ setCredits(0);
   const [adminBookings, setAdminBookings] = useState([]);
   const [studentWaitlist, setStudentWaitlist] = useState([]);
 const [adminWaitlist, setAdminWaitlist] = useState([]);
+
+const [totalStudents, setTotalStudents] = useState(0);
+
 const [credits, setCredits] = useState(0);
+
   const today = new Date();
   const [adminView, setAdminView] = useState("upcoming");
 const [studentView, setStudentView] = useState("upcoming");
@@ -158,6 +164,18 @@ async function loadBookings() {
   });
 
   setBookedSlots(slotMap);
+}
+  async function loadTotalStudents() {
+  const { count, error } = await supabase
+    .from("students")
+    .select("*", { count: "exact", head: true });
+
+  if (error) {
+    console.log(error);
+    return;
+  }
+
+  setTotalStudents(count || 0);
 }
 async function loadAdminBookings() {
   const { data, error } = await supabase
@@ -1348,6 +1366,22 @@ bookedSlots[
   <div>
     <p style={goldSmallText}>ADMIN DASHBOARD</p>
     <h2 style={sectionHeading}>Upcoming Class Bookings</h2>
+    <div
+  style={{
+    border: "1px solid rgba(200,169,107,0.25)",
+    borderRadius: "12px",
+    padding: "12px 20px",
+    marginTop: "15px",
+    display: "inline-block"
+  }}
+>
+  <div style={{ color: "#c8a96b", fontSize: "12px" }}>
+    TOTAL STUDENTS
+  </div>
+  <div style={{ color: "#fff", fontSize: "28px", fontWeight: "bold" }}>
+    {totalStudents}
+  </div>
+</div>
   </div>
 
   <button
