@@ -1002,6 +1002,22 @@ setPage("adminDashboard");
             <p style={{ color: "#999", margin: "6px 0 0" }}>
               {booking.Booking_date} · 6:00 PM
             </p>
+            {new Date(booking.Booking_date) < new Date() && (
+  <a
+    href="PASTE_GOOGLE_REVIEW_LINK_HERE"
+    target="_blank"
+    rel="noopener noreferrer"
+    style={{
+      color: "#c8a96b",
+      textDecoration: "none",
+      fontWeight: "bold",
+      display: "inline-block",
+      marginTop: "8px"
+    }}
+  >
+    ⭐ Leave a Review
+  </a>
+)}
           </div>
         ))
       )}
