@@ -87,7 +87,7 @@ const [adminWaitlist, setAdminWaitlist] = useState([]);
 const [credits, setCredits] = useState(0);
   const today = new Date();
   const [adminView, setAdminView] = useState("upcoming");
-
+const [studentView, setStudentView] = useState("upcoming");
 const displayedDate = new Date(
   today.getFullYear(),
   today.getMonth() + calendarMonthOffset,
@@ -898,51 +898,62 @@ setPage("adminDashboard");
     Credits Remaining: {credits}
   </h3>
 
-  <p style={{ color: "#999" }}>
-    Use 1 credit per class booking
-  </p>
+  <p style={{ color: "#999" }}>Use 1 credit per class booking</p>
 
-  <div style={{ marginTop: "20px" }}>
-    <p style={goldSmallText}>UPCOMING CLASSES</p>
+  <select
+    value={studentView}
+    onChange={(e) => setStudentView(e.target.value)}
+    style={{ ...inputStyle, marginBottom: "20px" }}
+  >
+    <option value="upcoming">Upcoming Classes</option>
+    <option value="waitlist">Waitlist</option>
+  </select>
 
-    {studentBookings.length === 0 ? (
-      <p style={{ color: "#999" }}>No classes booked yet.</p>
-    ) : (
-      studentBookings.map((booking) => (
-        <div key={booking.id} style={{
-          borderTop: "1px solid rgba(200,169,107,0.2)",
-          paddingTop: "12px",
-          marginTop: "12px"
-        }}>
-          <p style={{ color: "#fff", margin: 0 }}>{booking.Class_name}</p>
-          <p style={{ color: "#999", margin: "6px 0 0" }}>
-            {booking.Booking_date} · 6:00 PM
-          </p>
-        </div>
-      ))
-    )}
-  </div>
+  {studentView === "upcoming" && (
+    <div style={{ marginTop: "20px" }}>
+      <p style={goldSmallText}>UPCOMING CLASSES</p>
 
-  <div style={{ marginTop: "25px" }}>
-    <p style={goldSmallText}>WAITLIST</p>
+      {studentBookings.length === 0 ? (
+        <p style={{ color: "#999" }}>No classes booked yet.</p>
+      ) : (
+        studentBookings.map((booking) => (
+          <div key={booking.id} style={{
+            borderTop: "1px solid rgba(200,169,107,0.2)",
+            paddingTop: "12px",
+            marginTop: "12px"
+          }}>
+            <p style={{ color: "#fff", margin: 0 }}>{booking.Class_name}</p>
+            <p style={{ color: "#999", margin: "6px 0 0" }}>
+              {booking.Booking_date} · 6:00 PM
+            </p>
+          </div>
+        ))
+      )}
+    </div>
+  )}
 
-    {studentWaitlist.length === 0 ? (
-      <p style={{ color: "#999" }}>No waitlist classes.</p>
-    ) : (
-      studentWaitlist.map((item) => (
-        <div key={item.id} style={{
-          borderTop: "1px solid rgba(200,169,107,0.2)",
-          paddingTop: "12px",
-          marginTop: "12px"
-        }}>
-          <p style={{ color: "#fff", margin: 0 }}>{item.Class_name}</p>
-          <p style={{ color: "#999", margin: "6px 0 0" }}>
-            {item.Booking_date} · Waitlisted
-          </p>
-        </div>
-      ))
-    )}
-  </div>
+  {studentView === "waitlist" && (
+    <div style={{ marginTop: "20px" }}>
+      <p style={goldSmallText}>WAITLIST</p>
+
+      {studentWaitlist.length === 0 ? (
+        <p style={{ color: "#999" }}>No waitlist classes.</p>
+      ) : (
+        studentWaitlist.map((item) => (
+          <div key={item.id} style={{
+            borderTop: "1px solid rgba(200,169,107,0.2)",
+            paddingTop: "12px",
+            marginTop: "12px"
+          }}>
+            <p style={{ color: "#fff", margin: 0 }}>{item.Class_name}</p>
+            <p style={{ color: "#999", margin: "6px 0 0" }}>
+              {item.Booking_date} · Waitlisted
+            </p>
+          </div>
+        ))
+      )}
+    </div>
+  )}
 </div>
       <div style={calendarBox}>
         <div
@@ -1382,12 +1393,12 @@ bookedSlots[
                 </p>
               </div>
                         ))
-          )}
-        </div>
-      </>
-    )}
-</div>
-</section>
+                      )}
+          </div>
+        </>
+      )}
+    </div>
+  </section>
 )}
       {/* PACKAGES */}
       {page === "packages" && isLoggedIn && (
