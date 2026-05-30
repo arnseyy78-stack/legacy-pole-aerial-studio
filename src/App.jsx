@@ -86,6 +86,7 @@ setCredits(0);
 const [adminWaitlist, setAdminWaitlist] = useState([]);
 const [credits, setCredits] = useState(0);
   const today = new Date();
+  const [adminView, setAdminView] = useState("upcoming");
 
 const displayedDate = new Date(
   today.getFullYear(),
@@ -1250,7 +1251,18 @@ bookedSlots[
         <p style={goldSmallText}>ADMIN DASHBOARD</p>
 
         <h2 style={sectionHeading}>Upcoming Class Bookings</h2>
-
+<select
+  value={adminView}
+  onChange={(e) => setAdminView(e.target.value)}
+  style={{
+    ...inputStyle,
+    marginBottom: "20px"
+  }}
+>
+  <option value="today">Today's Classes</option>
+  <option value="upcoming">Upcoming Classes</option>
+  <option value="waitlist">Waitlist</option>
+</select>
         <button
           onClick={() => {
             loadAdminBookings();
@@ -1260,47 +1272,98 @@ bookedSlots[
         >
           REFRESH BOOKINGS
         </button>
+{adminView === "today" && (
+  <>
+    {adminBookings
+      .filter((booking) => {
+        const today = new Date();
+        const month = today.toLocaleString("default", {
+          month: "long"
+        });
+        const day = today.getDate();
 
-        {adminBookings.length === 0 ? (
-          <p style={{ color: "#999" }}>No bookings yet.</p>
-        ) : (
-          Object.entries(
-            adminBookings.reduce((groups, booking) => {
-              const key = `${booking.Booking_date}-${booking.Class_name}`;
-              if (!groups[key]) groups[key] = [];
-              groups[key].push(booking);
-              return groups;
-            }, {})
-          ).map(([groupKey, bookings]) => (
-            <div key={groupKey} style={{
-              borderTop: "1px solid rgba(200,169,107,0.25)",
-              paddingTop: "22px",
-              marginTop: "22px"
-            }}>
-              <p style={goldSmallText}>{bookings[0].Booking_date}</p>
-              <h3 style={{ color: "#fff", margin: "10px 0" }}>
-                {bookings[0].Class_name} · 6:00 PM
-              </h3>
-              <p style={{ color: "#c8a96b" }}>
-                Slots Filled: {bookings.length}/5
+        return booking.Booking_date === `${month}-${day}`;
+      })
+      .map((booking) => (
+        <div
+          key={booking.id}
+          style={{
+            borderTop: "1px solid rgba(200,169,107,0.25)",
+            paddingTop: "15px",
+            marginTop: "15px"
+          }}
+        >
+          <p style={{ color: "#fff", margin: 0 }}>
+            {booking.Student_name}
+          </p>
+
+          <p style={{ color: "#777", margin: "5px 0" }}>
+            {booking.Student_email}
+          </p>
+
+          <p style={{ color: "#c8a96b", margin: 0 }}>
+            {booking.Class_name}
+          </p>
+        </div>
+      ))}
+  </>
+)}
+        {adminView === "upcoming" && (
+  <>
+    {adminBookings.length === 0 ? (
+      <p style={{ color: "#999" }}>No bookings yet.</p>
+    ) : (
+      Object.entries(
+        adminBookings.reduce((groups, booking) => {
+          const key = `${booking.Booking_date}-${booking.Class_name}`;
+          if (!groups[key]) groups[key] = [];
+          groups[key].push(booking);
+          return groups;
+        }, {})
+      ).map(([groupKey, bookings]) => (
+        <div
+          key={groupKey}
+          style={{
+            borderTop: "1px solid rgba(200,169,107,0.25)",
+            paddingTop: "22px",
+            marginTop: "22px"
+          }}
+        >
+          <p style={goldSmallText}>{bookings[0].Booking_date}</p>
+
+          <h3 style={{ color: "#fff", margin: "10px 0" }}>
+            {bookings[0].Class_name} · 6:00 PM
+          </h3>
+
+          <p style={{ color: "#c8a96b" }}>
+            Slots Filled: {bookings.length}/5
+          </p>
+
+          {bookings.map((student) => (
+            <div
+              key={student.id}
+              style={{
+                padding: "10px 0",
+                borderBottom: "1px solid rgba(255,255,255,0.05)"
+              }}
+            >
+              <p style={{ color: "#fff", margin: 0 }}>
+                {student.Student_name}
               </p>
 
-              {bookings.map((student) => (
-                <div key={student.id} style={{
-                  padding: "10px 0",
-                  borderBottom: "1px solid rgba(255,255,255,0.05)"
-                }}>
-                  <p style={{ color: "#fff", margin: 0 }}>{student.Student_name}</p>
-                  <p style={{ color: "#777", margin: "5px 0 0" }}>
-                    {student.Student_email}
-                  </p>
-                </div>
-              ))}
+              <p style={{ color: "#777", margin: "5px 0 0" }}>
+                {student.Student_email}
+              </p>
             </div>
-          ))
-        )}
-
-        <div style={{ marginTop: "50px" }}>
+          ))}
+        </div>
+      ))
+    )}
+  </>
+)}
+        {adminView === "waitlist" && (
+  <>
+    <div style={{ marginTop: "50px" }}>
           <p style={goldSmallText}>WAITLIST</p>
 
           {adminWaitlist.length === 0 ? (
@@ -1318,12 +1381,14 @@ bookedSlots[
                   {item.Class_name} · {item.Booking_date}
                 </p>
               </div>
-            ))
+                        ))
           )}
         </div>
-      </div>
-    </section>
-  )}
+      </>
+    )}
+</div>
+</section>
+)}
       {/* PACKAGES */}
       {page === "packages" && isLoggedIn && (
         <section style={centerPage}>
