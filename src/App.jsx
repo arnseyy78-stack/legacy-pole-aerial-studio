@@ -38,6 +38,12 @@ const [isLoggedIn, setIsLoggedIn] = useState(
 );
   const [lastActivity, setLastActivity] = useState(Date.now());
   useEffect(() => {
+
+  if (window.location.hash === "#legacy-admin") {
+    localStorage.setItem("legacyAdminDevice", "true");
+    setShowAdminLogin(true);
+  }
+
   const updateActivity = () => {
     setLastActivity(Date.now());
   };
@@ -88,6 +94,9 @@ const [credits, setCredits] = useState(0);
   const today = new Date();
   const [adminView, setAdminView] = useState("upcoming");
 const [studentView, setStudentView] = useState("upcoming");
+  const [showAdminLogin, setShowAdminLogin] = useState(
+  localStorage.getItem("legacyAdminDevice") === "true"
+);
 const displayedDate = new Date(
   today.getFullYear(),
   today.getMonth() + calendarMonthOffset,
@@ -639,18 +648,20 @@ return;
             >
               LOGIN
             </button>
-            <button
-  onClick={() => setPage("adminLogin")}
-  style={{
-    ...outlineButton,
-    width: "100%",
-    marginTop: "20px",
-    border: "1px solid rgba(255,255,255,0.2)",
-    color: "#fff"
-  }}
->
-  ADMIN LOGIN
-</button>
+            {showAdminLogin && (
+  <button
+    onClick={() => setPage("adminLogin")}
+    style={{
+      ...outlineButton,
+      width: "100%",
+      marginTop: "20px",
+      border: "1px solid rgba(255,255,255,0.2)",
+      color: "#fff"
+    }}
+  >
+    ADMIN LOGIN
+  </button>
+)}
           </div>
         </section>
       )}
