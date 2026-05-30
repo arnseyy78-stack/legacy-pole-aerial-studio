@@ -1004,7 +1004,7 @@ setPage("adminDashboard");
             </p>
             {new Date(booking.Booking_date) < new Date() && (
   <a
-    href="PASTE_GOOGLE_REVIEW_LINK_HERE"
+    href="https://g.page/r/CW_TupV6xyxtEAI/review"
     target="_blank"
     rel="noopener noreferrer"
     style={{
