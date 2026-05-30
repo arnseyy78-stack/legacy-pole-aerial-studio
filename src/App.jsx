@@ -1376,20 +1376,7 @@ bookedSlots[
   <option value="upcoming">Upcoming Classes</option>
   <option value="waitlist">Waitlist</option>
 </select>
-        <button
-          onClick={() => {
-            loadAdminBookings();
-            loadAdminWaitlist();
-          }}
-          style={{
-  ...outlineButton,
-  padding: "8px 16px",
-  fontSize: "12px",
-  marginBottom: "25px"
-}}
-        >
-          ↻ Refresh Data
-        </button>
+        
 {adminView === "today" && (
   <>
     {adminBookings
