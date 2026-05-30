@@ -371,7 +371,16 @@ setStudentBookings([]);
 const savedCredits =
   Number(localStorage.getItem(`legacyCredits_${data.email}`)) || 0;
 
-setCredits(savedCredits);
+const savedExpiry = localStorage.getItem(`legacyExpiry_${data.email}`);
+
+if (savedExpiry && new Date(savedExpiry) < new Date()) {
+  localStorage.setItem(`legacyCredits_${data.email}`, 0);
+  localStorage.removeItem(`legacyExpiry_${data.email}`);
+  setCredits(0);
+  alert("Your package has expired. Please purchase a new package.");
+} else {
+  setCredits(savedCredits);
+}
 
 await loadStudentBookings(data.email);
 await loadStudentWaitlist(data.email);
@@ -397,14 +406,26 @@ setPage("chooseClass");
       className: "Test package selected",
       amount: "FREE",
       credits: pkg.credits,
-      expiry: "No expiry"
+      expiry: "30 Days"
     })
   });
 
 const packageCredits = pkg.credits || 0;
 
+const expiryDate = new Date();
+expiryDate.setDate(expiryDate.getDate() + 30);
+
 setCredits(packageCredits);
-localStorage.setItem(`legacyCredits_${studentData.email}`, packageCredits);
+
+localStorage.setItem(
+  `legacyCredits_${studentData.email}`,
+  packageCredits
+);
+
+localStorage.setItem(
+  `legacyExpiry_${studentData.email}`,
+  expiryDate.toISOString()
+);
 
 alert(`${pkg.name} confirmed. ${packageCredits} credits added.`);
 setPage("chooseClass");
