@@ -1198,6 +1198,20 @@ return;
   }
 
 await loadStudentWaitlist(studentData.email);
+
+    await fetch("/api/send-email", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    type: "waitlist",
+    studentName: studentData.fullName,
+    studentEmail: studentData.email,
+    className: item[1],
+    expiry: bookingDate
+  })
+});
 alert("This class is full. You have been added to the waitlist.");
 return;
 }
