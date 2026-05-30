@@ -504,7 +504,9 @@ return;
           <button onClick={() => setPage("home")} style={navButton}>
             HOME
           </button>
-
+<button onClick={() => setPage("contact")} style={navButton}>
+  CONTACT US
+</button>
           {isLoggedIn && (
   <button onClick={() => setPage("packages")} style={navButton}>
     PACKAGES
@@ -1462,6 +1464,58 @@ bookedSlots[
           </div>
         </>
       )}
+    </div>
+  </section>
+)}
+    {/* CONTACT */}
+{page === "contact" && (
+  <section style={centerPage}>
+    <div style={{ ...formCard, maxWidth: "900px" }}>
+      <p style={goldSmallText}>VISIT LEGACY</p>
+
+      <h2 style={sectionHeading}>Contact Us</h2>
+
+      <div style={{ marginBottom: "30px" }}>
+        <p style={goldSmallText}>ADDRESS</p>
+        <p style={paragraph}>
+          Unit 1, 2nd Flr, RCPJC Compound A, Antero Soriano Hwy,
+          General Trias, 4107 Cavite
+        </p>
+      </div>
+
+      <div style={{ marginBottom: "30px" }}>
+        <p style={goldSmallText}>PHONE</p>
+        <p style={paragraph}>
+          +63 905 336 6544 / +63 906 378 2296
+        </p>
+      </div>
+
+      <a
+        href="https://share.google/AFqMpoBqHNcfTIXGf"
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          ...goldButtonLarge,
+          display: "inline-block",
+          textDecoration: "none",
+          marginBottom: "30px"
+        }}
+      >
+        OPEN GOOGLE MAP
+      </a>
+
+      <iframe
+        title="Legacy Pole & Aerial Studio Google Map"
+        src="https://www.google.com/maps?q=Unit%201%2C%202nd%20Flr%2C%20RCPJC%20Compound%20A%2C%20Antero%20Soriano%20Hwy%2C%20General%20Trias%2C%204107%20Cavite&output=embed"
+        width="100%"
+        height="380"
+        style={{
+          border: "1px solid rgba(200,169,107,0.25)",
+          borderRadius: "24px",
+          marginTop: "10px"
+        }}
+        loading="lazy"
+      ></iframe>
     </div>
   </section>
 )}
