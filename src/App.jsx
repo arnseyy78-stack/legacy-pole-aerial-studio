@@ -1337,9 +1337,33 @@ bookedSlots[
   localStorage.getItem("legacyAdmin") === "true" && (
     <section style={centerPage}>
       <div style={{ ...formCard, maxWidth: "1100px" }}>
-        <p style={goldSmallText}>ADMIN DASHBOARD</p>
+<div
+  style={{
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: "20px"
+  }}
+>
+  <div>
+    <p style={goldSmallText}>ADMIN DASHBOARD</p>
+    <h2 style={sectionHeading}>Upcoming Class Bookings</h2>
+  </div>
 
-        <h2 style={sectionHeading}>Upcoming Class Bookings</h2>
+  <button
+    onClick={() => {
+      loadAdminBookings();
+      loadAdminWaitlist();
+    }}
+    style={{
+      ...outlineButton,
+      padding: "8px 16px",
+      fontSize: "12px"
+    }}
+  >
+    ↻ Refresh Data
+  </button>
+</div>
 <select
   value={adminView}
   onChange={(e) => setAdminView(e.target.value)}
@@ -1357,9 +1381,14 @@ bookedSlots[
             loadAdminBookings();
             loadAdminWaitlist();
           }}
-          style={{ ...outlineButton, marginBottom: "25px" }}
+          style={{
+  ...outlineButton,
+  padding: "8px 16px",
+  fontSize: "12px",
+  marginBottom: "25px"
+}}
         >
-          REFRESH BOOKINGS
+          ↻ Refresh Data
         </button>
 {adminView === "today" && (
   <>
