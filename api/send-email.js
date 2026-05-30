@@ -12,6 +12,7 @@ export default async function handler(req, res) {
       amount,
       credits,
       expiry
+      type
     } = req.body;
 
     const isClassBooking =
@@ -31,7 +32,10 @@ export default async function handler(req, res) {
         reply_to: "legacycavitepoleaerialstudio@gmail.com",
         to: [studentEmail],
         bcc: ["legacycavitepoleaerialstudio@gmail.com"],
-        subject: isClassBooking
+        subject: 
+            type === "waitlist"
+    ? "Waitlist Confirmation"
+          : isClassBooking
           ? "Class Booking Confirmation"
           : "Package Purchase Confirmation",
         html: `
@@ -40,7 +44,14 @@ export default async function handler(req, res) {
           <p>Hi ${studentName || "Student"},</p>
 
           ${
-            isClassBooking
+  type === "waitlist"
+    ? `
+      <p>You have been added to the waitlist.</p>
+      <p><b>Class:</b> ${className}</p>
+      <p><b>Date:</b> ${expiry}</p>
+      <p>We will contact you if a spot becomes available.</p>
+    `
+    : isClassBooking
               ? `
                 <p>Your booking has been confirmed.</p>
                 <p><b>Package:</b> ${packageName}</p>
