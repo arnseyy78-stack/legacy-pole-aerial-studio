@@ -1478,6 +1478,7 @@ bookedSlots[
       <div style={{ marginBottom: "30px" }}>
         <p style={goldSmallText}>ADDRESS</p>
         <p style={paragraph}>
+          Legacy Pole & Aerial Dance Studio 
           Unit 1, 2nd Flr, RCPJC Compound A, Antero Soriano Hwy,
           General Trias, 4107 Cavite
         </p>
