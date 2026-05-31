@@ -19,8 +19,8 @@ export default async function handler(req, res) {
             send_email_receipt: true,
             show_description: true,
             show_line_items: true,
-            success_url: "https://legacy-pole-aerial-studio.vercel.app/?paid=true",
-            cancel_url: "https://legacy-pole-aerial-studio.vercel.app/?cancelled=true",
+success_url: "https://legacypolestudio.com/?paid=true",
+cancel_url: "https://legacypolestudio.com/?cancelled=true",
             payment_method_types: ["qrph"],
             line_items: [
               {
