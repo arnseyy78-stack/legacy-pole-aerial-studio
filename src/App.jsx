@@ -394,9 +394,7 @@ setCredits(0);
   );
 setIsLoggedIn(true);
 setStudentBookings([]);
-
-const savedCredits =
-  Number(localStorage.getItem(`legacyCredits_${data.email}`)) || 0;
+const savedCredits = Number(data.credits) || 0;
 
 const savedExpiry = localStorage.getItem(`legacyExpiry_${data.email}`);
 
@@ -405,9 +403,9 @@ if (savedExpiry && new Date(savedExpiry) < new Date()) {
   localStorage.removeItem(`legacyExpiry_${data.email}`);
   setCredits(0);
   localStorage.setItem(
-  "legacyExpiryWarning",
-  "Your package has expired. Please purchase a new package."
-);
+    "legacyExpiryWarning",
+    "Your package has expired. Please purchase a new package."
+  );
 } else {
   setCredits(savedCredits);
 }
