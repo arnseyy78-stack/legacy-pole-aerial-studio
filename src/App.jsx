@@ -1625,13 +1625,14 @@ bookedSlots[
 </button>
             <div style={packageGrid}>
               {[
-  {
-    name: "Single Pass",
-    price: "₱870",
-    description: "One class access",
-    amount: 87000,
-    expiry: "30 Days"
-  },
+{
+  name: "Single Pass",
+  price: "₱870",
+  description: "One class access",
+  amount: 87000,
+  credits: 1,
+  expiry: "30 Days"
+},
 
 {
   name: "Class Card",
