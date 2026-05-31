@@ -1325,6 +1325,14 @@ await fetch("/api/send-email", {
 const newCredits = credits - 1;
 
 setCredits(newCredits);
+                  const { error: creditUpdateError } = await supabase
+  .from("students")
+  .update({ credits: newCredits })
+  .eq("email", studentData.email);
+
+if (creditUpdateError) {
+  console.log("Credit update error:", creditUpdateError);
+}
 localStorage.setItem(`legacyCredits_${studentData.email}`, newCredits);
 
 alert(
