@@ -8,7 +8,66 @@ useEffect(() => {
   loadStudentWaitlist();
   loadAdminWaitlist();
   loadTotalStudents();
+  async function handlePaymentSuccess() {
+    const params = new URLSearchParams(window.location.search);
 
+    if (params.get("paid") !== "true") return;
+
+    const studentData = JSON.parse(localStorage.getItem("legacyStudent"));
+    const selectedPackage = JSON.parse(localStorage.getItem("legacySelectedPackage"));
+
+    if (!studentData || !selectedPackage) return;
+
+    const packageCredits = selectedPackage.credits || 0;
+    const expiryDate = new Date();
+    expiryDate.setDate(expiryDate.getDate() + 30);
+
+    const { data: freshStudent, error: studentError } = await supabase
+      .from("students")
+      .select("credits")
+      .eq("email", studentData.email)
+      .single();
+
+    if (studentError) {
+      console.log(studentError);
+      return;
+    }
+
+    const updatedCredits =
+      (Number(freshStudent?.credits) || 0) + packageCredits;
+
+    const { error: updateError } = await supabase
+      .from("students")
+      .update({ credits: updatedCredits })
+      .eq("email", studentData.email);
+
+    if (updateError) {
+      console.log(updateError);
+      alert("Payment received, but credits were not updated. Please contact admin.");
+      return;
+    }
+
+    setCredits(updatedCredits);
+
+    localStorage.setItem(
+      `legacyCredits_${studentData.email}`,
+      updatedCredits
+    );
+
+    localStorage.setItem(
+      `legacyExpiry_${studentData.email}`,
+      expiryDate.toISOString()
+    );
+
+    localStorage.removeItem("legacySelectedPackage");
+
+    alert(`${selectedPackage.name} confirmed. ${packageCredits} credits added.`);
+
+    window.history.replaceState({}, document.title, window.location.pathname);
+    setPage("chooseClass");
+  }
+
+  handlePaymentSuccess();
   const channel = supabase
     .channel("Bookings-realtime")
     .on(
