@@ -126,7 +126,7 @@ const [isLoggedIn, setIsLoggedIn] = useState(
     const inactiveTime = Date.now() - lastActivity;
 
     if (
-  inactiveTime > 180000 &&
+  inactiveTime > 1800000 &&
   (localStorage.getItem("legacyStudent") || localStorage.getItem("legacyAdmin"))
 ) {
       localStorage.removeItem("legacyStudent");
