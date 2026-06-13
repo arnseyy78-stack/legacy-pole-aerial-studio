@@ -21,7 +21,14 @@ const metadata =
 
 const studentEmail = metadata?.studentEmail;
 const packageName = metadata?.packageName;
-
+console.log("WEBHOOK DEBUG", {
+  eventId,
+  eventType,
+  metadata,
+  studentEmail,
+  packageName,
+  packageCredits
+});
     if (!studentEmail || !packageName) {
       console.log("Missing metadata:", metadata);
       return res.status(200).json({ received: true, skipped: "missing metadata" });
