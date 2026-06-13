@@ -1686,9 +1686,9 @@ bookedSlots[
               {[
 {
   name: "Single Pass",
-  price: "₱870",
+  price: "₱1",
   description: "One class access",
-  amount: 87000,
+  amount: 100,
   credits: 1,
   expiry: "30 Days"
 },
