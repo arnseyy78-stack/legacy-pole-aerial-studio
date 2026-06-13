@@ -650,18 +650,9 @@ return;
     />
   </div>
 
-  <section style={hero}>
-            <div style={{
-  display: "grid",
-  gridTemplateColumns: "repeat(2, 1fr)",
-  gap: "18px",
-  marginBottom: "40px"
-}}>
-  <img src="/mermaid.jpg" style={{ width: "100%", borderRadius: "18px" }} />
-  <img src="/xtian-chair.jpg" style={{ width: "100%", borderRadius: "18px" }} />
-  <img src="/ace-floor.jpg" style={{ width: "100%", borderRadius: "18px" }} />
-</div>
-            <div style={heroLeft}>
+  <section style={{ ...hero, gridTemplateColumns: "1fr", textAlign: "center" }}>
+
+            <div style={{ ...heroLeft, alignItems: "center" }}>
               <p style={goldSmallText}>WELCOME TO LEGACY</p>
 
               <h1 style={heroTitle}>
@@ -686,31 +677,7 @@ return;
                 BOOK YOUR CLASS
               </button>
             </div>
-<div style={heroRight}>
-  <div
-    style={{
-      width: "370px",
-      height: "580px",
-      borderRadius: "300px 300px 40px 40px",
-      padding: "2px",
-      background: "linear-gradient(180deg, rgba(200,169,107,0.8), rgba(200,169,107,0.18))",
-      boxShadow: "0 0 30px rgba(200,169,107,0.18), 0 20px 50px rgba(0,0,0,0.6)",
-      overflow: "hidden"
-    }}
-  >
-    <img
-      src="/publicimageshero-model.jpg"
-      alt="Legacy Pole & Aerial Studio"
-      style={{
-        width: "100%",
-        height: "100%",
-        objectFit: "cover",
-        objectPosition: "center",
-        borderRadius: "260px 260px 30px 30px",
-        display: "block"
-      }}
-    />
-  </div>
+
 </div>
 
 </section>
