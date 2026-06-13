@@ -607,6 +607,16 @@ return;
       {page === "home" && (
         <>
           <section style={hero}>
+            <div style={{
+  display: "grid",
+  gridTemplateColumns: "repeat(2, 1fr)",
+  gap: "18px",
+  marginBottom: "40px"
+}}>
+  <img src="/mermaid.jpg" style={{ width: "100%", borderRadius: "18px" }} />
+  <img src="/xtian-chair.jpg" style={{ width: "100%", borderRadius: "18px" }} />
+  <img src="/ace-floor.jpg" style={{ width: "100%", borderRadius: "18px" }} />
+</div>
             <div style={heroLeft}>
               <p style={goldSmallText}>WELCOME TO LEGACY</p>
 
