@@ -14,6 +14,9 @@ export default async function handler(req, res) {
       {};
 
     const metadata =
+      console.log("EVENT TYPE:", eventType);
+console.log("METADATA:", metadata);
+console.log("ATTRIBUTES:", attributes);
       attributes?.metadata ||
       attributes?.payment_intent?.attributes?.metadata ||
       {};
