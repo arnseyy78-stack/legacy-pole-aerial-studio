@@ -59,12 +59,18 @@ export default async function handler(req, res) {
 
     const students = await studentRes.json();
 
-    if (!students || students.length === 0) {
-      console.log("Student not found:", studentEmail);
-      return res.status(200).json({ received: true, skipped: "student not found" });
-    }
+console.log("STUDENT LOOKUP:", students);
 
-    const student = students[0];
+if (!students || students.length === 0) {
+  console.log("Student not found:", studentEmail);
+
+  return res.status(200).json({
+    received: true,
+    skipped: "student not found"
+  });
+}
+
+const student = students[0];
     const updatedCredits = (Number(student.credits) || 0) + packageCredits;
 
     const updateRes = await fetch(
