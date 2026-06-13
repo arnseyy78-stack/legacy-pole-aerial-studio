@@ -608,52 +608,49 @@ return;
         <>
           {page === "home" && (
   <>
-    {/* TOP IMAGE STRIP */}
-    <div
+  {/* TOP IMAGE STRIP */}
+  <div
+    style={{
+      display: "grid",
+      gridTemplateColumns: "repeat(3, 1fr)",
+      gap: "15px",
+      padding: "30px",
+      maxWidth: "1400px",
+      margin: "0 auto"
+    }}
+  >
+    <img
+      src="/mermaid.jpg"
       style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(3, 1fr)",
-        gap: "15px",
-        padding: "30px",
-        maxWidth: "1400px",
-        margin: "0 auto"
+        width: "100%",
+        height: "500px",
+        objectFit: "cover",
+        borderRadius: "20px"
       }}
-    >
-      <img
-        src="/mermaid.jpg"
-        style={{
-          width: "100%",
-          height: "500px",
-          objectFit: "cover",
-          borderRadius: "20px"
-        }}
-      />
+    />
 
-      <img
-        src="/xtian-chair.jpg"
-        style={{
-          width: "100%",
-          height: "500px",
-          objectFit: "cover",
-          borderRadius: "20px"
-        }}
-      />
+    <img
+      src="/xtian-chair.jpg"
+      style={{
+        width: "100%",
+        height: "500px",
+        objectFit: "cover",
+        borderRadius: "20px"
+      }}
+    />
 
-      <img
-        src="/ace-floor.jpg"
-        style={{
-          width: "100%",
-          height: "500px",
-          objectFit: "cover",
-          borderRadius: "20px"
-        }}
-      />
-    </div>
+    <img
+      src="/ace-floor.jpg"
+      style={{
+        width: "100%",
+        height: "500px",
+        objectFit: "cover",
+        borderRadius: "20px"
+      }}
+    />
+  </div>
 
-    {/* EXISTING HERO */}
-    <section style={hero}>
-      <div style={heroLeft}>
-          <section style={hero}>
+  <section style={hero}>
             <div style={{
   display: "grid",
   gridTemplateColumns: "repeat(2, 1fr)",
