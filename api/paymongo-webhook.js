@@ -13,37 +13,30 @@ export default async function handler(req, res) {
       event?.data?.attributes ||
       {};
 
-const metadata =
-  attributes?.metadata ||
-  attributes?.payment_intent?.attributes?.metadata ||
-  event?.data?.attributes?.data?.attributes?.metadata ||
-  {};
+    const metadata = attributes?.metadata || {};
 
-const studentEmail = metadata?.studentEmail;
-const packageName = metadata?.packageName;
-console.log("WEBHOOK DEBUG", {
-  eventId,
-  eventType,
-  metadata,
-  studentEmail,
-  packageName,
-  packageCredits
-});
-    if (!studentEmail || !packageName) {
-      console.log("Missing metadata:", metadata);
-      return res.status(200).json({ received: true, skipped: "missing metadata" });
-    }
+    const studentEmail = metadata?.studentEmail;
+    const packageName = metadata?.packageName;
 
     const packageCredits =
       packageName === "Single Pass" ? 1 :
       packageName === "Class Card" ? 5 :
       0;
 
-    if (packageCredits <= 0) {
-      return res.status(200).json({ received: true, skipped: "no credits" });
+    console.log("WEBHOOK DEBUG:", {
+      eventId,
+      eventType,
+      metadata,
+      studentEmail,
+      packageName,
+      packageCredits
+    });
+
+    if (!studentEmail || !packageName || packageCredits <= 0) {
+      return res.status(200).json({ received: true, skipped: "missing data" });
     }
 
-    const alreadyProcessed = await fetch(
+    const check = await fetch(
       `${process.env.SUPABASE_URL}/rest/v1/payment_events?event_id=eq.${eventId}`,
       {
         headers: {
@@ -53,14 +46,14 @@ console.log("WEBHOOK DEBUG", {
       }
     );
 
-    const processedData = await alreadyProcessed.json();
+    const existing = await check.json();
 
-    if (processedData.length > 0) {
+    if (existing.length > 0) {
       return res.status(200).json({ received: true, skipped: "already processed" });
     }
 
-    const studentResponse = await fetch(
-      `${process.env.SUPABASE_URL}/rest/v1/students?email=eq.${studentEmail}`,
+    const studentRes = await fetch(
+      `${process.env.SUPABASE_URL}/rest/v1/students?email=eq.${encodeURIComponent(studentEmail)}`,
       {
         headers: {
           apikey: process.env.SUPABASE_SERVICE_ROLE_KEY,
@@ -69,7 +62,7 @@ console.log("WEBHOOK DEBUG", {
       }
     );
 
-    const students = await studentResponse.json();
+    const students = await studentRes.json();
     const student = students[0];
 
     if (!student) {
@@ -79,7 +72,7 @@ console.log("WEBHOOK DEBUG", {
     const updatedCredits = (Number(student.credits) || 0) + packageCredits;
 
     await fetch(
-      `${process.env.SUPABASE_URL}/rest/v1/students?email=eq.${studentEmail}`,
+      `${process.env.SUPABASE_URL}/rest/v1/students?email=eq.${encodeURIComponent(studentEmail)}`,
       {
         method: "PATCH",
         headers: {
