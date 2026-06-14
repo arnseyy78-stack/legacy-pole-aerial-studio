@@ -1862,14 +1862,17 @@ bookedSlots[
 /* STYLES */
 const dashboardBox = {
   border: "1px solid rgba(200,169,107,0.25)",
-  background: "rgba(255,255,255,0.035)",
+  background: "rgba(0,0,0,0.70)",
   borderRadius: "24px",
   padding: "24px",
   marginBottom: "28px"
 };
 const app = {
   minHeight: "100vh",
-  backgroundColor: "#050505",
+  backgroundImage: "url('/studio-bg.jpeg')",
+  backgroundSize: "cover",
+  backgroundPosition: "center",
+  backgroundAttachment: "fixed",
   color: "#f5f1ea",
   fontFamily: "Georgia, serif"
 };
@@ -2060,7 +2063,8 @@ const centerPage = {
 const formCard = {
   width: "100%",
   maxWidth: "700px",
-  background: "rgba(255,255,255,0.04)",
+  background: "rgba(0,0,0,0.78)",
+backdropFilter: "blur(6px)",
   border: "1px solid rgba(200,169,107,0.25)",
   borderRadius: "34px",
   padding: "50px"
@@ -2105,7 +2109,7 @@ const packageGrid = {
 };
 
 const packageCard = {
-  background: "rgba(255,255,255,0.035)",
+  background: "rgba(0,0,0,0.70)",
   border: "1px solid rgba(200,169,107,0.25)",
   color: "#f5f1ea",
   borderRadius: "26px",
