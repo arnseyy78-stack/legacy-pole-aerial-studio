@@ -1206,12 +1206,12 @@ return (
 const weekday = actualSelectedDate.getDay();
 
 const classes = {
-  1: [["6:00 PM", "Pole Fitness", "/crossknee.jpg"]],
-  2: [["6:00 PM", "Pole Flow", "/xtian-pole.jpg"]],
-  3: [["6:00 PM", "Spinny Pole", "/climb.jpg"]],
-  4: [["6:00 PM", "Intro to Pole", "/ace-pole.jpg"]],
-  5: [["6:00 PM", "Exo", "/floor.jpg"]],
-  6: [["6:00 PM", "Floor Work", "/ace-floor.jpg"]],
+  1: [["6:00 PM 1 hr", "Pole Fitness", "/crossknee.jpg"]],
+  2: [["6:00 PM 1 hr", "Pole Flow", "/xtian-pole.jpg"]],
+  3: [["6:00 PM 1 hr", "Spinny Pole", "/climb.jpg"]],
+  4: [["6:00 PM 1 hr", "Intro to Pole", "/ace-pole.jpg"]],
+  5: [["6:00 PM 1 hr", "Exo", "/floor.jpg"]],
+  6: [["6:00 PM 1 hr", "Floor Work", "/ace-floor.jpg"]],
   0: []
 };
 
@@ -1553,7 +1553,7 @@ bookedSlots[
           <p style={goldSmallText}>{bookings[0].Booking_date}</p>
 
           <h3 style={{ color: "#fff", margin: "10px 0" }}>
-            {bookings[0].Class_name} · 6:00 PM 1hr
+            {bookings[0].Class_name} · 6:00 PM 
           </h3>
 
           <p style={{ color: "#c8a96b" }}>
