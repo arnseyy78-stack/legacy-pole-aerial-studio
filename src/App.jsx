@@ -2137,7 +2137,7 @@ const footerLogo = {
   color: "#c8a96b",
   letterSpacing: "8px",
   fontWeight: "300",
-  marginBottom: "5px"
+  marginBottom: "20px"
 };
 
 const footerSub = {
