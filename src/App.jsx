@@ -585,7 +585,7 @@ return;
       <div style={navbar}>
         <div>
 <img
-  src="/legacy-logo.png"
+  src="/1.png"
   alt="Legacy Pole & Aerial Studio"
   style={{
     height: "80px",
