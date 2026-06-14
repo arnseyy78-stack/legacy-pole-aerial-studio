@@ -1918,7 +1918,7 @@ const sectionHeading = {
 };
 
 const centerPage = {
-  minHeight: "85vh",
+  minHeight: "auto",
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
