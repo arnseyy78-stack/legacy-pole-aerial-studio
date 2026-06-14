@@ -613,31 +613,32 @@ return;
           </button>
         </div>
       </div>
-
+{["home", "authChoice", "login", "createAccount", "adminLogin"].includes(page) && (
+  <div
+    style={{
+      width: "100%",
+      maxWidth: "1400px",
+      margin: "30px auto",
+      padding: "0 30px",
+      boxSizing: "border-box"
+    }}
+  >
+    <img
+      src={["/mermaid.jpg", "/xtian-chair.jpg", "/ace-floor.jpg"][slideIndex]}
+      style={{
+        width: "100%",
+        height: "650px",
+        objectFit: "cover",
+        borderRadius: "20px",
+        transition: "all 0.5s ease"
+      }}
+    />
+  </div>
+)}
       {/* HOME */}
 {page === "home" && (
   <div>
-    {/* TOP SLIDESHOW */}
-    <div
-      style={{
-        width: "100%",
-        maxWidth: "1400px",
-        margin: "30px auto",
-        padding: "0 30px",
-        boxSizing: "border-box"
-      }}
-    >
-      <img
-        src={["/mermaid.jpg", "/xtian-chair.jpg", "/ace-floor.jpg"][slideIndex]}
-        style={{
-          width: "100%",
-          height: "650px",
-          objectFit: "cover",
-          borderRadius: "20px",
-          transition: "all 0.5s ease"
-        }}
-      />
-    </div>
+
 
     <section style={{ ...hero, gridTemplateColumns: "1fr", textAlign: "center" }}>
       <div style={{ ...heroLeft, alignItems: "center" }}>
