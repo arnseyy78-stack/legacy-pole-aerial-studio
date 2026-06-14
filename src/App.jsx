@@ -1206,12 +1206,12 @@ return (
 const weekday = actualSelectedDate.getDay();
 
 const classes = {
-  1: [["6:00 PM 1 hr", "Pole Fitness", "/crossknee.jpg"]],
-  2: [["6:00 PM 1 hr", "Pole Flow", "/xtian-pole.jpg"]],
-  3: [["6:00 PM 1 hr", "Spinny Pole", "/climb.jpg"]],
-  4: [["6:00 PM 1 hr", "Intro to Pole", "/ace-pole.jpg"]],
-  5: [["6:00 PM 1 hr", "Exo", "/floor.jpg"]],
-  6: [["6:00 PM 1 hr", "Floor Work", "/ace-floor.jpg"]],
+  1: [["6:00 PM 1hr", "Pole Fitness", "/crossknee.jpg"]],
+  2: [["6:00 PM 1hr", "Pole Flow", "/xtian-pole.jpg"]],
+  3: [["6:00 PM 1hr", "Spinny Pole", "/climb.jpg"]],
+  4: [["6:00 PM 1hr", "Intro to Pole", "/ace-pole.jpg"]],
+  5: [["6:00 PM 1hr", "Exo", "/floor.jpg"]],
+  6: [["6:00 PM 1hr", "Floor Work", "/ace-floor.jpg"]],
   0: []
 };
 
