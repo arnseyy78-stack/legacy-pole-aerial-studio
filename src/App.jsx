@@ -613,7 +613,7 @@ return;
           </button>
         </div>
       </div>
-{["home", "authChoice", "login", "createAccount", "adminLogin"].includes(page) && (
+{["home", "authChoice", "student", "login", "createPassword", "adminLogin"].includes(page) && (
   <div
     style={{
       width: "100%",
