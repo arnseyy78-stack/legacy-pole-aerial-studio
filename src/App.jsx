@@ -1816,14 +1816,14 @@ const outlineButton = {
 const hero = {
   display: "grid",
   gridTemplateColumns: "1fr 1fr",
-  minHeight: "85vh"
+  minHeight: "auto"
 };
 
 const heroLeft = {
   display: "flex",
   flexDirection: "column",
   justifyContent: "center",
-  padding: "80px"
+  padding: "10px"
 };
 
 const heroRight = {
