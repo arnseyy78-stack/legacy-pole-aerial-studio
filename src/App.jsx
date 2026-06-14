@@ -1735,7 +1735,26 @@ bookedSlots[
           </div>
         </section>
       )}
-
+<a
+  href="https://wa.me/639053366544"
+  target="_blank"
+  rel="noopener noreferrer"
+  style={{
+    position: "fixed",
+    bottom: "22px",
+    right: "22px",
+    background: "#25D366",
+    color: "#fff",
+    padding: "14px 20px",
+    borderRadius: "999px",
+    textDecoration: "none",
+    fontWeight: "bold",
+    zIndex: 9999,
+    boxShadow: "0 10px 30px rgba(0,0,0,0.35)"
+  }}
+>
+  Chat with us
+</a>
       {/* FOOTER */}
       <footer style={footer}>
         <h2 style={footerLogo}>LEGACY</h2>
