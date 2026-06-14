@@ -619,7 +619,7 @@ return;
       width: "100%",
       maxWidth: "1400px",
       margin: "30px auto",
-      padding: "0 30px",
+      padding: "20px",
       boxSizing: "border-box"
     }}
   >
