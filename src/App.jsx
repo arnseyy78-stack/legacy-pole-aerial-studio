@@ -1202,15 +1202,15 @@ return (
 
 const weekday = actualSelectedDate.getDay();
 
-  const classes = {
-    1: [["6:00 PM", "Pole Fitness"]],
-    2: [["6:00 PM", "Pole Flow"]],
-    3: [["6:00 PM", "Spinny Pole"]],
-    4: [["6:00 PM", "Intro to Pole"]],
-    5: [["6:00 PM", "Exo"]],
-    6: [["6:00 PM", "Floor Work"]],
-    0: []
-  };
+const classes = {
+  1: [["6:00 PM", "Pole Fitness", "/crossknee.jpg"]],
+  2: [["6:00 PM", "Pole Flow", "/xtian-pole.jpg"]],
+  3: [["6:00 PM", "Spinny Pole", "/climb.jpg"]],
+  4: [["6:00 PM", "Intro to Pole", "/ace-pole.jpg"]],
+  5: [["6:00 PM", "Exo", "/floor.jpg"]],
+  6: [["6:00 PM", "Floor Work", "/ace-floor.jpg"]],
+  0: []
+};
 
   if (calendarMonthOffset > 1) {
   return [];
@@ -1380,6 +1380,16 @@ loadAdminWaitlist();
 
 }}
               >
+                <img
+  src={item[2]}
+  style={{
+    width: "100%",
+    height: "220px",
+    objectFit: "cover",
+    borderRadius: "18px",
+    marginBottom: "18px"
+  }}
+/>
                 <p style={goldSmallText}>{item[0]}</p>
                 <h3 style={packagePrice}>{item[1]}</h3>
                 <p style={{ color: "#999" }}>Tap to book this class</p>
