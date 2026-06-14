@@ -1372,14 +1372,12 @@ if (creditUpdateError) {
 }
 localStorage.setItem(`legacyCredits_${studentData.email}`, newCredits);
 
-alert(
-  `${item[1]} booked for ${bookingDate}`
-);
-
 loadBookings();
 loadStudentBookings();
 loadStudentWaitlist();
 loadAdminWaitlist();
+
+setPage("bookingConfirmed");
 
 }}
               >
@@ -1655,6 +1653,47 @@ bookedSlots[
           />
         ))}
       </div>
+    </div>
+  </section>
+)}
+    {/* BOOKING CONFIRMATION */}
+{page === "bookingConfirmed" && (
+  <section style={centerPage}>
+    <div style={{ ...formCard, maxWidth: "900px" }}>
+      <p style={goldSmallText}>BOOKING CONFIRMED ✓</p>
+
+      <h2 style={sectionHeading}>Class Reminder</h2>
+
+      <div style={waiverBox}>
+        <h3 style={{ color: "#c8a96b" }}>✅ Before Class</h3>
+
+        <p>✔ Arrive 10-15 minutes early. If you missed warm up you can no longer attend the class. This is for your safety. To avoid injuries.</p>
+        <p>✔ Wear short shorts. Do not apply body lotion before class.</p>
+        <p>✔ Bring water and towel.</p>
+        <p>✔ Also bring hold holder, so you can film your progress.</p>
+        <p>✔ Advise your instructor of any injuries or pregnancy.</p>
+
+        <br />
+
+        <h3 style={{ color: "#c8a96b" }}>🔄 Rebooking Policy</h3>
+
+        <p>✔ Cancel at least 48 hours before class</p>
+        <p>✔ Late cancellations may forfeit credits</p>
+        <p>✔ No-shows will forfeit class credits</p>
+        <p>✔ Credits are non-transferable</p>
+        <p>✔ Package credits expire after 30 days</p>
+      </div>
+
+      <button
+        onClick={() => setPage("chooseClass")}
+        style={{
+          ...goldButtonLarge,
+          width: "100%",
+          marginTop: "25px"
+        }}
+      >
+        CONTINUE TO DASHBOARD
+      </button>
     </div>
   </section>
 )}
