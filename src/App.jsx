@@ -1823,7 +1823,7 @@ const heroLeft = {
   display: "flex",
   flexDirection: "column",
   justifyContent: "center",
-  padding: "10px"
+  padding: "20px"
 };
 
 const heroRight = {
