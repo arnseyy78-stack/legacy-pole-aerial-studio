@@ -2129,7 +2129,7 @@ const footer = {
   backdropFilter: "blur(10px)",
   WebkitBackdropFilter: "blur(10px)",
   borderTop: "1px solid rgba(212,175,55,0.15)",
-  padding: "40px 20px",
+  padding: "60px 10px",
   textAlign: "center"
 };
 
