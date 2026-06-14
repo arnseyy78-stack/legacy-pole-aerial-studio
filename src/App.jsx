@@ -615,65 +615,59 @@ return;
       </div>
 
       {/* HOME */}
-      {page === "home" && (
-        <>
- {/* TOP SLIDESHOW */}
+{page === "home" && (
+  <>
+    {/* TOP SLIDESHOW */}
+    <div
+      style={{
+        width: "100%",
+        maxWidth: "1400px",
+        margin: "30px auto",
+        padding: "0 30px",
+        boxSizing: "border-box"
+      }}
+    >
+      <img
+        src={["/mermaid.jpg", "/xtian-chair.jpg", "/ace-floor.jpg"][slideIndex]}
+        style={{
+          width: "100%",
+          height: "650px",
+          objectFit: "cover",
+          borderRadius: "20px",
+          transition: "all 0.5s ease"
+        }}
+      />
+    </div>
 
-<div
-  style={{
-    width: "100%",
-    maxWidth: "1400px",
-    margin: "30px auto",
-    padding: "0 30px",
-    boxSizing: "border-box"
-  }}
->
-  <img
-    src={[
-      "/mermaid.jpg",
-      "/xtian-chair.jpg",
-      "/ace-floor.jpg"
-    ][slideIndex]}
-    style={{
-      width: "100%",
-      height: "650px",
-      objectFit: "cover",
-      borderRadius: "20px",
-      transition: "all 0.5s ease"
-    }}
-  />
-</div>
+    <section style={{ ...hero, gridTemplateColumns: "1fr", textAlign: "center" }}>
+      <div style={{ ...heroLeft, alignItems: "center" }}>
+        <p style={goldSmallText}>WELCOME TO LEGACY</p>
 
-  <section style={{ ...hero, gridTemplateColumns: "1fr", textAlign: "center" }}>
+        <h1 style={heroTitle}>
+          Strength.
+          <br />
+          Elegance.
+          <br />
+          Legacy.
+        </h1>
 
-            <div style={{ ...heroLeft, alignItems: "center" }}>
-              <p style={goldSmallText}>WELCOME TO LEGACY</p>
+        <div style={goldLine} />
 
-              <h1 style={heroTitle}>
-                Strength.
-                <br />
-                Elegance.
-                <br />
-                Legacy.
-              </h1>
+        <p style={paragraph}>
+          A luxury pole and aerial studio designed for confidence,
+          movement, empowerment, and artistry.
+        </p>
 
-              <div style={goldLine} />
-
-              <p style={paragraph}>
-                A luxury pole and aerial studio designed for confidence,
-                movement, empowerment, and artistry.
-              </p>
-
-              <button
-                onClick={() => setPage("authChoice")}
-                style={goldButtonLarge}
-              >
-                BOOK YOUR CLASS
-              </button>
-            </div>
-
-</section>
-
+        <button
+          onClick={() => setPage("authChoice")}
+          style={goldButtonLarge}
+        >
+          BOOK YOUR CLASS
+        </button>
+      </div>
+    </section>
+  </>
+)}
             {/* LOGIN / SIGN UP CHOICE */}
     
       {page === "authChoice" && (
