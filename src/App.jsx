@@ -2129,7 +2129,7 @@ const footer = {
   backdropFilter: "blur(10px)",
   WebkitBackdropFilter: "blur(10px)",
   borderTop: "1px solid rgba(212,175,55,0.15)",
-  padding: "60px 10px",
+  padding: "60px 20px",
   textAlign: "center"
 };
 
@@ -2137,7 +2137,7 @@ const footerLogo = {
   color: "#c8a96b",
   letterSpacing: "8px",
   fontWeight: "300",
-  marginBottom: "12px"
+  marginBottom: "5px"
 };
 
 const footerSub = {
