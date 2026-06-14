@@ -599,6 +599,9 @@ return;
           <button onClick={() => setPage("home")} style={navButton}>
             HOME
           </button>
+          <button onClick={() => setPage("gallery")} style={navButton}>
+  GALLERY
+</button>
 <button onClick={() => setPage("contact")} style={navButton}>
   CONTACT US
 </button>
@@ -1604,6 +1607,54 @@ bookedSlots[
           </div>
         </>
       )}
+    </div>
+  </section>
+)}
+    {/* GALLERY */}
+{page === "gallery" && (
+  <section style={centerPage}>
+    <div style={{ ...formCard, maxWidth: "1200px" }}>
+      <p style={goldSmallText}>LEGACY GALLERY</p>
+
+      <h2 style={sectionHeading}>Studio Gallery</h2>
+
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+          gap: "20px"
+        }}
+      >
+        {[
+          "/1.jpg",
+          "/2.jpg",
+          "/3.jpg",
+          "/4.jpg",
+          "/5.jpg",
+          "/6.jpg",
+          "/7.jpg",
+          "/8.jpg",
+        "/9.jpg",
+        "/10.jpg",
+        "/11.jpg",
+        "/12.jpg",
+        "/13.jpg",
+        "/14.jpg",
+          "/15.jpg"
+        ].map((img) => (
+          <img
+            key={img}
+            src={img}
+            style={{
+              width: "100%",
+              height: "350px",
+              objectFit: "cover",
+              borderRadius: "20px",
+              border: "1px solid rgba(200,169,107,0.25)"
+            }}
+          />
+        ))}
+      </div>
     </div>
   </section>
 )}
