@@ -1380,14 +1380,15 @@ loadAdminWaitlist();
 
 }}
               >
-                <img
+<img
   src={item[2]}
   style={{
     width: "100%",
-    height: "220px",
-    objectFit: "cover",
+    height: "400px",
+    objectFit: "contain",
     borderRadius: "18px",
-    marginBottom: "18px"
+    marginBottom: "18px",
+    backgroundColor: "#111"
   }}
 />
                 <p style={goldSmallText}>{item[0]}</p>
