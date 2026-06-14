@@ -1400,8 +1400,8 @@ setPage("bookingConfirmed");
     "Pole Flow": "Learn graceful transitions, movement and expression. Wear leggings, knee pads and socks.",
     "Spinny Pole": "Master spinning pole techniques and combinations. Wear short shorts.",
     "Intro to Pole": "Perfect starting point for complete beginners. Wear short shorts.",
-    "Exo": "Sensual movement, confidence, and floor transitions. Must have: knee pads and pleaser heels",
-    "Floor Work": "Flexibility, flow and choreography on the floor. Must wear leggings, knee pads, socks and heels (optional)."
+    "Exo": "Sensual movement, confidence, and floor transitions. Wear knee pads and pleaser heels.",
+    "Floor Work": "Flexibility, flow and choreography on the floor. Wear leggings, knee pads, socks and heels (optional)."
   }[item[1]]}
 </p>
                 <p style={{ color: "#c8a96b", fontSize: "13px", letterSpacing: "2px" }}>
