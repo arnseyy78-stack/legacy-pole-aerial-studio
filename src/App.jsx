@@ -1553,7 +1553,7 @@ bookedSlots[
           <p style={goldSmallText}>{bookings[0].Booking_date}</p>
 
           <h3 style={{ color: "#fff", margin: "10px 0" }}>
-            {bookings[0].Class_name} · 6:00 PM
+            {bookings[0].Class_name} · 6:00 PM 1hr
           </h3>
 
           <p style={{ color: "#c8a96b" }}>
