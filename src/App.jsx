@@ -1852,7 +1852,7 @@ bookedSlots[
         <p style={footerSub}>POLE & AERIAL STUDIO</p>
 
         <p style={{ color: "#999", marginTop: "25px" }}>
-          Bookings@legacypolestudio.com
+          bookings@legacypolestudio.com
         </p>
       </footer>
     </div>
