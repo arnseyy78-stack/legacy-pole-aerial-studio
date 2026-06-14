@@ -1,13 +1,24 @@
 import { useEffect, useState } from "react";
 import { supabase } from "./supabase";
 export default function App() {
-  const [page, setPage] = useState("home");
+const [page, setPage] = useState("home");
+const [slideIndex, setSlideIndex] = useState(0);
+
+useEffect(() => {
+  const interval = setInterval(() => {
+    setSlideIndex((prev) => (prev + 1) % 3);
+  }, 4000);
+
+  return () => clearInterval(interval);
+}, []);
+
 useEffect(() => {
   loadBookings();
   loadStudentBookings();
   loadStudentWaitlist();
   loadAdminWaitlist();
   loadTotalStudents();
+
   async function handlePaymentSuccess() {
     const params = new URLSearchParams(window.location.search);
 
@@ -606,49 +617,32 @@ return;
       {/* HOME */}
       {page === "home" && (
         <>
-          {page === "home" && (
-  <>
-  {/* TOP IMAGE STRIP */}
-  <div
+ {/* TOP SLIDESHOW */}
+
+<div
+  style={{
+    width: "100%",
+    maxWidth: "1400px",
+    margin: "30px auto",
+    padding: "0 30px",
+    boxSizing: "border-box"
+  }}
+>
+  <img
+    src={[
+      "/mermaid.jpg",
+      "/xtian-chair.jpg",
+      "/ace-floor.jpg"
+    ][slideIndex]}
     style={{
-      display: "grid",
-      gridTemplateColumns: "repeat(3, 1fr)",
-      gap: "15px",
-      padding: "30px",
-      maxWidth: "1400px",
-      margin: "0 auto"
+      width: "100%",
+      height: "650px",
+      objectFit: "cover",
+      borderRadius: "20px",
+      transition: "all 0.5s ease"
     }}
-  >
-    <img
-      src="/mermaid.jpg"
-      style={{
-        width: "100%",
-        height: "500px",
-        objectFit: "cover",
-        borderRadius: "20px"
-      }}
-    />
-
-    <img
-      src="/xtian-chair.jpg"
-      style={{
-        width: "100%",
-        height: "500px",
-        objectFit: "cover",
-        borderRadius: "20px"
-      }}
-    />
-
-    <img
-      src="/ace-floor.jpg"
-      style={{
-        width: "100%",
-        height: "500px",
-        objectFit: "cover",
-        borderRadius: "20px"
-      }}
-    />
-  </div>
+  />
+</div>
 
   <section style={{ ...hero, gridTemplateColumns: "1fr", textAlign: "center" }}>
 
@@ -678,43 +672,8 @@ return;
               </button>
             </div>
 
-</div>
-
 </section>
 
-          <section style={aboutSection}>
-            <div style={aboutGrid}>
-              <div style={archedPanel}>
-                <img
-  src="/aerial-hoop-model.jpg"
-  alt="Legacy Aerial Artist"
-  style={{
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
-    objectPosition: "center",
-    borderRadius: "260px 260px 30px 30px"
-  }}
-/>
-              </div>
-
-              <div>
-                <p style={goldSmallText}>WELCOME TO</p>
-
-                <h2 style={sectionHeading}>
-                  Legacy Pole &<br />
-                  Aerial Studio
-                </h2>
-
-                <p style={paragraph}>
-                  A safe, empowering and elegant space for every student to
-                  discover strength, confidence, artistry and movement.
-                </p>
-              </div>
-            </div>
-          </section>
-        </>
-      )}
             {/* LOGIN / SIGN UP CHOICE */}
     
       {page === "authChoice" && (
