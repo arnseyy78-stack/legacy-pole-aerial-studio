@@ -1922,7 +1922,7 @@ const centerPage = {
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
-  padding: "60px"
+  padding: "20px"
 };
 
 const formCard = {
