@@ -616,7 +616,7 @@ return;
 
       {/* HOME */}
 {page === "home" && (
-  <>
+  <div>
     {/* TOP SLIDESHOW */}
     <div
       style={{
@@ -666,7 +666,7 @@ return;
         </button>
       </div>
     </section>
-  </>
+  </div>
 )}
             {/* LOGIN / SIGN UP CHOICE */}
     
