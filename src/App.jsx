@@ -2125,11 +2125,11 @@ const packagePrice = {
 };
 
 const footer = {
-  background: "rgba(0,0,0,0.35)",
+  background: "rgba(0,0,0,0.15)",
   backdropFilter: "blur(10px)",
   WebkitBackdropFilter: "blur(10px)",
   borderTop: "1px solid rgba(212,175,55,0.15)",
-  padding: "60px 20px",
+  padding: "20px 20px",
   textAlign: "center"
 };
 
@@ -2137,13 +2137,14 @@ const footerLogo = {
   color: "#c8a96b",
   letterSpacing: "8px",
   fontWeight: "300",
-  marginBottom: "20px"
+  marginBottom: "8px"
 };
 
 const footerSub = {
   color: "#777",
   letterSpacing: "3px",
-  fontSize: "12px"
+  fontSize: "12px",
+  marginBottom: "8px"
 };
 const calendarBox = {
   background: "#efe3c8",
