@@ -1396,12 +1396,12 @@ setPage("bookingConfirmed");
                 <h3 style={packagePrice}>{item[1]}</h3>
                 <p style={{ color: "#999", lineHeight: "1.6" }}>
   {{
-    "Pole Fitness": "Build strength, confidence and body control.",
-    "Pole Flow": "Learn graceful transitions, movement and expression.",
-    "Spinny Pole": "Master spinning pole techniques and combinations.",
-    "Intro to Pole": "Perfect starting point for complete beginners.",
-    "Exo": "Sensual movement, confidence, and floor transitions.",
-    "Floor Work": "Flexibility, flow and choreography on the floor."
+    "Pole Fitness": "Build strength, confidence and body control. Wear short shorts.",
+    "Pole Flow": "Learn graceful transitions, movement and expression. Wear leggings, knee pads and socks.",
+    "Spinny Pole": "Master spinning pole techniques and combinations. Wear short shorts.",
+    "Intro to Pole": "Perfect starting point for complete beginners. Wear short shorts.",
+    "Exo": "Sensual movement, confidence, and floor transitions. Must have: knee pads and pleaser heels",
+    "Floor Work": "Flexibility, flow and choreography on the floor. Must wear leggings, knee pads, socks and heels (optional)."
   }[item[1]]}
 </p>
                 <p style={{ color: "#c8a96b", fontSize: "13px", letterSpacing: "2px" }}>
