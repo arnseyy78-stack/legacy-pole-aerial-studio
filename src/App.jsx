@@ -2129,14 +2129,14 @@ const footer = {
   backdropFilter: "blur(10px)",
   WebkitBackdropFilter: "blur(10px)",
   borderTop: "1px solid rgba(212,175,55,0.15)",
-  padding: "30px",
+  padding: "60px 20px",
   textAlign: "center"
 };
 
 const footerLogo = {
   color: "#c8a96b",
   letterSpacing: "8px",
-  fontWeight: "300",
+  fontWeight: "200",
   marginBottom: "20px"
 };
 
