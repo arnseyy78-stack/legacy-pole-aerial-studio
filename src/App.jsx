@@ -1849,9 +1849,9 @@ bookedSlots[
       <footer style={footer}>
         <h2 style={footerLogo}>LEGACY</h2>
 
-        <p style={footerSub}>POLE & AERIAL STUDIO</p>
+        <p style={footerSub}>POLE & AERIAL DANCE STUDIO</p>
 
-        <p style={{ color: "#999", marginTop: "25px" }}>
+        <p style={{ color: "#999", marginTop: "20px" }}>
           bookings@legacypolestudio.com
         </p>
       </footer>
@@ -2125,9 +2125,11 @@ const packagePrice = {
 };
 
 const footer = {
-  padding: "60px",
-  borderTop: "1px solid rgba(200,169,107,0.2)",
-  background: "#050505",
+  background: "rgba(0,0,0,0.35)",
+  backdropFilter: "blur(10px)",
+  WebkitBackdropFilter: "blur(10px)",
+  borderTop: "1px solid rgba(212,175,55,0.15)",
+  padding: "60px 20px",
   textAlign: "center"
 };
 
