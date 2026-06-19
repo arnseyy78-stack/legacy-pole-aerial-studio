@@ -943,27 +943,40 @@ return;
               readOnly
               style={inputStyle}
             />
-
-            <input
-              type={showPassword ? "text" : "password"}
-              name="password"
-              placeholder="Create Password"
-              value={student.password}
-              onChange={handleStudentChange}
-              style={inputStyle}
-            />
-
-<button
-  type="button"
-  onClick={() => setShowPassword(!showPassword)}
+<div
   style={{
-    ...outlineButton,
+    position: "relative",
     width: "100%",
-    marginBottom: "15px"
+    marginBottom: "16px"
   }}
 >
-  {showPassword ? "HIDE PASSWORD" : "SHOW PASSWORD"}
-</button>
+  <input
+    type={showPassword ? "text" : "password"}
+    placeholder="Password"
+    value={loginPassword}
+    onChange={(e) => setLoginPassword(e.target.value)}
+    style={{
+      ...inputStyle,
+      marginBottom: "0",
+      paddingRight: "55px"
+    }}
+  />
+
+  <span
+    onClick={() => setShowPassword(!showPassword)}
+    style={{
+      position: "absolute",
+      right: "18px",
+      top: "50%",
+      transform: "translateY(-50%)",
+      cursor: "pointer",
+      color: "#c8a96b",
+      fontSize: "20px"
+    }}
+  >
+    {showPassword ? "🙈" : "👁"}
+  </span>
+</div>
 
 <button
   onClick={savePassword}
