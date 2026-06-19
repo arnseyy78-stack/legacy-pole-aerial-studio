@@ -1911,7 +1911,7 @@ const dashboardBox = {
 };
 const app = {
   minHeight: "100vh",
-  backgroundImage: "url('/studio-bg.jpeg')",
+  backgroundImage: "url('/studio-bg.png')",
   backgroundSize: "cover",
   backgroundPosition: "center",
   backgroundAttachment: "fixed",
