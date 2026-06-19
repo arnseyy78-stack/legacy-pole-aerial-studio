@@ -432,7 +432,7 @@ const { error } = await supabase
   .insert([
     {
       full_name: student.fullName,
-      email: student.email,
+      email: student.email.trim().toLowerCase()
       phone: student.phone,
       emergency_person: student.emergencyPerson,
       emergency_phone: student.emergencyPhone,
