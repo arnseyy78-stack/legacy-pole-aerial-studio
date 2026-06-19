@@ -400,6 +400,8 @@ async function loadAdminWaitlist() {
   setAdminWaitlist(data || []);
 }
 function saveStudentInfo() {
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
   if (
     !student.fullName ||
     !student.email ||
@@ -408,6 +410,11 @@ function saveStudentInfo() {
     !student.emergencyPhone
   ) {
     alert("Please complete all required fields.");
+    return;
+  }
+
+  if (!emailPattern.test(student.email)) {
+    alert("Please enter a valid email address.");
     return;
   }
 
