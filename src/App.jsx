@@ -1104,8 +1104,8 @@ onChange={(e) =>
         </section>
       )}
     {page === "resetPassword" && (
-  <section style={authCard}>
-    <p style={goldLabel}>ACCOUNT RECOVERY</p>
+  <section style={centerPage}>
+    <p style={goldSmallText}>ACCOUNT RECOVERY</p>
 
     <h1 style={heroTitle}>
       Reset Password
@@ -1116,7 +1116,7 @@ onChange={(e) =>
       placeholder="Registered Email Address"
       value={resetEmail}
       onChange={(e) => setResetEmail(e.target.value)}
-      style={input}
+      style={inputStyle}
     />
 
     <input
@@ -1124,7 +1124,7 @@ onChange={(e) =>
       placeholder="New Password"
       value={resetPassword}
       onChange={(e) => setResetPassword(e.target.value)}
-      style={input}
+      style={inputStyle}
     />
 
     <button
