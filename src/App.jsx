@@ -432,7 +432,7 @@ const { error } = await supabase
   .insert([
     {
       full_name: student.fullName,
-      email: student.email.trim().toLowerCase()
+      email: student.email.trim().toLowerCase(),
       phone: student.phone,
       emergency_person: student.emergencyPerson,
       emergency_phone: student.emergencyPhone,
@@ -442,6 +442,18 @@ const { error } = await supabase
 
 if (error) {
   console.log(error);
+
+  if (
+    error.message?.toLowerCase().includes("duplicate") ||
+    error.code === "23505"
+  ) {
+    alert(
+      "This email already exists. Please login instead."
+    );
+    setPage("login");
+    return;
+  }
+
   alert("Account could not be created.");
   return;
 }
