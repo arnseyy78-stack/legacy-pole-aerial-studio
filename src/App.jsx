@@ -105,6 +105,7 @@ useEffect(() => {
   const [waiverAgreed, setWaiverAgreed] = useState(false);
 const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 const [isLoggedIn, setIsLoggedIn] = useState(
   !!localStorage.getItem("legacyStudent")
 );
@@ -944,7 +945,7 @@ return;
             />
 
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               name="password"
               placeholder="Create Password"
               value={student.password}
@@ -952,16 +953,29 @@ return;
               style={inputStyle}
             />
 
-            <button
-              onClick={savePassword}
-              style={{
-                ...goldButtonLarge,
-                width: "100%",
-                marginTop: "10px"
-              }}
-            >
-              CONTINUE
-            </button>
+<button
+  type="button"
+  onClick={() => setShowPassword(!showPassword)}
+  style={{
+    ...outlineButton,
+    width: "100%",
+    marginBottom: "15px"
+  }}
+>
+  {showPassword ? "HIDE PASSWORD" : "SHOW PASSWORD"}
+</button>
+
+<button
+  onClick={savePassword}
+  style={{
+    ...goldButtonLarge,
+    width: "100%",
+    marginTop: "10px"
+  }}
+>
+  CONTINUE
+</button>
+            
           </div>
         </section>
       )}
@@ -981,26 +995,66 @@ return;
 />
 
 <input
-  type="password"
+  type={showPassword ? "text" : "password"}
   placeholder="Password"
   value={loginPassword}
   onChange={(e) => setLoginPassword(e.target.value)}
   style={inputStyle}
 />
-
+<button
+  type="button"
+  onClick={() => setShowPassword(!showPassword)}
+  style={{
+    ...outlineButton,
+    width: "100%",
+    marginBottom: "15px"
+  }}
+>
+  {showPassword ? "HIDE PASSWORD" : "SHOW PASSWORD"}
+</button>
 <button
   onClick={loginStudent}
-              style={{
-                ...goldButtonLarge,
-                width: "100%",
-                marginTop: "10px"
-              }}
-            >
-              LOGIN
-            </button>
+  style={{
+    ...goldButtonLarge,
+    width: "100%",
+    marginTop: "10px"
+  }}
+>
+  LOGIN
+</button>
+
+<button
+  type="button"
+  onClick={async () => {
+    const email = prompt("Enter your registered email address:");
+
+    if (!email) return;
+
+    const { data, error } = await supabase
+      .from("students")
+      .select("password")
+      .eq("email", email.trim().toLowerCase())
+      .single();
+
+    if (error || !data) {
+      alert("No account found with that email.");
+      return;
+    }
+
+    alert(`Your password is: ${data.password}`);
+  }}
+  style={{
+    ...outlineButton,
+    width: "100%",
+    marginTop: "15px"
+  }}
+>
+  FORGOT PASSWORD
+</button>
           </div>
         </section>
       )}
+    
     {/* ADMIN LOGIN */}
 {page === "adminLogin" && (
   <section style={centerPage}>
