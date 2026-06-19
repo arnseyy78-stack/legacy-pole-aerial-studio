@@ -1014,17 +1014,7 @@ return;
   onChange={(e) => setLoginPassword(e.target.value)}
   style={inputStyle}
 />
-<button
-  type="button"
-  onClick={() => setShowPassword(!showPassword)}
-  style={{
-    ...outlineButton,
-    width: "100%",
-    marginBottom: "15px"
-  }}
->
-  {showPassword ? "HIDE PASSWORD" : "SHOW PASSWORD"}
-</button>
+
 <button
   onClick={loginStudent}
   style={{
