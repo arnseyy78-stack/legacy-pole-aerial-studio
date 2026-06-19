@@ -5,6 +5,7 @@ const [page, setPage] = useState("home");
 const [slideIndex, setSlideIndex] = useState(0);
 const [resetEmail, setResetEmail] = useState("");
 const [resetPassword, setResetPassword] = useState("");
+const [showResetPassword, setShowResetPassword] = useState(false);
 useEffect(() => {
   const interval = setInterval(() => {    setSlideIndex((prev) => (prev + 1) % 3);
   }, 4000);
@@ -1118,13 +1119,41 @@ onChange={(e) =>
         style={inputStyle}
       />
 
-      <input
-        type="password"
-        placeholder="New Password"
-        value={resetPassword}
-        onChange={(e) => setResetPassword(e.target.value)}
-        style={inputStyle}
-      />
+      <div
+  style={{
+    position: "relative",
+    width: "100%",
+    marginBottom: "16px"
+  }}
+>
+  <input
+    type={showResetPassword ? "text" : "password"}
+    placeholder="New Password"
+    value={resetPassword}
+    onChange={(e) => setResetPassword(e.target.value)}
+    style={{
+      ...inputStyle,
+      marginBottom: "0",
+      paddingRight: "60px"
+    }}
+  />
+
+  <span
+    onClick={() => setShowResetPassword(!showResetPassword)}
+    style={{
+      position: "absolute",
+      right: "20px",
+      top: "50%",
+      transform: "translateY(-50%)",
+      cursor: "pointer",
+      color: "#c8a96b",
+      fontSize: "22px",
+      zIndex: 999
+    }}
+  >
+    {showResetPassword ? "🙈" : "👁"}
+  </span>
+</div>
 
       <button
         onClick={resetStudentPassword}
