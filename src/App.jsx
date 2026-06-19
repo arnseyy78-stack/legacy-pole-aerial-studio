@@ -3,10 +3,10 @@ import { supabase } from "./supabase";
 export default function App() {
 const [page, setPage] = useState("home");
 const [slideIndex, setSlideIndex] = useState(0);
-
+const [resetEmail, setResetEmail] = useState("");
+const [resetPassword, setResetPassword] = useState("");
 useEffect(() => {
-  const interval = setInterval(() => {
-    setSlideIndex((prev) => (prev + 1) % 3);
+  const interval = setInterval(() => {    setSlideIndex((prev) => (prev + 1) % 3);
   }, 4000);
 
   return () => clearInterval(interval);
@@ -463,7 +463,38 @@ localStorage.setItem("legacyStudent", JSON.stringify(student));
   setIsLoggedIn(true);
 setPage("packages");
 }
+async function resetStudentPassword() {
+  if (!resetEmail || !resetPassword) {
+    alert("Please enter your email and new password.");
+    return;
+  }
 
+  const { data: existingStudent, error: findError } = await supabase
+    .from("students")
+    .select("id")
+    .eq("email", resetEmail.trim().toLowerCase())
+    .single();
+
+  if (findError || !existingStudent) {
+    alert("No account found with that email.");
+    return;
+  }
+
+  const { error: updateError } = await supabase
+    .from("students")
+    .update({ password: resetPassword })
+    .eq("email", resetEmail.trim().toLowerCase());
+
+  if (updateError) {
+    alert("Password reset failed. Please try again.");
+    return;
+  }
+
+  alert("Password updated successfully. Please login.");
+  setResetEmail("");
+  setResetPassword("");
+  setPage("login");
+}
 async function loginStudent() {
   const { data, error } = await supabase
     .from("students")
@@ -1058,39 +1089,67 @@ onChange={(e) =>
 >
   LOGIN
 </button>
-
 <button
   type="button"
-  onClick={async () => {
-    const email = prompt("Enter your registered email address:");
-
-    if (!email) return;
-
-    const { data, error } = await supabase
-      .from("students")
-      .select("password")
-      .eq("email", email.trim().toLowerCase())
-      .single();
-
-    if (error || !data) {
-      alert("No account found with that email.");
-      return;
-    }
-
-    alert(`Your password is: ${data.password}`);
-  }}
+  onClick={() => setPage("resetPassword")}
   style={{
     ...outlineButton,
     width: "100%",
     marginTop: "15px"
   }}
 >
-  FORGOT PASSWORD
+  RESET PASSWORD
 </button>
           </div>
         </section>
       )}
-    
+    {page === "resetPassword" && (
+  <section style={authCard}>
+    <p style={goldLabel}>ACCOUNT RECOVERY</p>
+
+    <h1 style={heroTitle}>
+      Reset Password
+    </h1>
+
+    <input
+      type="email"
+      placeholder="Registered Email Address"
+      value={resetEmail}
+      onChange={(e) => setResetEmail(e.target.value)}
+      style={input}
+    />
+
+    <input
+      type="password"
+      placeholder="New Password"
+      value={resetPassword}
+      onChange={(e) => setResetPassword(e.target.value)}
+      style={input}
+    />
+
+    <button
+      onClick={resetStudentPassword}
+      style={{
+        ...goldButtonLarge,
+        width: "100%",
+        marginTop: "15px"
+      }}
+    >
+      UPDATE PASSWORD
+    </button>
+
+    <button
+      onClick={() => setPage("login")}
+      style={{
+        ...outlineButton,
+        width: "100%",
+        marginTop: "15px"
+      }}
+    >
+      BACK TO LOGIN
+    </button>
+  </section>
+)}
     {/* ADMIN LOGIN */}
 {page === "adminLogin" && (
   <section style={centerPage}>
