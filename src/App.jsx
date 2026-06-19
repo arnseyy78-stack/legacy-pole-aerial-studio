@@ -400,6 +400,17 @@ async function loadAdminWaitlist() {
   setAdminWaitlist(data || []);
 }
 function saveStudentInfo() {
+  if (
+    !student.fullName ||
+    !student.email ||
+    !student.phone ||
+    !student.emergencyPerson ||
+    !student.emergencyPhone
+  ) {
+    alert("Please complete all required fields.");
+    return;
+  }
+
   setPage("waiver");
 }
 
@@ -735,21 +746,23 @@ return;
               style={inputStyle}
             />
 
-            <input
-              name="email"
-              placeholder="Email Address"
-              value={student.email}
-              onChange={handleStudentChange}
-              style={inputStyle}
-            />
+           <input
+  type="email"
+  name="email"
+  placeholder="Email Address"
+  value={student.email}
+  onChange={handleStudentChange}
+  style={inputStyle}
+/>
 
             <input
-              name="phone"
-              placeholder="Phone Number"
-              value={student.phone}
-              onChange={handleStudentChange}
-              style={inputStyle}
-            />
+  type="tel"
+  name="phone"
+  placeholder="Phone Number"
+  value={student.phone}
+  onChange={handleStudentChange}
+  style={inputStyle}
+/>
 
             <input
               name="emergencyPerson"
@@ -766,17 +779,39 @@ return;
               onChange={handleStudentChange}
               style={inputStyle}
             />
-
-            <button
-              onClick={saveStudentInfo}
-              style={{
-                ...goldButtonLarge,
-                width: "100%",
-                marginTop: "10px"
-              }}
-            >
-              CONTINUE
-            </button>
+<button
+  onClick={saveStudentInfo}
+  disabled={
+    !student.fullName ||
+    !student.email ||
+    !student.phone ||
+    !student.emergencyPerson ||
+    !student.emergencyPhone
+  }
+  style={{
+    ...goldButtonLarge,
+    width: "100%",
+    marginTop: "10px",
+    opacity:
+      !student.fullName ||
+      !student.email ||
+      !student.phone ||
+      !student.emergencyPerson ||
+      !student.emergencyPhone
+        ? 0.5
+        : 1,
+    cursor:
+      !student.fullName ||
+      !student.email ||
+      !student.phone ||
+      !student.emergencyPerson ||
+      !student.emergencyPhone
+        ? "not-allowed"
+        : "pointer"
+  }}
+>
+  CONTINUE
+</button>
           </div>
         </section>
       )}
