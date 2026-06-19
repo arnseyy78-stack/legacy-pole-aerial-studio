@@ -1105,49 +1105,49 @@ onChange={(e) =>
       )}
     {page === "resetPassword" && (
   <section style={centerPage}>
-    <p style={goldSmallText}>ACCOUNT RECOVERY</p>
+    <div style={formCard}>
+      <p style={goldSmallText}>ACCOUNT RECOVERY</p>
 
-    <h1 style={heroTitle}>
-      Reset Password
-    </h1>
+      <h2 style={sectionHeading}>Reset Password</h2>
 
-    <input
-      type="email"
-      placeholder="Registered Email Address"
-      value={resetEmail}
-      onChange={(e) => setResetEmail(e.target.value)}
-      style={inputStyle}
-    />
+      <input
+        type="email"
+        placeholder="Registered Email Address"
+        value={resetEmail}
+        onChange={(e) => setResetEmail(e.target.value)}
+        style={inputStyle}
+      />
 
-    <input
-      type="password"
-      placeholder="New Password"
-      value={resetPassword}
-      onChange={(e) => setResetPassword(e.target.value)}
-      style={inputStyle}
-    />
+      <input
+        type="password"
+        placeholder="New Password"
+        value={resetPassword}
+        onChange={(e) => setResetPassword(e.target.value)}
+        style={inputStyle}
+      />
 
-    <button
-      onClick={resetStudentPassword}
-      style={{
-        ...goldButtonLarge,
-        width: "100%",
-        marginTop: "15px"
-      }}
-    >
-      UPDATE PASSWORD
-    </button>
+      <button
+        onClick={resetStudentPassword}
+        style={{
+          ...goldButtonLarge,
+          width: "100%",
+          marginTop: "10px"
+        }}
+      >
+        UPDATE PASSWORD
+      </button>
 
-    <button
-      onClick={() => setPage("login")}
-      style={{
-        ...outlineButton,
-        width: "100%",
-        marginTop: "15px"
-      }}
-    >
-      BACK TO LOGIN
-    </button>
+      <button
+        onClick={() => setPage("login")}
+        style={{
+          ...outlineButton,
+          width: "100%",
+          marginTop: "15px"
+        }}
+      >
+        BACK TO LOGIN
+      </button>
+    </div>
   </section>
 )}
     {/* ADMIN LOGIN */}
