@@ -953,8 +953,13 @@ return;
   <input
     type={showPassword ? "text" : "password"}
     placeholder="Password"
-    value={loginPassword}
-    onChange={(e) => setLoginPassword(e.target.value)}
+value={student.password}
+onChange={(e) =>
+  setStudent({
+    ...student,
+    password: e.target.value
+  })
+}
     style={{
       ...inputStyle,
       marginBottom: "0",
@@ -1007,13 +1012,41 @@ return;
   style={inputStyle}
 />
 
-<input
-  type={showPassword ? "text" : "password"}
-  placeholder="Password"
-  value={loginPassword}
-  onChange={(e) => setLoginPassword(e.target.value)}
-  style={inputStyle}
-/>
+<div
+  style={{
+    position: "relative",
+    width: "100%",
+    marginBottom: "16px"
+  }}
+>
+  <input
+    type={showPassword ? "text" : "password"}
+    placeholder="Password"
+    value={loginPassword}
+    onChange={(e) => setLoginPassword(e.target.value)}
+    style={{
+      ...inputStyle,
+      marginBottom: "0",
+      paddingRight: "60px"
+    }}
+  />
+
+  <span
+    onClick={() => setShowPassword(!showPassword)}
+    style={{
+      position: "absolute",
+      right: "20px",
+      top: "50%",
+      transform: "translateY(-50%)",
+      cursor: "pointer",
+      color: "#c8a96b",
+      fontSize: "22px",
+      zIndex: 999
+    }}
+  >
+    {showPassword ? "🙈" : "👁"}
+  </span>
+</div>
 
 <button
   onClick={loginStudent}
