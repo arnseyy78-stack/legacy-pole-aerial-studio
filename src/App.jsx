@@ -466,9 +466,7 @@ if (error) {
   return;
 }
 
-localStorage.setItem("legacyStudent", JSON.stringify(student));
-  setIsLoggedIn(true);
-await fetch("/api/send-verification-code", {
+const response = await fetch("/api/send-verification-code", {
   method: "POST",
   headers: {
     "Content-Type": "application/json"
@@ -478,7 +476,10 @@ await fetch("/api/send-verification-code", {
     code: generatedCode
   })
 });
-
+if (!response.ok) {
+  alert("Verification email could not be sent.");
+  return;
+}
 setPage("verifyEmail");
 }
 async function resetStudentPassword() {
@@ -529,6 +530,10 @@ async function loginStudent() {
     alert("Incorrect password.");
     return;
   }
+  if (!data.verified) {
+  alert("Please verify your email before logging in.");
+  return;
+}
 localStorage.removeItem("legacyStudent");
 setStudentBookings([]);
 setCredits(0);
@@ -1192,6 +1197,118 @@ onChange={(e) =>
         }}
       >
         BACK TO LOGIN
+      </button>
+    </div>
+  </section>
+)}
+    {/* VERIFY EMAIL */}
+{page === "verifyEmail" && (
+  <section style={centerPage}>
+    <div style={formCard}>
+      <p style={goldSmallText}>EMAIL VERIFICATION</p>
+
+      <h2 style={sectionHeading}>Verify Your Email</h2>
+
+      <p style={paragraph}>
+        We sent a 6-digit code to your email. Enter it below to activate your account.
+      </p>
+
+      <input
+        type="text"
+        placeholder="Enter Verification Code"
+        value={enteredCode}
+        onChange={(e) => setEnteredCode(e.target.value)}
+        style={{
+          ...inputStyle,
+          textAlign: "center",
+          letterSpacing: "6px",
+          fontSize: "22px"
+        }}
+      />
+
+      <button
+        onClick={async () => {
+          if (!enteredCode) {
+            alert("Please enter the verification code.");
+            return;
+          }
+
+          const cleanEmail = student.email.trim().toLowerCase();
+
+          const { data, error } = await supabase
+            .from("students")
+            .select("*")
+            .eq("email", cleanEmail)
+            .eq("verification_code", enteredCode.trim())
+            .single();
+
+          if (error || !data) {
+            alert("Invalid verification code. Please try again.");
+            return;
+          }
+
+          const { error: updateError } = await supabase
+            .from("students")
+            .update({
+              verified: true,
+              verification_code: null
+            })
+            .eq("email", cleanEmail);
+
+          if (updateError) {
+            alert("Verification failed. Please try again.");
+            return;
+          }
+
+          alert("Email verified successfully. You can now login.");
+          setEnteredCode("");
+          setPage("login");
+        }}
+        style={{
+          ...goldButtonLarge,
+          width: "100%",
+          marginTop: "10px"
+        }}
+      >
+        VERIFY EMAIL
+      </button>
+
+      <button
+        type="button"
+        onClick={async () => {
+          const newCode = Math.floor(100000 + Math.random() * 900000).toString();
+          const cleanEmail = student.email.trim().toLowerCase();
+
+          const { error } = await supabase
+            .from("students")
+            .update({ verification_code: newCode })
+            .eq("email", cleanEmail);
+
+          if (error) {
+            alert("Could not resend code. Please try again.");
+            return;
+          }
+
+          await fetch("/api/send-verification-code", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              email: cleanEmail,
+              code: newCode
+            })
+          });
+
+          alert("New verification code sent.");
+        }}
+        style={{
+          ...outlineButton,
+          width: "100%",
+          marginTop: "15px"
+        }}
+      >
+        RESEND CODE
       </button>
     </div>
   </section>
