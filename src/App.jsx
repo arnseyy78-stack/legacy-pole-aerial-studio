@@ -438,7 +438,9 @@ const { error } = await supabase
       phone: student.phone,
       emergency_person: student.emergencyPerson,
       emergency_phone: student.emergencyPhone,
-      password: student.password
+      password: student.password,
+verified: false,
+verification_code: generatedCode
     }
   ]);
 
