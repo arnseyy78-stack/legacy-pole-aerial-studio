@@ -6,6 +6,8 @@ const [slideIndex, setSlideIndex] = useState(0);
 const [resetEmail, setResetEmail] = useState("");
 const [resetPassword, setResetPassword] = useState("");
 const [showResetPassword, setShowResetPassword] = useState(false);
+const [verificationCode, setVerificationCode] = useState("");
+const [enteredCode, setEnteredCode] = useState("");
 useEffect(() => {
   const interval = setInterval(() => {    setSlideIndex((prev) => (prev + 1) % 3);
   }, 4000);
@@ -428,7 +430,9 @@ async function savePassword() {
     alert("Please create a password.");
     return;
   }
-
+const generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
+setVerificationCode(generatedCode);
+  
 const { error } = await supabase
   .from("students")
   .insert([
@@ -439,8 +443,8 @@ const { error } = await supabase
       emergency_person: student.emergencyPerson,
       emergency_phone: student.emergencyPhone,
       password: student.password,
-verified: false,
-verification_code: generatedCode
+      verified: false,
+      verification_code: generatedCode
     }
   ]);
 
@@ -464,7 +468,18 @@ if (error) {
 
 localStorage.setItem("legacyStudent", JSON.stringify(student));
   setIsLoggedIn(true);
-setPage("packages");
+await fetch("/api/send-verification-code", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    email: student.email.trim().toLowerCase(),
+    code: generatedCode
+  })
+});
+
+setPage("verifyEmail");
 }
 async function resetStudentPassword() {
   if (!resetEmail || !resetPassword) {
