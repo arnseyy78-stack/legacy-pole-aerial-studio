@@ -696,7 +696,7 @@ return;
   {isLoggedIn && (
     <span
       style={{
-        color: "##fff",
+        color: "#fff",
         fontSize: "20px",
         whiteSpace: "nowrap"
       }}
@@ -1453,7 +1453,7 @@ setPage("adminDashboard");
       {new Date(packageExpiry).toLocaleDateString()}
     </p>
 
-    <p style={{ color: "#999" }}>
+    <p style={{ color: "#fff" }}>
       {Math.ceil(
         (new Date(packageExpiry) - new Date()) /
           (1000 * 60 * 60 * 24)
