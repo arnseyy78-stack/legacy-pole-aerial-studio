@@ -1445,7 +1445,49 @@ setPage("adminDashboard");
 </p>
     Credits Remaining: {credits}
   </h3>
+{(() => {
+  const studentData = JSON.parse(
+    localStorage.getItem("legacyStudent")
+  );
 
+  const expiryDate = localStorage.getItem(
+    `legacyExpiry_${studentData?.email}`
+  );
+
+  if (!expiryDate) return null;
+
+  const daysRemaining = Math.ceil(
+    (new Date(expiryDate) - new Date()) /
+      (1000 * 60 * 60 * 24)
+  );
+
+  return (
+    <>
+      <p
+        style={{
+          color: "#c8a96b",
+          marginTop: "8px",
+          marginBottom: "5px"
+        }}
+      >
+        Package Expires:
+        {" "}
+        {new Date(expiryDate).toLocaleDateString()}
+      </p>
+
+      <p
+        style={{
+          color:
+            daysRemaining <= 7
+              ? "#ff6b6b"
+              : "#999"
+        }}
+      >
+        {daysRemaining} days remaining
+      </p>
+    </>
+  );
+})()}
   <p style={{ color: "#999" }}>Use 1 credit per class booking</p>
 
   <select
