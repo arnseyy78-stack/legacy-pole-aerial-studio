@@ -695,7 +695,7 @@ return;
     <span
       style={{
         color: "##fff",
-        fontSize: "14px",
+        fontSize: "16px",
         whiteSpace: "nowrap"
       }}
     >
