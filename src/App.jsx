@@ -2618,7 +2618,7 @@ bookedSlots[
               onClick={() => buyPackage(pkg)}
               style={{ ...goldButton, width: "100%", marginTop: "25px" }}
             >
-              SELECT PACKAGE
+              Purchase
             </button>
           </div>
         ))}
