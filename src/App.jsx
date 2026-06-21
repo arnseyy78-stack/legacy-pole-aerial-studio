@@ -2560,7 +2560,7 @@ bookedSlots[
             name: "Single Pass",
             price: "₱870",
             description: "1 class credit",
-            subText: "Pole / Aerial.",
+            subText: "Pole or Aerial.",
             amount: 87000,
             credits: 1,
             expiry: "30 Days"
