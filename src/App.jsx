@@ -2558,7 +2558,7 @@ bookedSlots[
             name: "Class Card",
             price: "₱4,100",
             description: "5 class credits",
-            subText: "Best value. Save and plan your month.",
+            subText: "Best value. Save and plan your month. Consumable within 30 days",
             amount: 410000,
             credits: 5,
             expiry: "30 Days",
