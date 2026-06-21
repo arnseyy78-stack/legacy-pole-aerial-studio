@@ -2202,30 +2202,148 @@ bookedSlots[
 {page === "pricing" && (
   <section style={centerPage}>
     <div style={{ ...formCard, maxWidth: "1100px" }}>
-      <p style={goldSmallText}>PRICING</p>
+<p style={goldSmallText}>PRICING</p>
 
-      <h2 style={sectionHeading}>Packages</h2>
+<h2
+  style={{
+    ...sectionHeading,
+    fontSize: "64px",
+    marginBottom: "10px"
+  }}
+>
+  Packages & Pricing
+</h2>
+
+<p
+  style={{
+    color: "#c8a96b",
+    fontSize: "18px",
+    marginBottom: "40px",
+    maxWidth: "600px"
+  }}
+>
+  Choose the package that best suits your pole journey.
+</p>
 
       <div style={packageGrid}>
-        <div style={packageCard}>
+        <div style={{
+  ...packageCard,
+  minHeight: "320px",
+  padding: "35px",
+  background:
+    "linear-gradient(180deg, rgba(0,0,0,0.95) 0%, rgba(20,10,5,0.95) 100%)",
+  border: "1px solid rgba(200,169,107,0.35)",
+  boxShadow: "0 15px 40px rgba(0,0,0,0.4)"
+}}
           <h3>Single Pass</h3>
-          <p>₱870</p>
+          <p
+  style={{
+    fontSize: "48px",
+    fontWeight: "700",
+    color: "#c8a96b",
+    margin: "15px 0"
+  }}
+>
+  ₱870
+</p>
+        <button
+  onClick={() => setPage("authChoice")}
+  style={{
+    ...goldButton,
+    marginTop: "20px",
+    width: "100%"
+  }}
+>
+  BOOK NOW
+</button>
         </div>
 
         <div style={packageCard}>
-          <h3>Class Card</h3>
-          <p>₱4,100</p>
+          <div
+  style={{
+    background: "#c8a96b",
+    color: "#000",
+    padding: "6px 14px",
+    borderRadius: "20px",
+    display: "inline-block",
+    fontWeight: "bold",
+    marginBottom: "12px",
+    fontSize: "12px"
+  }}
+>
+  MOST POPULAR
+</div>
+
+<h3>Class Card</h3>
+          <p
+  style={{
+    fontSize: "48px",
+    fontWeight: "700",
+    color: "#c8a96b",
+    margin: "15px 0"
+  }}
+>
+  ₱4,100
+</p>
           <p>5 Credits</p>
+          <button
+  onClick={() => setPage("authChoice")}
+  style={{
+    ...goldButton,
+    marginTop: "20px",
+    width: "100%"
+  }}
+>
+  BOOK NOW
+</button>
         </div>
 
         <div style={packageCard}>
           <h3>Practice Session</h3>
-          <p>₱550</p>
+          <p
+  style={{
+    fontSize: "48px",
+    fontWeight: "700",
+    color: "#c8a96b",
+    margin: "15px 0"
+  }}
+>
+  ₱550
+</p>
+          <button
+  onClick={() => setPage("authChoice")}
+  style={{
+    ...goldButton,
+    marginTop: "20px",
+    width: "100%"
+  }}
+>
+  BOOK NOW
+</button>
         </div>
 
         <div style={packageCard}>
           <h3>Private Class</h3>
-          <p>₱3,100</p>
+          <p
+  style={{
+    fontSize: "48px",
+    fontWeight: "700",
+    color: "#c8a96b",
+    margin: "15px 0"
+  }}
+>
+  ₱3,100
+</p>
+          <button
+  onClick={() => setPage("authChoice")}
+  style={{
+    ...goldButton,
+    marginTop: "20px",
+    width: "100%"
+  }}
+>
+  BOOK NOW
+</button>
         </div>
       </div>
     </div>
