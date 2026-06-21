@@ -773,15 +773,18 @@ return;
           CONTACT US
         </button>
 
-        <button
-          onClick={() => {
-            setPage("authChoice");
-            setMenuOpen(false);
-          }}
-          style={goldButton}
-        >
-          BOOK NOW
-        </button>
+        {!isLoggedIn &&
+ !localStorage.getItem("legacyAdmin") && (
+  <button
+    onClick={() => {
+      setPage("authChoice");
+      setMenuOpen(false);
+    }}
+    style={goldButton}
+  >
+    BOOK NOW
+  </button>
+)}
         {(isLoggedIn || localStorage.getItem("legacyAdmin")) && (
   <button
     onClick={() => {
