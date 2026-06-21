@@ -476,12 +476,13 @@ const response = await fetch("/api/send-verification-code", {
     code: generatedCode
   })
 });
+
 if (!response.ok) {
   alert("Verification email could not be sent.");
   return;
 }
-setPage("verifyEmail");
-}
+
+setPage("verifyEmail");}
 async function resetStudentPassword() {
   if (!resetEmail || !resetPassword) {
     alert("Please enter your email and new password.");
