@@ -2217,7 +2217,7 @@ bookedSlots[
           ["Single Pass", "₱870", "1 class credit", "Perfect for trying your first class."],
           ["Class Card", "₱4,100", "5 class credits", "Best value. Save and plan your month.", "MOST POPULAR"],
           ["Practice Session", "₱550", "Contact studio for time", "For registered students only."],
-          ["Private Class", "₱3,100", "Personal coaching", "Up to 3 students. Personal guidance."]
+          ["Private Class", "₱3,100", "One on one class. Best for achieving your dream tricks."]
         ].map((pkg) => (
           <div
             key={pkg[0]}
