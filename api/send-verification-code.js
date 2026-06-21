@@ -23,7 +23,7 @@ export default async function handler(req, res) {
 });
 
     await transporter.sendMail({
-      from: `"Legacy Pole & Aerial Studio" <${process.env.SMTP_USER}>`,
+      from: `"Legacy Pole & Aerial Studio" <legacycavitepoleaerialstudio@gmail.com>`,
       to: email,
       subject: "Your Legacy verification code",
       html: `
