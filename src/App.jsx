@@ -542,6 +542,8 @@ async function loginStudent() {
 localStorage.removeItem("legacyStudent");
 setStudentBookings([]);
 setCredits(0);
+  localStorage.removeItem("legacyAdmin");
+  
   localStorage.setItem(
     "legacyStudent",
     JSON.stringify({
@@ -700,13 +702,14 @@ return;
     whiteSpace: "nowrap"
   }}
 >
-  {localStorage.getItem("legacyAdmin")
-    ? "Welcome, Admin"
-    : isLoggedIn &&
-      `Welcome, ${
-        JSON.parse(localStorage.getItem("legacyStudent"))
-          ?.fullName?.split(" ")[0] || ""
-      }`}
+{localStorage.getItem("legacyAdmin") === "true"
+  ? "Welcome, Admin"
+  : isLoggedIn
+  ? `Welcome, ${
+      JSON.parse(localStorage.getItem("legacyStudent"))
+        ?.fullName?.split(" ")[0] || ""
+    }`
+  : ""}
 </span>
     <button
       onClick={() => setMenuOpen(!menuOpen)}
@@ -1412,6 +1415,7 @@ const response = await fetch("/api/admin-login", {
 const result = await response.json();
 
 if (result.success) {
+  localStorage.removeItem("legacyStudent");
   localStorage.setItem("legacyAdmin", "true");
 loadAdminBookings();
 loadAdminWaitlist();
