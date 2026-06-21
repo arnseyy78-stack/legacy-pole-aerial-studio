@@ -2560,7 +2560,7 @@ bookedSlots[
             name: "Single Pass",
             price: "₱870",
             description: "1 class credit",
-            subText: "Perfect for trying your first class.",
+            subText: "1 class pass.",
             amount: 87000,
             credits: 1,
             expiry: "30 Days"
