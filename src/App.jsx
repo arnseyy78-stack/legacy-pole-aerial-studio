@@ -2178,13 +2178,54 @@ bookedSlots[
         }}
       >
         {[
-          ["Monday", "6:00 PM", "Pole Fitness", "/xtian-sit.jpg"],
-          ["Tuesday", "6:00 PM", "Pole Flow", "/pole-flow.jpg"],
-          ["Wednesday", "6:00 PM", "Spinny Pole", "/spinny.jpg"],
-          ["Thursday", "6:00 PM", "Intro to Pole", "/ace-pole.jpg"],
-          ["Friday", "6:00 PM", "Exo", "/floor.jpg"],
-          ["Saturday", "6:00 PM", "Floor Work", "/ace-floor.jpg"]
-        ].map((cls) => (
+  [
+    "Monday",
+    "6:00 PM",
+    "Pole Fitness",
+    "Build strength, confidence and fitness while learning beginner-friendly pole techniques.",
+    "/xtian-sit.jpg"
+  ],
+
+  [
+    "Tuesday",
+    "6:00 PM",
+    "Pole Flow",
+    "Learn graceful transitions, musicality and fluid movement around the pole.",
+    "/pole-flow.jpg"
+  ],
+
+  [
+    "Wednesday",
+    "6:00 PM",
+    "Spinny Pole",
+    "Master spinning pole techniques, control, momentum and beautiful aerial shapes.",
+    "/spinny.jpg"
+  ],
+
+  [
+    "Thursday",
+    "6:00 PM",
+    "Intro to Pole",
+    "Perfect for complete beginners. Learn foundational grips, spins and pole safety.",
+    "/ace-pole.jpg"
+  ],
+
+  [
+    "Friday",
+    "6:00 PM",
+    "Exo",
+    "Explore sensual movement, expression, confidence and performance-based choreography.",
+    "/floor.jpg"
+  ],
+
+  [
+    "Saturday",
+    "6:00 PM",
+    "Floor Work",
+    "Learn elegant floor transitions, flexibility, lines and dance movement techniques.",
+    "/ace-floor.jpg"
+  ]
+].map((cls) => (
           <div
             key={cls[2]}
             style={{
@@ -2197,7 +2238,7 @@ bookedSlots[
             }}
           >
             <img
-              src={cls[3]}
+              src={cls[4]}
               alt={cls[2]}
               style={{
                 width: "100%",
@@ -2213,9 +2254,21 @@ bookedSlots[
                 {cls[2]}
               </h3>
 
-              <p style={{ color: "#c8a96b", fontWeight: "bold" }}>
-                {cls[1]}
-              </p>
+<p style={{ color: "#c8a96b", fontWeight: "bold" }}>
+  {cls[1]}
+</p>
+
+<p
+  style={{
+    color: "rgba(255,255,255,0.75)",
+    fontSize: "14px",
+    lineHeight: "1.6",
+    marginTop: "12px",
+    minHeight: "70px"
+  }}
+>
+  {cls[3]}
+</p>
 
               <button
                 onClick={() => setPage("authChoice")}
