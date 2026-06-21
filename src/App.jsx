@@ -772,7 +772,17 @@ return;
         >
           CONTACT US
         </button>
-
+{isLoggedIn && !localStorage.getItem("legacyAdmin") && (
+  <button
+    onClick={() => {
+      setPage("packages");
+      setMenuOpen(false);
+    }}
+    style={navButton}
+  >
+    PACKAGES
+  </button>
+)}
         {!isLoggedIn &&
  !localStorage.getItem("legacyAdmin") && (
   <button
