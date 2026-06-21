@@ -729,7 +729,30 @@ return;
         >
           HOME
         </button>
+{!isLoggedIn &&
+ !localStorage.getItem("legacyAdmin") && (
+  <>
+    <button
+      onClick={() => {
+        setPage("classes");
+        setMenuOpen(false);
+      }}
+      style={navButton}
+    >
+      CLASSES
+    </button>
 
+    <button
+      onClick={() => {
+        setPage("pricing");
+        setMenuOpen(false);
+      }}
+      style={navButton}
+    >
+      PRICING
+    </button>
+  </>
+)}
         <button
           onClick={() => {
             setPage("gallery");
@@ -2130,6 +2153,81 @@ bookedSlots[
           </div>
         </>
       )}
+    </div>
+  </section>
+)}
+    {/* CLASSES */}
+{page === "classes" && (
+  <section style={centerPage}>
+    <div style={{ ...formCard, maxWidth: "1100px" }}>
+      <p style={goldSmallText}>CLASS SCHEDULE</p>
+
+      <h2 style={sectionHeading}>Weekly Classes</h2>
+
+      <div style={packageGrid}>
+        <div style={packageCard}>
+          <h3>Monday</h3>
+          <p>6:00 PM - Pole Fitness</p>
+        </div>
+
+        <div style={packageCard}>
+          <h3>Tuesday</h3>
+          <p>6:00 PM - Pole Flow</p>
+        </div>
+
+        <div style={packageCard}>
+          <h3>Wednesday</h3>
+          <p>6:00 PM - Spinny Pole</p>
+        </div>
+
+        <div style={packageCard}>
+          <h3>Thursday</h3>
+          <p>6:00 PM - Intro to Pole</p>
+        </div>
+
+        <div style={packageCard}>
+          <h3>Friday</h3>
+          <p>6:00 PM - Exo</p>
+        </div>
+
+        <div style={packageCard}>
+          <h3>Saturday</h3>
+          <p>6:00 PM - Floor Work</p>
+        </div>
+      </div>
+    </div>
+  </section>
+)}
+    {/* PRICING */}
+{page === "pricing" && (
+  <section style={centerPage}>
+    <div style={{ ...formCard, maxWidth: "1100px" }}>
+      <p style={goldSmallText}>PRICING</p>
+
+      <h2 style={sectionHeading}>Packages</h2>
+
+      <div style={packageGrid}>
+        <div style={packageCard}>
+          <h3>Single Pass</h3>
+          <p>₱870</p>
+        </div>
+
+        <div style={packageCard}>
+          <h3>Class Card</h3>
+          <p>₱4,100</p>
+          <p>5 Credits</p>
+        </div>
+
+        <div style={packageCard}>
+          <h3>Practice Session</h3>
+          <p>₱550</p>
+        </div>
+
+        <div style={packageCard}>
+          <h3>Private Class</h3>
+          <p>₱3,100</p>
+        </div>
+      </div>
     </div>
   </section>
 )}
