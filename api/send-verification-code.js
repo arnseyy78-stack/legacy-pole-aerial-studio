@@ -13,14 +13,14 @@ export default async function handler(req, res) {
     }
 
     const transporter = nodemailer.createTransport({
-      host: smtp-relay.brevo.com,
-      port: 587,
-      secure: false,
-      auth: {
-        user: af6028001@smtp-brevo.com,
-        pass: M4GadASr6YqKNZcp
-      }
-    });
+  host: process.env.SMTP_HOST,
+  port: Number(process.env.SMTP_PORT),
+  secure: false,
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS
+  }
+});
 
     await transporter.sendMail({
       from: `"Legacy Pole & Aerial Studio" <${process.env.SMTP_USER}>`,
