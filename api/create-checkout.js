@@ -20,7 +20,7 @@ export default async function handler(req, res) {
             show_description: true,
             show_line_items: true,
 success_url: "https://legacypolestudio.com/?paid=true",
-cancel_url: "https://legacypolestudio.com/?cancelled=true",
+cancel_url: "https://legacypolestudio.com?dashboard=true"
             payment_method_types: ["qrph"],
             line_items: [
               {
