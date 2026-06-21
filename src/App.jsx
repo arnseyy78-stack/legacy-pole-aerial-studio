@@ -2506,80 +2506,126 @@ bookedSlots[
   </section>
 )}
       {/* PACKAGES */}
-      {page === "packages" && isLoggedIn && (
-        <section style={centerPage}>
+{page === "packages" && isLoggedIn && (
+  <section style={centerPage}>
+    <div style={{ ...formCard, maxWidth: "1200px" }}>
+      <p style={goldSmallText}>STUDENT PACKAGES</p>
+
+      <h2 style={{ ...sectionHeading, fontSize: "60px", marginBottom: "10px" }}>
+        Packages & Pricing
+      </h2>
+
+      <button
+        onClick={() => setPage("chooseClass")}
+        style={{ ...outlineButton, marginBottom: "35px" }}
+      >
+        DASHBOARD
+      </button>
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "24px" }}>
+        {[
+          {
+            name: "Single Pass",
+            price: "₱870",
+            description: "1 class credit",
+            subText: "Perfect for trying your first class.",
+            amount: 87000,
+            credits: 1,
+            expiry: "30 Days"
+          },
+          {
+            name: "Class Card",
+            price: "₱4,100",
+            description: "5 class credits",
+            subText: "Best value. Save and plan your month.",
+            amount: 410000,
+            credits: 5,
+            expiry: "30 Days",
+            popular: true
+          },
+          {
+            name: "Practice Session",
+            price: "₱550",
+            description: "Contact studio for time",
+            subText: "For registered students only.",
+            amount: 55000,
+            expiry: "30 Days"
+          },
+          {
+            name: "Private Class",
+            price: "₱3,100",
+            description: "One on one coaching.",
+            subText: "Best for achieving your dream tricks.",
+            amount: 310000,
+            expiry: "30 Days"
+          }
+        ].map((pkg) => (
           <div
+            key={pkg.name}
             style={{
-              ...formCard,
-              maxWidth: "950px"
+              ...packageCard,
+              minHeight: "330px",
+              padding: "34px",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+              background: "linear-gradient(180deg, rgba(0,0,0,0.95), rgba(30,15,8,0.95))",
+              border: pkg.popular
+                ? "2px solid #c8a96b"
+                : "1px solid rgba(200,169,107,0.35)",
+              boxShadow: pkg.popular
+                ? "0 20px 55px rgba(200,169,107,0.25)"
+                : "0 15px 40px rgba(0,0,0,0.4)"
             }}
           >
-            
-            <h2 style={sectionHeading}>Pricing</h2>
-<button
-  onClick={() => setPage("chooseClass")}
-  style={{
-    ...outlineButton,
-    marginBottom: "25px"
-  }}
->
-  DASHBOARD
-</button>
-            <div style={packageGrid}>
-              {[
-{
-  name: "Single Pass",
-  price: "₱870",
-  description: "One class access",
-  amount: 87000,
-  credits: 1,
-  expiry: "30 Days"
-},
+            <div>
+              {pkg.popular && (
+                <div
+                  style={{
+                    background: "#c8a96b",
+                    color: "#000",
+                    padding: "7px 14px",
+                    borderRadius: "999px",
+                    display: "inline-block",
+                    fontWeight: "bold",
+                    marginBottom: "18px",
+                    fontSize: "11px",
+                    letterSpacing: "2px"
+                  }}
+                >
+                  MOST POPULAR
+                </div>
+              )}
 
-{
-  name: "Class Card",
-  price: "₱4,100",
-  description: "Five class credits",
-  amount: 410000,
-  credits: 5,
-  expiry: "30 Days",
-  
-},
+              <h3 style={{ color: "#fff", fontSize: "24px", marginBottom: "15px" }}>
+                {pkg.name}
+              </h3>
 
-  {
-    name: "Practice Session",
-    price: "₱550",
-    description: "Contact studio for time",
-    amount: 55000,
-    expiry: "30 Days"
-  },
+              <p style={{ fontSize: "46px", fontWeight: "700", color: "#c8a96b", margin: "10px 0" }}>
+                {pkg.price}
+              </p>
 
-  {
-    name: "Private Class",
-    price: "₱3,100",
-    description: "Personal coaching",
-    amount: 310000,
-    expiry: "30 Days"
-  }
-].map((pkg) => (
-                <button
-  key={pkg.name}
-  style={packageCard}
-  onClick={() => buyPackage(pkg)}
->
-  <p style={goldSmallText}>{pkg.name}</p>
+              <p style={{ color: "#fff", fontWeight: "bold", marginBottom: "10px" }}>
+                {pkg.description}
+              </p>
 
-  <h3 style={packagePrice}>{pkg.price}</h3>
-
-  <p style={{ color: "#999", lineHeight: "1.6" }}>
-    {pkg.description}
-  </p>
-</button>
-              ))}
+              <p style={{ color: "#999", lineHeight: "1.6" }}>
+                {pkg.subText}
+              </p>
             </div>
+
+            <button
+              onClick={() => buyPackage(pkg)}
+              style={{ ...goldButton, width: "100%", marginTop: "25px" }}
+            >
+              SELECT PACKAGE
+            </button>
           </div>
-        </section>
-      )}
+        ))}
+      </div>
+    </div>
+  </section>
+)}
 <a
   href="https://wa.me/639053366544"
   target="_blank"
