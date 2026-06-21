@@ -2526,11 +2526,22 @@ bookedSlots[
       </h2>
 
       <button
-        onClick={() => setPage("chooseClass")}
-        style={{ ...outlineButton, marginBottom: "35px" }}
-      >
-        DASHBOARD
-      </button>
+  onClick={() => setPage("chooseClass")}
+  style={{
+    background: "transparent",
+    border: "1px solid rgba(200,169,107,0.35)",
+    color: "#c8a96b",
+    padding: "12px 22px",
+    borderRadius: "999px",
+    cursor: "pointer",
+    marginBottom: "35px",
+    fontWeight: "600",
+    letterSpacing: "1px",
+    transition: "all 0.3s ease"
+  }}
+>
+  BACK TO DASHBOARD
+</button>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "24px" }}>
         {[
