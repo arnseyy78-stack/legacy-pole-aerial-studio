@@ -2225,16 +2225,17 @@ bookedSlots[
   Choose the package that best suits your pole journey.
 </p>
 
-      <div style={packageGrid}>
-        <div style={{
-  ...packageCard,
-  minHeight: "320px",
-  padding: "35px",
-  background:
-    "linear-gradient(180deg, rgba(0,0,0,0.95) 0%, rgba(20,10,5,0.95) 100%)",
-  border: "1px solid rgba(200,169,107,0.35)",
-  boxShadow: "0 15px 40px rgba(0,0,0,0.4)"
-}}
+<div
+  style={{
+    ...packageCard,
+    minHeight: "320px",
+    padding: "35px",
+    background:
+      "linear-gradient(180deg, rgba(0,0,0,0.95) 0%, rgba(20,10,5,0.95) 100%)",
+    border: "1px solid rgba(200,169,107,0.35)",
+    boxShadow: "0 15px 40px rgba(0,0,0,0.4)"
+  }}
+>
           <h3>Single Pass</h3>
           <p
   style={{
