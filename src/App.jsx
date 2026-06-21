@@ -769,6 +769,30 @@ return;
         >
           BOOK NOW
         </button>
+        {(isLoggedIn || localStorage.getItem("legacyAdmin")) && (
+  <button
+    onClick={() => {
+      localStorage.removeItem("legacyStudent");
+      localStorage.removeItem("legacyAdmin");
+
+      setIsLoggedIn(false);
+      setCredits(0);
+      setStudentBookings([]);
+      setAdminBookings([]);
+      setMenuOpen(false);
+
+      alert("You have been logged out.");
+      setPage("home");
+    }}
+    style={{
+      ...navButton,
+      color: "#ff6b6b",
+      fontWeight: "bold"
+    }}
+  >
+    LOGOUT
+  </button>
+)}
       </div>
     )}
   </div>
