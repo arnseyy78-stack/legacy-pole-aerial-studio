@@ -9,6 +9,17 @@ const [showResetPassword, setShowResetPassword] = useState(false);
 const [verificationCode, setVerificationCode] = useState("");
 const [enteredCode, setEnteredCode] = useState("");
 const [menuOpen, setMenuOpen] = useState(false);
+  const params = new URLSearchParams(window.location.search);
+
+if (params.get("dashboard") === "true") {
+  setPage("chooseClass");
+
+  window.history.replaceState(
+    {},
+    document.title,
+    window.location.pathname
+  );
+}
 useEffect(() => {
   const interval = setInterval(() => {    setSlideIndex((prev) => (prev + 1) % 3);
   }, 4000);
