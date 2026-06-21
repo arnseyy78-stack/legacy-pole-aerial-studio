@@ -775,16 +775,6 @@ return;
 
         <button
           onClick={() => {
-            setPage("packages");
-            setMenuOpen(false);
-          }}
-          style={navButton}
-        >
-          PACKAGES
-        </button>
-
-        <button
-          onClick={() => {
             setPage("authChoice");
             setMenuOpen(false);
           }}
