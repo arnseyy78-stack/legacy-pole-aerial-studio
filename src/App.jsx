@@ -683,7 +683,27 @@ return;
     />
   </div>
 
-  <div style={{ position: "relative" }}>
+  <div
+  style={{
+    display: "flex",
+    alignItems: "center",
+    gap: "15px",
+    position: "relative"
+  }}
+>
+  {isLoggedIn && (
+    <span
+      style={{
+        color: "#c8a96b",
+        fontSize: "14px",
+        whiteSpace: "nowrap"
+      }}
+    >
+      Welcome,{" "}
+      {JSON.parse(localStorage.getItem("legacyStudent"))
+        ?.fullName?.split(" ")[0]}
+    </span>
+  )}
     <button
       onClick={() => setMenuOpen(!menuOpen)}
       style={menuButton}
