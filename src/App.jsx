@@ -1435,16 +1435,9 @@ setPage("adminDashboard");
 <div style={dashboardBox}>
   <p style={goldSmallText}>STUDENT DASHBOARD</p>
 
-  <h3 style={{ color: "#fff", fontSize: "30px", margin: "10px 0" }}>
-    <p style={{ color: "#c8a96b", marginTop: "10px" }}>
-  Package: {studentPackage || "No Package"}
-</p>
-
-<p style={{ color: "#c8a96b" }}>
-  Expires: {expiryDate || "N/A"}
-</p>
-    Credits Remaining: {credits}
-  </h3>
+<h3 style={{ color: "#fff", fontSize: "30px", margin: "10px 0" }}>
+  Credits Remaining: {credits}
+</h3>
 {(() => {
   const studentData = JSON.parse(
     localStorage.getItem("legacyStudent")
