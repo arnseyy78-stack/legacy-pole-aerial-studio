@@ -694,7 +694,7 @@ return;
   {isLoggedIn && (
     <span
       style={{
-        color: "#c8a96b",
+        color: "##fff",
         fontSize: "14px",
         whiteSpace: "nowrap"
       }}
