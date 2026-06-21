@@ -2559,14 +2559,15 @@ const menuButton = {
 
 const mobileMenuOpen = {
   position: "absolute",
-  top: "95px",
-  right: "20px",
-  background: "rgba(0,0,0,0.92)",
+  top: "55px",
+  right: "0",
+  background: "rgba(0,0,0,0.95)",
   border: "1px solid rgba(200,169,107,0.35)",
   borderRadius: "20px",
-  padding: "20px",
+  padding: "22px",
   display: "flex",
   flexDirection: "column",
   gap: "18px",
+  minWidth: "220px",
   zIndex: 99999
 };
