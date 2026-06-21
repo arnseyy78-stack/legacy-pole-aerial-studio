@@ -693,19 +693,21 @@ return;
     position: "relative"
   }}
 >
-  {isLoggedIn && (
-    <span
-      style={{
-        color: "#fff",
-        fontSize: "20px",
-        whiteSpace: "nowrap"
-      }}
-    >
-      Welcome,{" "}
-      {JSON.parse(localStorage.getItem("legacyStudent"))
-        ?.fullName?.split(" ")[0]}
-    </span>
-  )}
+  <span
+  style={{
+    color: "#fff",
+    fontSize: "20px",
+    whiteSpace: "nowrap"
+  }}
+>
+  {localStorage.getItem("legacyAdmin")
+    ? "Welcome, Admin"
+    : isLoggedIn &&
+      `Welcome, ${
+        JSON.parse(localStorage.getItem("legacyStudent"))
+          ?.fullName?.split(" ")[0] || ""
+      }`}
+</span>
     <button
       onClick={() => setMenuOpen(!menuOpen)}
       style={menuButton}
