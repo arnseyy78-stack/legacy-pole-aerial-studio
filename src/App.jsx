@@ -9,6 +9,7 @@ const [showResetPassword, setShowResetPassword] = useState(false);
 const [verificationCode, setVerificationCode] = useState("");
 const [enteredCode, setEnteredCode] = useState("");
 const [menuOpen, setMenuOpen] = useState(false);
+useEffect(() => {
   const params = new URLSearchParams(window.location.search);
 
 if (params.get("dashboard") === "true") {
@@ -20,7 +21,6 @@ if (params.get("dashboard") === "true") {
     window.location.pathname
   );
 }
-useEffect(() => {
   const interval = setInterval(() => {    setSlideIndex((prev) => (prev + 1) % 3);
   }, 4000);
 
