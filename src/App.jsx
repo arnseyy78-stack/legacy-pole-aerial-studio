@@ -483,6 +483,7 @@ if (!response.ok) {
 }
 
 setPage("verifyEmail");}
+  
 async function resetStudentPassword() {
   if (!resetEmail || !resetPassword) {
     alert("Please enter your email and new password.");
