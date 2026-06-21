@@ -669,21 +669,83 @@ return;
   }
 }
   return (    <div style={app}>
-      {/* NAVBAR */}
-      <div style={navbar}>
-        <div>
-<img
-  src="/1.png"
-  alt="Legacy Pole & Aerial Studio"
-  style={{
-    height: "80px",
-    width: "auto",
-    objectFit: "contain"
-  }}
-/>
-</div>
+{/* NAVBAR */}
+<div style={navbar}>
+  <div>
+    <img
+      src="/1.png"
+      alt="Legacy Pole & Aerial Studio"
+      style={{
+        height: "80px",
+        width: "auto",
+        objectFit: "contain"
+      }}
+    />
+  </div>
 
+  <div style={{ position: "relative" }}>
+    <button
+      onClick={() => setMenuOpen(!menuOpen)}
+      style={menuButton}
+    >
+      ☰
+    </button>
+
+    {menuOpen && (
+      <div style={mobileMenuOpen}>
+        <button
+          onClick={() => {
+            setPage("home");
+            setMenuOpen(false);
+          }}
+          style={navButton}
+        >
+          HOME
+        </button>
+
+        <button
+          onClick={() => {
+            setPage("gallery");
+            setMenuOpen(false);
+          }}
+          style={navButton}
+        >
+          GALLERY
+        </button>
+
+        <button
+          onClick={() => {
+            setPage("contact");
+            setMenuOpen(false);
+          }}
+          style={navButton}
+        >
+          CONTACT US
+        </button>
+
+        <button
+          onClick={() => {
+            setPage("packages");
+            setMenuOpen(false);
+          }}
+          style={navButton}
+        >
+          PACKAGES
+        </button>
+
+        <button
+          onClick={() => {
+            setPage("authChoice");
+            setMenuOpen(false);
+          }}
+          style={goldButton}
+        >
+          BOOK NOW
+        </button>
       </div>
+    )}
+  </div>
+</div>
 {["home", "authChoice", "student", "login", "createPassword", "adminLogin"].includes(page) && (
   <div
     style={{
@@ -700,41 +762,7 @@ return;
         width: "100%",
         height: "650px",
         objectFit: "cover",
-        borderRadius: "20px",<div style={{ position: "relative" }}>
-  <button
-    onClick={() => setMenuOpen(!menuOpen)}
-    style={menuButton}
-  >
-    ☰
-  </button>
-
-  {menuOpen && (
-    <div style={mobileMenuOpen}>
-      <button onClick={() => { setPage("home"); setMenuOpen(false); }} style={navButton}>
-        HOME
-      </button>
-
-      <button onClick={() => { setPage("gallery"); setMenuOpen(false); }} style={navButton}>
-        GALLERY
-      </button>
-
-      <button onClick={() => { setPage("contact"); setMenuOpen(false); }} style={navButton}>
-        CONTACT US
-      </button>
-
-      {isLoggedIn && (
-        <button onClick={() => { setPage("packages"); setMenuOpen(false); }} style={navButton}>
-          PACKAGES
-        </button>
-      )}
-
-      <button onClick={() => { setPage("authChoice"); setMenuOpen(false); }} style={goldButton}>
-        BOOK NOW
-      </button>
-    </div>
-  )}
-</div>
-        transition: "all 0.5s ease"
+        borderRadius: "20px", transition: "all 0.5s ease"
       }}
     />
   </div>
