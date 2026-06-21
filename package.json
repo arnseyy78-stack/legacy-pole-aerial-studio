@@ -6,6 +6,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "nodemailer": "^6.9.16",
     "@supabase/supabase-js": "^2.49.8",
     "@vitejs/plugin-react": "latest",
     "vite": "latest",
