@@ -683,36 +683,6 @@ return;
 />
 </div>
 
-<button
-  onClick={() => setMenuOpen(!menuOpen)}
-  style={menuButton}
->
-  ☰
-</button>
-
-<div style={menuOpen ? mobileMenuOpen : navLinks}>
-  <button onClick={() => { setPage("home"); setMenuOpen(false); }} style={navButton}>
-    HOME
-  </button>
-
-  <button onClick={() => { setPage("gallery"); setMenuOpen(false); }} style={navButton}>
-    GALLERY
-  </button>
-
-  <button onClick={() => { setPage("contact"); setMenuOpen(false); }} style={navButton}>
-    CONTACT US
-  </button>
-
-  {isLoggedIn && (
-    <button onClick={() => { setPage("packages"); setMenuOpen(false); }} style={navButton}>
-      PACKAGES
-    </button>
-  )}
-
-  <button onClick={() => { setPage("authChoice"); setMenuOpen(false); }} style={goldButton}>
-    BOOK NOW
-  </button>
-</div>
       </div>
 {["home", "authChoice", "student", "login", "createPassword", "adminLogin"].includes(page) && (
   <div
@@ -730,7 +700,40 @@ return;
         width: "100%",
         height: "650px",
         objectFit: "cover",
-        borderRadius: "20px",
+        borderRadius: "20px",<div style={{ position: "relative" }}>
+  <button
+    onClick={() => setMenuOpen(!menuOpen)}
+    style={menuButton}
+  >
+    ☰
+  </button>
+
+  {menuOpen && (
+    <div style={mobileMenuOpen}>
+      <button onClick={() => { setPage("home"); setMenuOpen(false); }} style={navButton}>
+        HOME
+      </button>
+
+      <button onClick={() => { setPage("gallery"); setMenuOpen(false); }} style={navButton}>
+        GALLERY
+      </button>
+
+      <button onClick={() => { setPage("contact"); setMenuOpen(false); }} style={navButton}>
+        CONTACT US
+      </button>
+
+      {isLoggedIn && (
+        <button onClick={() => { setPage("packages"); setMenuOpen(false); }} style={navButton}>
+          PACKAGES
+        </button>
+      )}
+
+      <button onClick={() => { setPage("authChoice"); setMenuOpen(false); }} style={goldButton}>
+        BOOK NOW
+      </button>
+    </div>
+  )}
+</div>
         transition: "all 0.5s ease"
       }}
     />
