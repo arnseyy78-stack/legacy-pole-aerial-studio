@@ -69,10 +69,12 @@ useEffect(() => {
       updatedCredits
     );
 
-    localStorage.setItem(
-      `legacyExpiry_${studentData.email}`,
-      expiryDate.toISOString()
-    );
+    await supabase
+  .from("students")
+  .update({
+    package_expiry: expiryDate.toISOString()
+  })
+  .eq("email", studentData.email);
 
     localStorage.removeItem("legacySelectedPackage");
 
@@ -169,7 +171,7 @@ setCredits(0);
 const [adminWaitlist, setAdminWaitlist] = useState([]);
 
 const [totalStudents, setTotalStudents] = useState(0);
-
+const [packageExpiry, setPackageExpiry] = useState(null);
 const [credits, setCredits] = useState(0);
 
   const today = new Date();
@@ -553,7 +555,7 @@ setCredits(0);
 setIsLoggedIn(true);
 setStudentBookings([]);
 const savedCredits = Number(data.credits) || 0;
-
+setPackageExpiry(data.package_expiry);
 const savedExpiry = localStorage.getItem(`legacyExpiry_${data.email}`);
 
 if (savedExpiry && new Date(savedExpiry) < new Date()) {
@@ -1438,6 +1440,27 @@ setPage("adminDashboard");
 <h3 style={{ color: "#fff", fontSize: "30px", margin: "10px 0" }}>
   Credits Remaining: {credits}
 </h3>
+  {packageExpiry && (
+  <>
+    <p
+      style={{
+        color: "#c8a96b",
+        marginTop: "8px"
+      }}
+    >
+      Package Expires:
+      {" "}
+      {new Date(packageExpiry).toLocaleDateString()}
+    </p>
+
+    <p style={{ color: "#999" }}>
+      {Math.ceil(
+        (new Date(packageExpiry) - new Date()) /
+          (1000 * 60 * 60 * 24)
+      )} days remaining
+    </p>
+  </>
+)}
 {(() => {
   const studentData = JSON.parse(
     localStorage.getItem("legacyStudent")
