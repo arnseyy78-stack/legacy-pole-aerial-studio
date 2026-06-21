@@ -8,6 +8,7 @@ const [resetPassword, setResetPassword] = useState("");
 const [showResetPassword, setShowResetPassword] = useState(false);
 const [verificationCode, setVerificationCode] = useState("");
 const [enteredCode, setEnteredCode] = useState("");
+const [menuOpen, setMenuOpen] = useState(false);
 useEffect(() => {
   const interval = setInterval(() => {    setSlideIndex((prev) => (prev + 1) % 3);
   }, 4000);
@@ -682,26 +683,36 @@ return;
 />
 </div>
 
-        <div style={navLinks}>
-          <button onClick={() => setPage("home")} style={navButton}>
-            HOME
-          </button>
-          <button onClick={() => setPage("gallery")} style={navButton}>
-  GALLERY
+<button
+  onClick={() => setMenuOpen(!menuOpen)}
+  style={menuButton}
+>
+  ☰
 </button>
-<button onClick={() => setPage("contact")} style={navButton}>
-  CONTACT US
-</button>
-          {isLoggedIn && (
-  <button onClick={() => setPage("packages")} style={navButton}>
-    PACKAGES
-  </button>
-)}
 
-          <button onClick={() => setPage("authChoice")} style={goldButton}>
-            BOOK NOW
-          </button>
-        </div>
+<div style={menuOpen ? mobileMenuOpen : navLinks}>
+  <button onClick={() => { setPage("home"); setMenuOpen(false); }} style={navButton}>
+    HOME
+  </button>
+
+  <button onClick={() => { setPage("gallery"); setMenuOpen(false); }} style={navButton}>
+    GALLERY
+  </button>
+
+  <button onClick={() => { setPage("contact"); setMenuOpen(false); }} style={navButton}>
+    CONTACT US
+  </button>
+
+  {isLoggedIn && (
+    <button onClick={() => { setPage("packages"); setMenuOpen(false); }} style={navButton}>
+      PACKAGES
+    </button>
+  )}
+
+  <button onClick={() => { setPage("authChoice"); setMenuOpen(false); }} style={goldButton}>
+    BOOK NOW
+  </button>
+</div>
       </div>
 {["home", "authChoice", "student", "login", "createPassword", "adminLogin"].includes(page) && (
   <div
@@ -2534,4 +2545,28 @@ const dateButton = {
   padding: "16px",
   fontSize: "16px",
   cursor: "pointer"
+};
+const menuButton = {
+  display: "block",
+  background: "transparent",
+  border: "1px solid rgba(200,169,107,0.5)",
+  color: "#c8a96b",
+  fontSize: "28px",
+  borderRadius: "12px",
+  padding: "8px 14px",
+  cursor: "pointer"
+};
+
+const mobileMenuOpen = {
+  position: "absolute",
+  top: "95px",
+  right: "20px",
+  background: "rgba(0,0,0,0.92)",
+  border: "1px solid rgba(200,169,107,0.35)",
+  borderRadius: "20px",
+  padding: "20px",
+  display: "flex",
+  flexDirection: "column",
+  gap: "18px",
+  zIndex: 99999
 };
