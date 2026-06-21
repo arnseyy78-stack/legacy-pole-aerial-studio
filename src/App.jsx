@@ -2159,41 +2159,73 @@ bookedSlots[
     {/* CLASSES */}
 {page === "classes" && (
   <section style={centerPage}>
-    <div style={{ ...formCard, maxWidth: "1100px" }}>
+    <div style={{ ...formCard, maxWidth: "1200px" }}>
       <p style={goldSmallText}>CLASS SCHEDULE</p>
 
-      <h2 style={sectionHeading}>Weekly Classes</h2>
+      <h2 style={{ ...sectionHeading, fontSize: "60px", marginBottom: "10px" }}>
+        Weekly Classes
+      </h2>
 
-      <div style={packageGrid}>
-        <div style={packageCard}>
-          <h3>Monday</h3>
-          <p>6:00 PM - Pole Fitness</p>
-        </div>
+      <p style={{ color: "#c8a96b", fontSize: "18px", marginBottom: "40px" }}>
+        Explore our beginner-friendly pole and floor classes.
+      </p>
 
-        <div style={packageCard}>
-          <h3>Tuesday</h3>
-          <p>6:00 PM - Pole Flow</p>
-        </div>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+          gap: "26px"
+        }}
+      >
+        {[
+          ["Monday", "6:00 PM", "Pole Fitness", "/xtian-sit.jpg"],
+          ["Tuesday", "6:00 PM", "Pole Flow", "/pole-flow.jpg"],
+          ["Wednesday", "6:00 PM", "Spinny Pole", "/spinny.jpg"],
+          ["Thursday", "6:00 PM", "Intro to Pole", "/ace-pole.jpg"],
+          ["Friday", "6:00 PM", "Exo", "/floor.jpg"],
+          ["Saturday", "6:00 PM", "Floor Work", "/ace-floor.jpg"]
+        ].map((cls) => (
+          <div
+            key={cls[2]}
+            style={{
+              ...packageCard,
+              padding: "0",
+              overflow: "hidden",
+              background: "linear-gradient(180deg, rgba(0,0,0,0.95), rgba(30,15,8,0.95))",
+              border: "1px solid rgba(200,169,107,0.35)",
+              boxShadow: "0 18px 45px rgba(0,0,0,0.45)"
+            }}
+          >
+            <img
+              src={cls[3]}
+              alt={cls[2]}
+              style={{
+                width: "100%",
+                height: "320px",
+                objectFit: "cover"
+              }}
+            />
 
-        <div style={packageCard}>
-          <h3>Wednesday</h3>
-          <p>6:00 PM - Spinny Pole</p>
-        </div>
+            <div style={{ padding: "26px" }}>
+              <p style={goldSmallText}>{cls[0]}</p>
 
-        <div style={packageCard}>
-          <h3>Thursday</h3>
-          <p>6:00 PM - Intro to Pole</p>
-        </div>
+              <h3 style={{ color: "#fff", fontSize: "26px", margin: "10px 0" }}>
+                {cls[2]}
+              </h3>
 
-        <div style={packageCard}>
-          <h3>Friday</h3>
-          <p>6:00 PM - Exo</p>
-        </div>
+              <p style={{ color: "#c8a96b", fontWeight: "bold" }}>
+                {cls[1]}
+              </p>
 
-        <div style={packageCard}>
-          <h3>Saturday</h3>
-          <p>6:00 PM - Floor Work</p>
-        </div>
+              <button
+                onClick={() => setPage("authChoice")}
+                style={{ ...goldButton, width: "100%", marginTop: "18px" }}
+              >
+                BOOK NOW
+              </button>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   </section>
