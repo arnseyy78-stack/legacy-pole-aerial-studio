@@ -1885,7 +1885,18 @@ if (existingBooking) {
   alert("You have already booked this class.");
   return;
 }
+const confirmed = window.confirm(
+  `Confirm Booking\n\n` +
+  `Class: ${item[1]}\n` +
+  `Date: ${bookingDate}\n` +
+  `Time: ${item[0]}\n\n` +
+  `1 credit will be deducted.\n\n` +
+  `Do you wish to continue?`
+);
 
+if (!confirmed) {
+  return;
+}
 
 const { error } = await supabase
   .from("Bookings")
