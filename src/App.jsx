@@ -1801,7 +1801,7 @@ const selectedClassDate = new Date(
 
 if (selectedClassDate <= now) {
   alert(
-    "Bookings for this class have closed because the class has already started."
+    "Booking is closed."
   );
   return;
 }
