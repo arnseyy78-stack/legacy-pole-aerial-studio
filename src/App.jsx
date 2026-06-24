@@ -1788,6 +1788,23 @@ return classes[weekday] || [];
                 style={packageCard}
                 onClick={async () => {
 const bookingDate = `${currentMonthName}-${selectedDate}`;
+                  const now = new Date();
+
+const selectedClassDate = new Date(
+  currentYear,
+  displayedDate.getMonth(),
+  selectedDate,
+  18, // 6 PM
+  0,
+  0
+);
+
+if (selectedClassDate <= now) {
+  alert(
+    "Bookings for this class have closed because the class has already started."
+  );
+  return;
+}
 
 const bookingKey =
   `${bookingDate}-${item[1]}`;
