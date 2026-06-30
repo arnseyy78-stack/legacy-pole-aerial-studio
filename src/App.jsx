@@ -810,11 +810,7 @@ return;
   >
     ADMIN DASHBOARD
   </button>
-)}
-        PACKAGES
-  </button>
-)}
-        
+)}  
         {!isLoggedIn &&
  !localStorage.getItem("legacyAdmin") && (
   <button
