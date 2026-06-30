@@ -764,25 +764,30 @@ return;
     </button>
   </>
 )}
-        <button
-          onClick={() => {
-            setPage("gallery");
-            setMenuOpen(false);
-          }}
-          style={navButton}
-        >
-          GALLERY
-        </button>
+{!localStorage.getItem("legacyAdmin") && (
+  <>
+    <button
+      onClick={() => {
+        setPage("gallery");
+        setMenuOpen(false);
+      }}
+      style={navButton}
+    >
+      GALLERY
+    </button>
 
-        <button
-          onClick={() => {
-            setPage("contact");
-            setMenuOpen(false);
-          }}
-          style={navButton}
-        >
-          CONTACT US
-        </button>
+    <button
+      onClick={() => {
+        setPage("contact");
+        setMenuOpen(false);
+      }}
+      style={navButton}
+    >
+      CONTACT US
+    </button>
+  </>
+)}
+
 {isLoggedIn && !localStorage.getItem("legacyAdmin") && (
   <button
     onClick={() => {
@@ -794,6 +799,22 @@ return;
     PACKAGES
   </button>
 )}
+
+{localStorage.getItem("legacyAdmin") === "true" && (
+  <button
+    onClick={() => {
+      setPage("adminDashboard");
+      setMenuOpen(false);
+    }}
+    style={navButton}
+  >
+    ADMIN DASHBOARD
+  </button>
+)}
+        PACKAGES
+  </button>
+)}
+        
         {!isLoggedIn &&
  !localStorage.getItem("legacyAdmin") && (
   <button
