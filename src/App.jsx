@@ -2029,14 +2029,33 @@ setPage("bookingConfirmed");
     marginTop: "12px"
   }}
 >
-Slots remaining: {
-  5 -
-  (
-bookedSlots[
-  `${currentMonthName}-${selectedDate}-${item[1]}`
-] || 0
-  )
-}/5
+{(() => {
+  const bookedCount =
+    bookedSlots[
+      `${currentMonthName}-${selectedDate}-${item[1]}`
+    ] || 0;
+
+  const spotsLeft = 5 - bookedCount;
+
+  return (
+    <>
+      <p style={{ color: "#c8a96b", marginTop: "12px" }}>
+        {bookedCount} / 5 booked
+      </p>
+
+      <p
+        style={{
+          color: spotsLeft <= 1 ? "#ff6b6b" : "#999",
+          fontWeight: spotsLeft <= 1 ? "bold" : "normal"
+        }}
+      >
+        {spotsLeft > 0
+          ? `${spotsLeft} spot${spotsLeft === 1 ? "" : "s"} left`
+          : "FULL"}
+      </p>
+    </>
+  );
+})()}
 </p>
               </button>
             ))}
