@@ -72,7 +72,14 @@ if (!students || students.length === 0) {
 
 const student = students[0];
     const updatedCredits = (Number(student.credits) || 0) + packageCredits;
+    let packageExpiry = student.package_expiry;
 
+if (packageName === "Class Card") {
+  const expiry = new Date();
+  expiry.setDate(expiry.getDate() + 30);
+
+  packageExpiry = expiry.toISOString().split("T")[0];
+}
     const updateRes = await fetch(
       `${process.env.SUPABASE_URL}/rest/v1/students?email=eq.${encodeURIComponent(studentEmail)}`,
       {
@@ -81,7 +88,11 @@ const student = students[0];
           ...headers,
           Prefer: "return=representation"
         },
-        body: JSON.stringify({ credits: updatedCredits })
+        body: JSON.stringify({
+  credits: updatedCredits,
+  package_name: packageName,
+  package_expiry: packageExpiry
+})
       }
     );
 
