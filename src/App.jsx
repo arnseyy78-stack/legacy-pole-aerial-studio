@@ -1969,9 +1969,18 @@ await fetch("/api/send-email", {
 const newCredits = credits - 1;
 
 setCredits(newCredits);
-                  const { error: creditUpdateError } = await supabase
+
+const updateData = {
+  credits: newCredits
+};
+
+if (newCredits <= 0) {
+  updateData.package_expiry = null;
+  setPackageExpiry(null);
+}
+const { error: creditUpdateError } = await supabase
   .from("students")
-  .update({ credits: newCredits })
+  .update(updateData)
   .eq("email", studentData.email);
 
 if (creditUpdateError) {
