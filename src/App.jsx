@@ -1786,9 +1786,15 @@ const weekday = actualSelectedDate.getDay();
 
 const classes = {
   1: [["6:00 PM 1hr", "Pole Fitness", "/crossknee.jpg"]],
-  2: [["6:00 PM 1hr", "Pole Flow", "/xtian-pole.jpg"]],
+    2: [
+    ["3:00 PM 1hr", "Aerial Silks", "/silks.jpg"],
+    ["6:00 PM 1hr", "Pole Flow", "/xtian-pole.jpg"]
+  ],
   3: [["6:00 PM 1hr", "Spinny Pole", "/climb.jpg"]],
-  4: [["6:00 PM 1hr", "Intro to Pole", "/ace-pole.jpg"]],
+    4: [
+    ["3:00 PM 1hr", "Aerial Silks", "/silks.jpg"],
+    ["6:00 PM 1hr", "Intro to Pole", "/ace-pole.jpg"]
+  ],
   5: [["6:00 PM 1hr", "Exo", "/floor.jpg"]],
   6: [["6:00 PM 1hr", "Floor Work", "/ace-floor.jpg"]],
   0: []
@@ -1807,11 +1813,13 @@ return classes[weekday] || [];
 const bookingDate = `${currentMonthName}-${selectedDate}`;
                   const now = new Date();
 
+const classHour = item[0].includes("3:00 PM") ? 15 : 18;
+
 const selectedClassDate = new Date(
   currentYear,
   displayedDate.getMonth(),
   selectedDate,
-  18, // 6 PM
+  classHour,
   0,
   0
 );
@@ -2018,6 +2026,7 @@ setPage("bookingConfirmed");
     "Intro to Pole": "Perfect starting point for complete beginners. Wear short shorts. Tap to book this class.",
     "Exo": "Sensual movement, confidence, and floor transitions. Wear knee pads and pleaser heels. Tap to book this class.",
     "Floor Work": "Flexibility, flow and choreography on the floor. Wear leggings, knee pads, socks and heels (optional). Tap to book this class."
+    "Aerial Silks": "Build strength, flexibility and confidence with climbs, wraps and graceful aerial poses. Wear fitted leggings and a fitted top. Tap to book this class.",
   }[item[1]]}
 </p>
                 <p style={{ color: "#c8a96b", fontSize: "13px", letterSpacing: "2px" }}>
@@ -2274,13 +2283,20 @@ setPage("bookingConfirmed");
   ],
 
   [
-    "Tuesday",
-    "6:00 PM",
-    "Pole Flow",
-    "Learn graceful transitions, musicality and fluid movement around the pole.",
-    "/pole-flow.jpg"
-  ],
+  "Tuesday",
+  "3:00 PM",
+  "Aerial Silks",
+  "Develop strength, flexibility and confidence while learning beautiful aerial silks techniques. Perfect for beginners and intermediate students.",
+  "/silks.jpg"
+],
 
+[
+  "Tuesday",
+  "6:00 PM",
+  "Pole Flow",
+  "Learn graceful transitions, musicality and fluid movement around the pole.",
+  "/pole-flow.jpg"
+],
   [
     "Wednesday",
     "6:00 PM",
@@ -2290,12 +2306,20 @@ setPage("bookingConfirmed");
   ],
 
   [
-    "Thursday",
-    "6:00 PM",
-    "Intro to Pole",
-    "Perfect for complete beginners. Learn foundational grips, spins and pole safety.",
-    "/ace-pole.jpg"
-  ],
+  "Thursday",
+  "3:00 PM",
+  "Aerial Silks",
+  "Build upper body strength, climbs, wraps and beautiful aerial poses in a supportive environment.",
+  "/silks.jpg"
+],
+
+[
+  "Thursday",
+  "6:00 PM",
+  "Intro to Pole",
+  "Perfect for complete beginners. Learn foundational grips, spins and pole safety.",
+  "/ace-pole.jpg"
+],
 
   [
     "Friday",
