@@ -2022,7 +2022,7 @@ setPage("bookingConfirmed");
     "Intro to Pole": "Perfect starting point for complete beginners. Wear short shorts. Tap to book this class.",
     "Exo": "Sensual movement, confidence, and floor transitions. Wear knee pads and pleaser heels. Tap to book this class.",
     "Floor Work": "Flexibility, flow and choreography on the floor. Wear leggings, knee pads, socks and heels (optional). Tap to book this class.",
-    "Aerial Silks": "Build strength, flexibility and confidence with climbs, wraps and graceful aerial poses. Wear fitted leggings and a fitted top. Tap to book this class.",
+    "Aerial Silks": "Build strength, flexibility and confidence with climbs, wraps and graceful aerial poses. Wear fitted leggings and a fitted top. Tap to book this class."
   }[item[1]]}
 </p>
                 <p style={{ color: "#c8a96b", fontSize: "13px", letterSpacing: "2px" }}>
