@@ -62,10 +62,23 @@ useEffect(() => {
     const updatedCredits =
       (Number(freshStudent?.credits) || 0) + packageCredits;
 
-    const { error: updateError } = await supabase
-      .from("students")
-      .update({ credits: updatedCredits })
-      .eq("email", studentData.email);
+    const updateData = {
+  credits: updatedCredits,
+  package_name: selectedPackage.name
+};
+
+if (selectedPackage.name === "Class Card") {
+  updateData.package_expiry = expiryDate.toISOString();
+}
+
+if (selectedPackage.name === "Single Pass") {
+  updateData.package_expiry = null;
+}
+
+const { error: updateError } = await supabase
+  .from("students")
+  .update(updateData)
+  .eq("email", studentData.email);
 
     if (updateError) {
       console.log(updateError);
@@ -74,18 +87,6 @@ useEffect(() => {
     }
 
     setCredits(updatedCredits);
-
-    localStorage.setItem(
-      `legacyCredits_${studentData.email}`,
-      updatedCredits
-    );
-
-    await supabase
-  .from("students")
-  .update({
-    package_expiry: expiryDate.toISOString()
-  })
-  .eq("email", studentData.email);
 
     localStorage.removeItem("legacySelectedPackage");
 
