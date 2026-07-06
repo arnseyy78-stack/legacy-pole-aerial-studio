@@ -63,16 +63,11 @@ useEffect(() => {
       (Number(freshStudent?.credits) || 0) + packageCredits;
 
     const updateData = {
-  credits: updatedCredits,
-  package_name: selectedPackage.name
+  credits: updatedCredits
 };
 
 if (selectedPackage.name === "Class Card") {
   updateData.package_expiry = expiryDate.toISOString();
-}
-
-if (selectedPackage.name === "Single Pass") {
-  updateData.package_expiry = null;
 }
 
 const { error: updateError } = await supabase
@@ -96,7 +91,7 @@ const { error: updateError } = await supabase
     setPage("chooseClass");
   }
 
-  handlePaymentSuccess();
+  // handlePaymentSuccess();
   const channel = supabase
     .channel("Bookings-realtime")
     .on(
