@@ -91,7 +91,7 @@ const { error: updateError } = await supabase
     setPage("chooseClass");
   }
 
-  // handlePaymentSuccess();
+  handlePaymentSuccess();
   const channel = supabase
     .channel("Bookings-realtime")
     .on(
