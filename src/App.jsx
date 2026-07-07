@@ -18,6 +18,10 @@ const [menuOpen, setMenuOpen] = useState(false);
   "Floor Work": "6:00 PM",
   "Aerial Silks": "3:00 PM"
 };
+  
+const getClassTime = (className) =>
+  classTimes[className] || "6:00 PM";
+  
 useEffect(() => {
   const params = new URLSearchParams(window.location.search);
 
