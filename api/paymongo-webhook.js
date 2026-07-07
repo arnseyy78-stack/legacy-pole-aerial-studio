@@ -100,7 +100,11 @@ if (packageName === "Class Card") {
 
     if (!updateRes.ok) {
       console.log("Student credit update failed:", updateText);
-      return res.status(500).json({ error: "credit update failed", details: updateText });
+
+return res.status(200).json({
+  received: true,
+  skipped: "credit update failed"
+});
     }
 
     const logRes = await fetch(
@@ -124,7 +128,11 @@ if (packageName === "Class Card") {
 
     if (!logRes.ok) {
       console.log("Payment event insert failed:", logText);
-      return res.status(500).json({ error: "payment event insert failed", details: logText });
+      
+      return res.status(200).json({
+  received: true,
+  skipped: "payment log failed"
+});
     }
 
     console.log("WEBHOOK SUCCESS:", {
@@ -135,8 +143,13 @@ if (packageName === "Class Card") {
     });
 
     return res.status(200).json({ success: true });
-  } catch (error) {
-    console.log("Webhook error:", error);
-    return res.status(500).json({ error: error.message });
-  }
+  } 
+catch (error) {
+  console.log("Webhook error:", error);
+
+  return res.status(200).json({
+    received: true,
+    error: error.message
+  });
+}  
 }
