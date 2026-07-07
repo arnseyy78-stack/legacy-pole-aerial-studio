@@ -1631,7 +1631,7 @@ setPage("adminDashboard");
           }}>
             <p style={{ color: "#fff", margin: 0 }}>{booking.Class_name}</p>
             <p style={{ color: "#999", margin: "6px 0 0" }}>
-              {booking.Booking_date} · 6:00 PM
+              {booking.Booking_date} · {classTimes[booking.Class_name] || "6:00 PM"}
             </p>
             {new Date(booking.Booking_date) < new Date() && (
   <a
@@ -2212,7 +2212,7 @@ setPage("bookingConfirmed");
           <p style={goldSmallText}>{bookings[0].Booking_date}</p>
 
           <h3 style={{ color: "#fff", margin: "10px 0" }}>
-            {bookings[0].Class_name} · 6:00 PM 
+            {bookings[0].Class_name} · {classTimes[bookings[0].Class_name] || "6:00 PM"}
           </h3>
 
           <p style={{ color: "#c8a96b" }}>
