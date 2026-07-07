@@ -785,15 +785,27 @@ return;
 )}
 
 {isLoggedIn && !localStorage.getItem("legacyAdmin") && (
-  <button
-    onClick={() => {
-      setPage("packages");
-      setMenuOpen(false);
-    }}
-    style={navButton}
-  >
-    PACKAGES
-  </button>
+  <>
+    <button
+      onClick={() => {
+        setPage("chooseClass");
+        setMenuOpen(false);
+      }}
+      style={navButton}
+    >
+      DASHBOARD
+    </button>
+
+    <button
+      onClick={() => {
+        setPage("packages");
+        setMenuOpen(false);
+      }}
+      style={navButton}
+    >
+      PACKAGES
+    </button>
+  </>
 )}
 
 {localStorage.getItem("legacyAdmin") === "true" && (
