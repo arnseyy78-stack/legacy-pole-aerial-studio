@@ -1964,15 +1964,15 @@ if (!confirmed) {
 const { error } = await supabase
   .from("Bookings")
   .insert([
-    {
-      Student_name: studentData.fullName,
-      Student_email: studentData.email,
-      Class_name: item[1],
-      Booking_date: bookingDate,
-      Slots: 1
-    }
-  ]);
-
+  {
+    Student_name: studentData.fullName,
+    Student_email: studentData.email,
+    Class_name: item[1],
+    Booking_date: bookingDate,
+    Booking_time: item[0],
+    Slots: 1
+  }
+]);
 if (error) {
   console.log(error);
   alert("Booking failed. Please try again.");
