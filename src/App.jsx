@@ -9,6 +9,15 @@ const [showResetPassword, setShowResetPassword] = useState(false);
 const [verificationCode, setVerificationCode] = useState("");
 const [enteredCode, setEnteredCode] = useState("");
 const [menuOpen, setMenuOpen] = useState(false);
+  const classTimes = {
+  "Pole Fitness": "6:00 PM",
+  "Pole Flow": "6:00 PM",
+  "Spinny Pole": "6:00 PM",
+  "Intro to Pole": "6:00 PM",
+  "Exo": "6:00 PM",
+  "Floor Work": "6:00 PM",
+  "Aerial Silks": "3:00 PM"
+};
 useEffect(() => {
   const params = new URLSearchParams(window.location.search);
 
