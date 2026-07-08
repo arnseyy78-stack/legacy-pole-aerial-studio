@@ -1854,7 +1854,20 @@ if (selectedClassDate <= now) {
 
 const bookingKey =
   `${bookingDate}-${item[1]}`;
+const { data: blockedClass } = await supabase
+  .from("class_blocks")
+  .select("*")
+  .eq("booking_date", bookingDate)
+  .eq("class_name", item[1])
+  .eq("booking_time", item[0])
+  .maybeSingle();
 
+if (blockedClass) {
+  alert(
+    `This class is unavailable.\n\nReason: ${blockedClass.reason}`
+  );
+  return;
+}
   const currentBooked =
     bookedSlots[bookingKey] || 0;
 
