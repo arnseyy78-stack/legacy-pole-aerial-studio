@@ -90,7 +90,6 @@ if (packageName === "Class Card") {
         },
         body: JSON.stringify({
   credits: updatedCredits,
-  package_name: packageName,
   package_expiry: packageExpiry
 })
       }
