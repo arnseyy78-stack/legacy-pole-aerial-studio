@@ -1831,6 +1831,16 @@ return classes[weekday] || [];
                 key={item[0]}
                 style={packageCard}
                 onClick={async () => {
+                  // Temporary class block
+if (
+  bookingDate === "July-17" &&
+  item[1] === "Aerial Silks"
+) {
+  alert(
+    "Aerial Silks at 3:00 PM is unavailable on July 17 due to a private class. Please book another session."
+  );
+  return;
+}
 const bookingDate = `${currentMonthName}-${selectedDate}`;
                   const now = new Date();
 
