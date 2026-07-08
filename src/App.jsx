@@ -1859,7 +1859,6 @@ const { data: blockedClass } = await supabase
   .select("*")
   .eq("booking_date", bookingDate)
   .eq("class_name", item[1])
-  .eq("booking_time", item[0])
   .maybeSingle();
 
 if (blockedClass) {
