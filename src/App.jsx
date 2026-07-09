@@ -2691,7 +2691,7 @@ setPage("bookingConfirmed");
             price: "₱870",
             description: "1 class credit",
             subText: "Pole or Aerial.",
-            amount: 87000,
+            amount: 100,
             credits: 1,
             expiry: "30 Days"
           },
