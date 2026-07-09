@@ -5,15 +5,32 @@ export default async function handler(req, res) {
 
   try {
     const event = req.body;
-    const eventId = event?.data?.id;
-    const eventType = event?.data?.attributes?.type;
 
-    if (eventType !== "checkout_session.payment.paid") {
-      return res.status(200).json({ received: true, skipped: eventType });
-    }
+const eventId =
+  event?.data?.id ||
+  event?.id;
 
-    const checkout = event?.data?.attributes?.data?.attributes || {};
-    const metadata = checkout?.metadata || {};
+const eventType =
+  event?.data?.attributes?.type ||
+  event?.type;
+
+const checkout =
+  event?.data?.attributes?.data?.attributes ||
+  event?.data?.attributes ||
+  event?.attributes ||
+  {};
+
+const metadata = checkout?.metadata || {};
+
+if (
+  eventType !== "checkout_session.payment.paid" &&
+  eventType !== "checkout_session"
+) {
+  return res.status(200).json({
+    received: true,
+    skipped: eventType
+  });
+}
 
     const studentEmail = metadata?.studentEmail;
     const packageName = metadata?.packageName;
