@@ -47,64 +47,47 @@ useEffect(() => {
   loadAdminWaitlist();
   loadTotalStudents();
 
-  async function handlePaymentSuccess() {
-    const params = new URLSearchParams(window.location.search);
+async function handlePaymentReturn() {
+  const params = new URLSearchParams(window.location.search);
 
-    if (params.get("paid") !== "true") return;
+  if (params.get("paid") !== "true") return;
 
-    const studentData = JSON.parse(localStorage.getItem("legacyStudent"));
-    const selectedPackage = JSON.parse(localStorage.getItem("legacySelectedPackage"));
+  const studentData = JSON.parse(
+    localStorage.getItem("legacyStudent")
+  );
 
-    if (!studentData || !selectedPackage) return;
+  if (!studentData?.email) return;
 
-    const packageCredits = selectedPackage.credits || 0;
-    const expiryDate = new Date();
-    expiryDate.setDate(expiryDate.getDate() + 30);
+  // Give the PayMongo webhook a moment to update Supabase.
+  await new Promise((resolve) => setTimeout(resolve, 2500));
 
-    const { data: freshStudent, error: studentError } = await supabase
-      .from("students")
-      .select("credits")
-      .eq("email", studentData.email)
-      .single();
+  const { data: freshStudent, error } = await supabase
+    .from("students")
+    .select("credits, package_expiry")
+    .eq("email", studentData.email)
+    .single();
 
-    if (studentError) {
-      console.log(studentError);
-      return;
-    }
-
-    const updatedCredits =
-      (Number(freshStudent?.credits) || 0) + packageCredits;
-
-    const updateData = {
-  credits: updatedCredits
-};
-
-if (selectedPackage.name === "Class Card") {
-  updateData.package_expiry = expiryDate.toISOString();
-}
-
-const { error: updateError } = await supabase
-  .from("students")
-  .update(updateData)
-  .eq("email", studentData.email);
-
-    if (updateError) {
-      console.log(updateError);
-      alert("Payment received, but credits were not updated. Please contact admin.");
-      return;
-    }
-
-    setCredits(updatedCredits);
-
-    localStorage.removeItem("legacySelectedPackage");
-
-    alert(`${selectedPackage.name} confirmed. ${packageCredits} credits added.`);
-
-    window.history.replaceState({}, document.title, window.location.pathname);
-    setPage("chooseClass");
+  if (error) {
+    console.log("Could not refresh student credits:", error);
+  } else {
+    setCredits(Number(freshStudent?.credits) || 0);
+    setPackageExpiry(freshStudent?.package_expiry || null);
   }
 
-  handlePaymentSuccess();
+  localStorage.removeItem("legacySelectedPackage");
+
+  window.history.replaceState(
+    {},
+    document.title,
+    window.location.pathname
+  );
+
+  setPage("chooseClass");
+
+  alert("Payment received. Your dashboard has been refreshed.");
+}
+
+handlePaymentReturn();
   const channel = supabase
     .channel("Bookings-realtime")
     .on(
