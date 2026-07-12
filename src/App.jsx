@@ -175,6 +175,7 @@ setCredits(0);
 const [adminWaitlist, setAdminWaitlist] = useState([]);
 
   const [studentRefreshing, setStudentRefreshing] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 const [totalStudents, setTotalStudents] = useState(0);
 const [packageExpiry, setPackageExpiry] = useState(null);
 const [credits, setCredits] = useState(0);
@@ -2212,7 +2213,7 @@ setPage("bookingConfirmed");
       "0 6px 0 #7b5f2d, 0 8px 18px rgba(0,0,0,0.35)";
   }}
 >
-  🔄 Refresh Data
+  {refreshing ? "✓ Refreshed" : "🔄 Refresh Data"}
 </button>
   </div>
 <select
