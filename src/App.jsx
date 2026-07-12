@@ -2159,7 +2159,7 @@ setPage("bookingConfirmed");
       "0 6px 0 #7b5f2d, 0 8px 18px rgba(0,0,0,0.35)";
   }}
 >
-  🔄 Refresh Data
+  {refreshing ? "✓ Refreshed" : "🔄 Refresh Data"}
 </button>
   </div>
 <select
