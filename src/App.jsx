@@ -9,6 +9,7 @@ const [showResetPassword, setShowResetPassword] = useState(false);
 const [verificationCode, setVerificationCode] = useState("");
 const [enteredCode, setEnteredCode] = useState("");
 const [menuOpen, setMenuOpen] = useState(false);
+  
   const classTimes = {
   "Pole Fitness": "6:00 PM",
   "Pole Flow": "6:00 PM",
@@ -173,6 +174,7 @@ setCredits(0);
   const [studentWaitlist, setStudentWaitlist] = useState([]);
 const [adminWaitlist, setAdminWaitlist] = useState([]);
 
+  const [studentRefreshing, setStudentRefreshing] = useState(false);
 const [totalStudents, setTotalStudents] = useState(0);
 const [packageExpiry, setPackageExpiry] = useState(null);
 const [credits, setCredits] = useState(0);
@@ -1524,6 +1526,57 @@ setPage("adminDashboard");
       <h2 style={sectionHeading}>Schedule</h2>
 <div style={dashboardBox}>
   <p style={goldSmallText}>STUDENT DASHBOARD</p>
+  <button
+  disabled={studentRefreshing}
+  onClick={async () => {
+    setStudentRefreshing(true);
+
+    const studentData = JSON.parse(
+      localStorage.getItem("legacyStudent")
+    );
+
+    await Promise.all([
+      loadStudentBookings(studentData?.email),
+      loadStudentWaitlist(studentData?.email)
+    ]);
+
+    const { data: freshStudent, error } = await supabase
+      .from("students")
+      .select("credits, package_expiry")
+      .eq("email", studentData?.email)
+      .single();
+
+    if (error) {
+      console.log("Student refresh error:", error);
+    } else {
+      setCredits(Number(freshStudent?.credits) || 0);
+      setPackageExpiry(freshStudent?.package_expiry || null);
+    }
+
+    setTimeout(() => {
+      setStudentRefreshing(false);
+    }, 700);
+  }}
+  style={{
+    background: studentRefreshing
+      ? "#4CAF50"
+      : "linear-gradient(180deg, #f4d58d 0%, #c8a96b 100%)",
+    color: studentRefreshing ? "#fff" : "#111",
+    border: "1px solid #8f6f33",
+    borderRadius: "12px",
+    padding: "11px 20px",
+    marginBottom: "18px",
+    fontSize: "13px",
+    fontWeight: "bold",
+    cursor: studentRefreshing ? "default" : "pointer",
+    boxShadow: studentRefreshing
+      ? "0 2px 0 #2e7d32"
+      : "0 6px 0 #7b5f2d, 0 8px 18px rgba(0,0,0,0.3)",
+    transition: "all 0.2s ease"
+  }}
+>
+  {studentRefreshing ? "✓ Dashboard Refreshed" : "🔄 Refresh Dashboard"}
+</button>
 
 <h3 style={{ color: "#fff", fontSize: "30px", margin: "10px 0" }}>
   Credits Remaining: {credits}
