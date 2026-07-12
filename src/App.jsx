@@ -2124,34 +2124,42 @@ setPage("bookingConfirmed");
 </div>
   </div>
 <button
-  onClick={async () => {
-    setRefreshing(true);
-
-    await Promise.all([
-      loadAdminBookings(),
-      loadAdminWaitlist(),
-      loadTotalStudents()
-    ]);
-
-    setTimeout(() => setRefreshing(false), 700);
+  onClick={() => {
+    loadAdminBookings();
+    loadAdminWaitlist();
   }}
   style={{
-    background: refreshing
-      ? "#4CAF50"
-      : "linear-gradient(180deg,#f4d58d,#c8a96b)",
-    color: refreshing ? "#fff" : "#111",
+    background: "linear-gradient(180deg, #f4d58d 0%, #c8a96b 100%)",
+    color: "#111",
     border: "1px solid #8f6f33",
     borderRadius: "12px",
     padding: "12px 24px",
-    fontWeight: "bold",
-    cursor: refreshing ? "default" : "pointer",
-    boxShadow: refreshing
-      ? "0 2px 0 #2e7d32"
-      : "0 6px 0 #7b5f2d",
-    transition: "all .2s"
+    fontSize: "14px",
+    fontWeight: "700",
+    letterSpacing: "1px",
+    cursor: "pointer",
+    boxShadow:
+      "0 6px 0 #7b5f2d, 0 8px 18px rgba(0,0,0,0.35)",
+    transition: "all 0.12s ease",
+    userSelect: "none"
+  }}
+  onMouseDown={(e) => {
+    e.currentTarget.style.transform = "translateY(4px)";
+    e.currentTarget.style.boxShadow =
+      "0 2px 0 #7b5f2d, 0 4px 10px rgba(0,0,0,0.35)";
+  }}
+  onMouseUp={(e) => {
+    e.currentTarget.style.transform = "translateY(0)";
+    e.currentTarget.style.boxShadow =
+      "0 6px 0 #7b5f2d, 0 8px 18px rgba(0,0,0,0.35)";
+  }}
+  onMouseLeave={(e) => {
+    e.currentTarget.style.transform = "translateY(0)";
+    e.currentTarget.style.boxShadow =
+      "0 6px 0 #7b5f2d, 0 8px 18px rgba(0,0,0,0.35)";
   }}
 >
-  {refreshing ? "✓ Refreshed" : "🔄 Refresh Data"}
+  🔄 Refresh Data
 </button>
   </div>
 <select
