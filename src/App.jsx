@@ -47,7 +47,7 @@ useEffect(() => {
   loadStudentWaitlist();
   loadAdminWaitlist();
   loadTotalStudents();
-loadSpecialClasses();
+
 async function handlePaymentReturn() {
   const params = new URLSearchParams(window.location.search);
 
@@ -173,13 +173,9 @@ setCredits(0);
   const [adminBookings, setAdminBookings] = useState([]);
   const [studentWaitlist, setStudentWaitlist] = useState([]);
 const [adminWaitlist, setAdminWaitlist] = useState([]);
-  
-const [specialClasses, setSpecialClasses] = useState([]);
-const [showSpecialClassPopup, setShowSpecialClassPopup] = useState(false);
-const [selectedSpecialClass, setSelectedSpecialClass] = useState(null);
+
   const [studentRefreshing, setStudentRefreshing] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  
 const [totalStudents, setTotalStudents] = useState(0);
 const [packageExpiry, setPackageExpiry] = useState(null);
 const [credits, setCredits] = useState(0);
@@ -403,31 +399,6 @@ async function loadStudentWaitlist(emailOverride = null) {
   }
 
   setStudentWaitlist(data || []);
-}
-  async function loadSpecialClasses() {
-  const today = new Date().toISOString().split("T")[0];
-
-  const { data, error } = await supabase
-    .from("special_classes")
-    .select("*")
-    .eq("is_active", true)
-    .gte("class_date", today)
-    .order("class_date", { ascending: true })
-    .order("start_time", { ascending: true });
-
-  if (error) {
-    console.log("Special classes load error:", error);
-    return;
-  }
-
-  const classes = data || [];
-
-  setSpecialClasses(classes);
-
-  if (classes.length > 0) {
-    setSelectedSpecialClass(classes[0]);
-    setShowSpecialClassPopup(true);
-  }
 }
 async function loadAdminWaitlist() {
   const { data, error } = await supabase
@@ -708,186 +679,6 @@ return;
   }
 }
   return (    <div style={app}>
-    {showSpecialClassPopup && selectedSpecialClass && (
-  <div
-    style={{
-      position: "fixed",
-      inset: 0,
-      background: "rgba(0,0,0,0.82)",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      padding: "20px",
-      zIndex: 99999
-    }}
-  >
-    <div
-      style={{
-        width: "100%",
-        maxWidth: "520px",
-        background:
-          "linear-gradient(180deg, rgba(35,18,10,0.98), rgba(5,5,5,0.98))",
-        border: "1px solid rgba(200,169,107,0.7)",
-        borderRadius: "24px",
-        padding: "38px",
-        textAlign: "center",
-        boxShadow: "0 25px 80px rgba(0,0,0,0.75)",
-        position: "relative"
-      }}
-    >
-      <button
-        onClick={() => setShowSpecialClassPopup(false)}
-        style={{
-          position: "absolute",
-          top: "15px",
-          right: "18px",
-          border: "none",
-          background: "transparent",
-          color: "#c8a96b",
-          fontSize: "26px",
-          cursor: "pointer"
-        }}
-      >
-        ×
-      </button>
-
-      {selectedSpecialClass.image_url && (
-        <img
-          src={selectedSpecialClass.image_url}
-          alt={selectedSpecialClass.class_name}
-          style={{
-            width: "100%",
-            height: "260px",
-            objectFit: "cover",
-            borderRadius: "16px",
-            marginBottom: "24px"
-          }}
-        />
-      )}
-
-      <p
-        style={{
-          color: "#c8a96b",
-          letterSpacing: "4px",
-          fontSize: "12px",
-          fontWeight: "bold",
-          marginBottom: "12px"
-        }}
-      >
-        SPECIAL CLASS
-      </p>
-
-      <h2
-        style={{
-          color: "#fff",
-          fontSize: "42px",
-          margin: "8px 0 18px"
-        }}
-      >
-        {selectedSpecialClass.class_name}
-      </h2>
-
-      <p
-        style={{
-          color: "#c8a96b",
-          fontSize: "18px",
-          fontWeight: "bold"
-        }}
-      >
-        {new Date(
-          `${selectedSpecialClass.class_date}T00:00:00`
-        ).toLocaleDateString("en-US", {
-          weekday: "long",
-          month: "long",
-          day: "numeric",
-          year: "numeric"
-        })}
-      </p>
-
-      <p
-        style={{
-          color: "#fff",
-          fontSize: "18px",
-          marginTop: "8px"
-        }}
-      >
-        {new Date(
-          `2000-01-01T${selectedSpecialClass.start_time}`
-        ).toLocaleTimeString("en-US", {
-          hour: "numeric",
-          minute: "2-digit"
-        })}
-      </p>
-
-      <p
-        style={{
-          color: "#999",
-          lineHeight: "1.7",
-          margin: "22px 0"
-        }}
-      >
-        {selectedSpecialClass.description}
-      </p>
-
-      <p
-        style={{
-          color: "#c8a96b",
-          marginBottom: "8px"
-        }}
-      >
-        Instructor: {selectedSpecialClass.instructor || "Legacy Instructor"}
-      </p>
-
-      <p
-        style={{
-          color: "#fff",
-          fontWeight: "bold",
-          marginBottom: "26px"
-        }}
-      >
-        Maximum {selectedSpecialClass.capacity} students
-      </p>
-
-      <button
-        onClick={() => {
-          setShowSpecialClassPopup(false);
-          setPage("chooseClass");
-        }}
-        style={{
-          width: "100%",
-          padding: "15px 24px",
-          background:
-            "linear-gradient(180deg, #f4d58d 0%, #c8a96b 100%)",
-          color: "#111",
-          border: "1px solid #8f6f33",
-          borderRadius: "12px",
-          fontSize: "14px",
-          fontWeight: "bold",
-          letterSpacing: "2px",
-          cursor: "pointer",
-          boxShadow: "0 6px 0 #7b5f2d"
-        }}
-      >
-        BOOK THIS CLASS
-      </button>
-
-      <button
-        onClick={() => setShowSpecialClassPopup(false)}
-        style={{
-          width: "100%",
-          marginTop: "18px",
-          padding: "12px",
-          background: "transparent",
-          color: "#999",
-          border: "none",
-          cursor: "pointer"
-        }}
-      >
-        Maybe Later
-      </button>
-    </div>
-  </div>
-)}
 {/* NAVBAR */}
 <div style={navbar}>
   <div>
