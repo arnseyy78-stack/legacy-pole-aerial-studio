@@ -22,17 +22,6 @@ const [menuOpen, setMenuOpen] = useState(false);
   
 const getClassTime = (className) =>
   classTimes[className] || "6:00 PM";
-
-  useEffect(() => {
-  const today = new Date();
-
-  // Saturday 18 July 2026
-  const popupUntil = new Date(2026, 6, 18, 15, 0);
-
-  if (today <= popupUntil) {
-    setShowPoleDoublesPopup(true);
-  }
-}, []);
   
 useEffect(() => {
   const params = new URLSearchParams(window.location.search);
@@ -185,7 +174,6 @@ setCredits(0);
   const [studentWaitlist, setStudentWaitlist] = useState([]);
 const [adminWaitlist, setAdminWaitlist] = useState([]);
 
-  const [showPoleDoublesPopup, setShowPoleDoublesPopup] = useState(false);
   const [studentRefreshing, setStudentRefreshing] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 const [totalStudents, setTotalStudents] = useState(0);
@@ -1865,11 +1853,8 @@ const classes = {
     ["3:00 PM 1hr", "Aerial Silks", "/silks.jpg"],
     ["6:00 PM 1hr", "Intro to Pole", "/ace-pole.jpg"]
   ],
-  5: [["6:00 PM 1hr", "Exo", "/floor.jpg"]]
-  6: [
-  "3:00 PM",
-  "Pole Doubles", "/poledoubles.jpg"],
-    [["6:00 PM 1hr", "Floor Work", "/ace-floor.jpg"]],
+  5: [["6:00 PM 1hr", "Exo", "/floor.jpg"]],
+  6: [["6:00 PM 1hr", "Floor Work", "/ace-floor.jpg"]],
   0: []
 };
 
@@ -1922,10 +1907,7 @@ if (blockedClass) {
   const currentBooked =
     bookedSlots[bookingKey] || 0;
 
-  const maxSlots =
-  item[1] === "Pole Doubles" ? 10 : 5;
-
-if (currentBooked >= maxSlots) {
+  if (currentBooked >= 5) {
   const studentData =
     JSON.parse(localStorage.getItem("legacyStudent")) || student;
 
@@ -3226,39 +3208,3 @@ const mobileMenuOpen = {
   minWidth: "220px",
   zIndex: 99999
 };
-{showPoleDoublesPopup && (
-  <div style={popupOverlay}>
-    <div style={popupCard}>
-
-      <h2 style={{ color:"#c8a96b" }}>
-        ⭐ SPECIAL CLASS ⭐
-      </h2>
-
-      <h3>Pole Doubles</h3>
-
-      <p>
-        Saturday • 3:00 PM
-      </p>
-
-      <p>
-        Maximum 10 Students
-      </p>
-
-      <button
-        onClick={()=>{
-          setShowPoleDoublesPopup(false);
-          setPage("chooseClass");
-        }}
-      >
-        BOOK NOW
-      </button>
-
-      <button
-        onClick={()=>setShowPoleDoublesPopup(false)}
-      >
-        Maybe Later
-      </button>
-
-    </div>
-  </div>
-)}
