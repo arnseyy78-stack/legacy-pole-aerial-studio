@@ -47,7 +47,7 @@ useEffect(() => {
   loadStudentWaitlist();
   loadAdminWaitlist();
   loadTotalStudents();
-
+loadSpecialClasses();
 async function handlePaymentReturn() {
   const params = new URLSearchParams(window.location.search);
 
@@ -173,9 +173,13 @@ setCredits(0);
   const [adminBookings, setAdminBookings] = useState([]);
   const [studentWaitlist, setStudentWaitlist] = useState([]);
 const [adminWaitlist, setAdminWaitlist] = useState([]);
-
+  
+const [specialClasses, setSpecialClasses] = useState([]);
+const [showSpecialClassPopup, setShowSpecialClassPopup] = useState(false);
+const [selectedSpecialClass, setSelectedSpecialClass] = useState(null);
   const [studentRefreshing, setStudentRefreshing] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  
 const [totalStudents, setTotalStudents] = useState(0);
 const [packageExpiry, setPackageExpiry] = useState(null);
 const [credits, setCredits] = useState(0);
@@ -399,6 +403,31 @@ async function loadStudentWaitlist(emailOverride = null) {
   }
 
   setStudentWaitlist(data || []);
+}
+  async function loadSpecialClasses() {
+  const today = new Date().toISOString().split("T")[0];
+
+  const { data, error } = await supabase
+    .from("special_classes")
+    .select("*")
+    .eq("is_active", true)
+    .gte("class_date", today)
+    .order("class_date", { ascending: true })
+    .order("start_time", { ascending: true });
+
+  if (error) {
+    console.log("Special classes load error:", error);
+    return;
+  }
+
+  const classes = data || [];
+
+  setSpecialClasses(classes);
+
+  if (classes.length > 0) {
+    setSelectedSpecialClass(classes[0]);
+    setShowSpecialClassPopup(true);
+  }
 }
 async function loadAdminWaitlist() {
   const { data, error } = await supabase
