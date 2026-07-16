@@ -2134,22 +2134,132 @@ setPage("bookingConfirmed");
     backgroundColor: "#111"
   }}
 />
-                <p style={goldSmallText}>{item[0]}</p>
-                <h3 style={packagePrice}>{item[1]}</h3>
-                <p style={{ color: "#999", lineHeight: "1.6" }}>
-  {{
-    "Pole Fitness": "Build strength, confidence and body control. Wear short shorts. Tap to book this class.",
-    "Pole Flow": "Learn graceful transitions, movement and expression. Wear leggings, knee pads and socks. Tap to book this class.",
-    "Spinny Pole": "Master spinning pole techniques and combinations. Wear short shorts. Tap to book this class.",
-    "Intro to Pole": "Perfect starting point for complete beginners. Wear short shorts. Tap to book this class.",
-    "Exo": "Sensual movement, confidence, and floor transitions. Wear knee pads and pleaser heels. Tap to book this class.",
-    "Floor Work": "Flexibility, flow and choreography on the floor. Wear leggings, knee pads, socks and heels (optional). Tap to book this class.",
-    "Aerial Silks": "Build strength, flexibility and confidence with climbs, wraps and graceful aerial poses. Wear fitted leggings and a fitted top. Tap to book this class."
-  }[item[1]]}
+                {item[6] === true && (
+  <div
+    style={{
+      display: "inline-block",
+      background:
+        "linear-gradient(180deg, #f4d58d 0%, #c8a96b 100%)",
+      color: "#111",
+      padding: "7px 14px",
+      borderRadius: "999px",
+      fontSize: "11px",
+      fontWeight: "bold",
+      letterSpacing: "2px",
+      marginBottom: "18px",
+      boxShadow: "0 4px 12px rgba(200,169,107,0.25)"
+    }}
+  >
+    ✨ SPECIAL EVENT
+  </div>
+)}
+
+<p
+  style={{
+    ...goldSmallText,
+    marginBottom: "8px"
+  }}
+>
+  {item[0].replace(" 1hr", " • 1 HR")}
 </p>
-                <p style={{ color: "#c8a96b", fontSize: "13px", letterSpacing: "2px" }}>
-  Instructor: London
-</p>
+
+<h3
+  style={{
+    ...packagePrice,
+    fontSize: item[6] === true ? "32px" : packagePrice.fontSize,
+    marginBottom: "12px"
+  }}
+>
+  {item[1]}
+</h3>
+
+{item[6] === true ? (
+  <>
+    {item[4] && (
+      <p
+        style={{
+          color: "rgba(255,255,255,0.75)",
+          fontSize: "15px",
+          lineHeight: "1.7",
+          margin: "12px 0 18px"
+        }}
+      >
+        {item[4]}
+      </p>
+    )}
+
+    <div
+      style={{
+        display: "flex",
+        flexWrap: "wrap",
+        gap: "10px",
+        marginBottom: "16px"
+      }}
+    >
+      <span
+        style={{
+          border: "1px solid rgba(200,169,107,0.35)",
+          borderRadius: "999px",
+          padding: "7px 12px",
+          color: "#c8a96b",
+          fontSize: "12px",
+          fontWeight: "bold"
+        }}
+      >
+        👤 {item[5] || "Legacy Instructor"}
+      </span>
+
+      <span
+        style={{
+          border: "1px solid rgba(200,169,107,0.35)",
+          borderRadius: "999px",
+          padding: "7px 12px",
+          color: "#fff",
+          fontSize: "12px",
+          fontWeight: "bold"
+        }}
+      >
+        🎯 {Number(item[3]) || 5} SLOTS ONLY
+      </span>
+    </div>
+  </>
+) : (
+  <>
+    <p
+      style={{
+        color: "#999",
+        lineHeight: "1.6"
+      }}
+    >
+      {{
+        "Pole Fitness":
+          "Build strength, confidence and body control. Wear short shorts. Tap to book this class.",
+        "Pole Flow":
+          "Learn graceful transitions, movement and expression. Wear leggings, knee pads and socks. Tap to book this class.",
+        "Spinny Pole":
+          "Master spinning pole techniques and combinations. Wear short shorts. Tap to book this class.",
+        "Intro to Pole":
+          "Perfect starting point for complete beginners. Wear short shorts. Tap to book this class.",
+        "Exo":
+          "Sensual movement, confidence, and floor transitions. Wear knee pads and pleaser heels. Tap to book this class.",
+        "Floor Work":
+          "Flexibility, flow and choreography on the floor. Wear leggings, knee pads, socks and heels optional. Tap to book this class.",
+        "Aerial Silks":
+          "Build strength, flexibility and confidence with climbs, wraps and graceful aerial poses. Wear fitted leggings and a fitted top. Tap to book this class."
+      }[item[1]]}
+    </p>
+
+    <p
+      style={{
+        color: "#c8a96b",
+        fontSize: "13px",
+        letterSpacing: "2px"
+      }}
+    >
+      Instructor: London
+    </p>
+  </>
+)}
                 <p
   style={{
     color: "#c8a96b",
