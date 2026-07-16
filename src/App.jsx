@@ -42,6 +42,7 @@ if (params.get("dashboard") === "true") {
 }, []);
 
 useEffect(() => {
+  loadSpecialClasses();
   loadBookings();
   loadStudentBookings();
   loadStudentWaitlist();
@@ -179,7 +180,7 @@ const [adminWaitlist, setAdminWaitlist] = useState([]);
 const [totalStudents, setTotalStudents] = useState(0);
 const [packageExpiry, setPackageExpiry] = useState(null);
 const [credits, setCredits] = useState(0);
-
+  const [specialClasses, setSpecialClasses] = useState([]);
   const today = new Date();
   const [adminView, setAdminView] = useState("upcoming");
 const [studentView, setStudentView] = useState("upcoming");
@@ -227,7 +228,19 @@ function handleStudentChange(e) {
     [e.target.name]: e.target.value
   });
 }
+async function loadSpecialClasses() {
+  const { data, error } = await supabase
+    .from("special_classes")
+    .select("*")
+    .eq("is_active", true);
 
+  if (error) {
+    console.log(error);
+    return;
+  }
+
+  setSpecialClasses(data || []);
+}
 async function loadBookings() {
   const { data, error } = await supabase
     .from("Bookings")
