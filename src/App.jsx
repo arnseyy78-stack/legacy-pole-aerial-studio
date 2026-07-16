@@ -1870,12 +1870,45 @@ const classes = {
   6: [["6:00 PM 1hr", "Floor Work", "/ace-floor.jpg"]],
   0: []
 };
+const selectedDateISO =
+  `${currentYear}-` +
+  `${String(displayedDate.getMonth() + 1).padStart(2, "0")}-` +
+  `${String(selectedDate).padStart(2, "0")}`;
 
+const matchingSpecialClasses = specialClasses
+  .filter((specialClass) => specialClass.class_date === selectedDateISO)
+  .map((specialClass) => {
+    const [hour, minute] = specialClass.start_time.split(":");
+
+    const displayTime = new Date(
+      2000,
+      0,
+      1,
+      Number(hour),
+      Number(minute)
+    ).toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit"
+    });
+
+    return [
+      `${displayTime} 1hr`,
+      specialClass.class_name,
+      specialClass.image_url || "/ace-pole.jpg",
+      Number(specialClass.capacity) || 5,
+      specialClass.description || "",
+      specialClass.instructor || "London",
+      true
+    ];
+  });
   if (calendarMonthOffset > 1) {
   return [];
 }
 
-return classes[weekday] || [];
+return [
+  ...(classes[weekday] || []),
+  ...matchingSpecialClasses
+];
 })().map((item) => (
               <button
                 key={item[0]}
