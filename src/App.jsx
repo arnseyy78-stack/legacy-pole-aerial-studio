@@ -1911,7 +1911,7 @@ return [
 ];
 })().map((item) => (
               <button
-                key={item[0]}
+                key={`${item[0]}-${item[1]}`}
                 style={packageCard}
                 onClick={async () => {
 const bookingDate = `${currentMonthName}-${selectedDate}`;
@@ -1950,10 +1950,12 @@ if (blockedClass) {
   );
   return;
 }
-  const currentBooked =
-    bookedSlots[bookingKey] || 0;
+const currentBooked =
+  bookedSlots[bookingKey] || 0;
 
-  if (currentBooked >= 5) {
+const maxSlots = Number(item[3]) || 5;
+
+if (currentBooked >= maxSlots) {
   const studentData =
     JSON.parse(localStorage.getItem("legacyStudent")) || student;
 
@@ -2160,12 +2162,13 @@ setPage("bookingConfirmed");
       `${currentMonthName}-${selectedDate}-${item[1]}`
     ] || 0;
 
-  const spotsLeft = 5 - bookedCount;
+  const maxSlots = Number(item[3]) || 5;
+const spotsLeft = maxSlots - bookedCount;
 
   return (
     <>
       <p style={{ color: "#c8a96b", marginTop: "12px" }}>
-        {bookedCount} / 5 booked
+        {bookedCount} / {maxSlots} booked
       </p>
 
       <p
