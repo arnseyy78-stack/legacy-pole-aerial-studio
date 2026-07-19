@@ -1856,18 +1856,34 @@ return (
 const weekday = actualSelectedDate.getDay();
 
 const classes = {
-  1: [["6:00 PM 1hr", "Pole Fitness", "/crossknee.jpg"]],
-    2: [
+  1: [
+    ["6:00 PM 1hr", "Pole Fitness", "/crossknee.jpg"]
+  ],
+
+  2: [
     ["3:00 PM 1hr", "Aerial Silks", "/silks.jpg"],
     ["6:00 PM 1hr", "Pole Flow", "/xtian-pole.jpg"]
   ],
-  3: [["6:00 PM 1hr", "Spinny Pole", "/climb.jpg"]],
-    4: [
+
+  3: [
+    ["3:00 PM 1hr", "Aerial Hoop", "/aerial-hoop.jpg"],
+    ["6:00 PM 1hr", "Spinny Pole", "/climb.jpg"]
+  ],
+
+  4: [
     ["3:00 PM 1hr", "Aerial Silks", "/silks.jpg"],
     ["6:00 PM 1hr", "Intro to Pole", "/ace-pole.jpg"]
   ],
-  5: [["6:00 PM 1hr", "Exo", "/floor.jpg"]],
-  6: [["6:00 PM 1hr", "Floor Work", "/ace-floor.jpg"]],
+
+  5: [
+    ["3:00 PM 1hr", "Aerial Hoop", "/aerial-hoop.jpg"],
+    ["6:00 PM 1hr", "Exo", "/floor.jpg"]
+  ],
+
+  6: [
+    ["6:00 PM 1hr", "Floor Work", "/ace-floor.jpg"]
+  ],
+
   0: []
 };
 const selectedDateISO =
@@ -2245,7 +2261,9 @@ setPage("bookingConfirmed");
         "Floor Work":
           "Flexibility, flow and choreography on the floor. Wear leggings, knee pads, socks and heels optional. Tap to book this class.",
         "Aerial Silks":
-          "Build strength, flexibility and confidence with climbs, wraps and graceful aerial poses. Wear fitted leggings and a fitted top. Tap to book this class."
+          "Build strength, flexibility and confidence with climbs, wraps and graceful aerial poses. Wear fitted leggings and a fitted top. Tap to book this class.",
+      "Aerial Hoop":
+  "Build strength, confidence and aerial skills while learning spins, hangs and beautiful hoop poses. Suitable for beginners. Wear leggings and a fitted top. Tap to book this class."
       }[item[1]]}
     </p>
 
