@@ -17,6 +17,7 @@ const [menuOpen, setMenuOpen] = useState(false);
   "Intro to Pole": "6:00 PM",
   "Exo": "6:00 PM",
   "Floor Work": "6:00 PM",
+  "Aerial Hoop": "3:00 PM",
   "Aerial Silks": "3:00 PM"
 };
   
