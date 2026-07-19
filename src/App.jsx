@@ -2561,6 +2561,13 @@ const spotsLeft = maxSlots - bookedCount;
   "Learn graceful transitions, musicality and fluid movement around the pole.",
   "/pole-flow.jpg"
 ],
+        [
+  "Wednesday",
+  "3:00 PM",
+  "Aerial Hoop",
+  "Build strength, balance and confidence while learning beginner-friendly spins, hangs and beautiful aerial hoop poses. Wear fitted leggings and a fitted top.",
+  "/aerial-hoop.jpg"
+],
   [
     "Wednesday",
     "6:00 PM",
@@ -2584,7 +2591,13 @@ const spotsLeft = maxSlots - bookedCount;
   "Perfect for complete beginners. Learn foundational grips, spins and pole safety.",
   "/ace-pole.jpg"
 ],
-
+[
+  "Friday",
+  "3:00 PM",
+  "Aerial Hoop",
+  "Build strength, balance and confidence while learning beginner-friendly spins, hangs and beautiful aerial hoop poses. Wear fitted leggings and a fitted top.",
+  "/aerial-hoop.jpg"
+],
   [
     "Friday",
     "6:00 PM",
@@ -2602,7 +2615,7 @@ const spotsLeft = maxSlots - bookedCount;
   ]
 ].map((cls) => (
           <div
-            key={cls[2]}
+            key={`${cls[0]}-${cls[1]}-${cls[2]}`}
             style={{
               ...packageCard,
               padding: "0",
