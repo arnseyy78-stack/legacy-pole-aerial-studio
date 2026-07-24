@@ -12,11 +12,8 @@ const [menuOpen, setMenuOpen] = useState(false);
   
   const classTimes = {
   "Pole Fitness": "6:00 PM",
-  "Pole Flow": "6:00 PM",
   "Spinny Pole": "6:00 PM",
   "Intro to Pole": "6:00 PM",
-  "Exo": "6:00 PM",
-  "Floor Work": "6:00 PM",
   "Aerial Hoop": "3:00 PM",
   "Aerial Silks": "3:00 PM"
 };
@@ -1863,7 +1860,6 @@ const classes = {
 
   2: [
     ["3:00 PM 1hr", "Aerial Silks", "/silks.jpg"],
-    ["6:00 PM 1hr", "Pole Flow", "/xtian-pole.jpg"]
   ],
 
   3: [
@@ -1878,11 +1874,6 @@ const classes = {
 
   5: [
     ["3:00 PM 1hr", "Aerial Hoop", "/aerial-hoop.jpg"],
-    ["6:00 PM 1hr", "Exo", "/floor.jpg"]
-  ],
-
-  6: [
-    ["6:00 PM 1hr", "Floor Work", "/ace-floor.jpg"]
   ],
 
   0: []
@@ -2251,16 +2242,10 @@ setPage("bookingConfirmed");
       {{
         "Pole Fitness":
           "Build strength, confidence and body control. Wear short shorts. Tap to book this class.",
-        "Pole Flow":
-          "Learn graceful transitions, movement and expression. Wear leggings, knee pads and socks. Tap to book this class.",
         "Spinny Pole":
           "Master spinning pole techniques and combinations. Wear short shorts. Tap to book this class.",
         "Intro to Pole":
           "Perfect starting point for complete beginners. Wear short shorts. Tap to book this class.",
-        "Exo":
-          "Sensual movement, confidence, and floor transitions. Wear knee pads and pleaser heels. Tap to book this class.",
-        "Floor Work":
-          "Flexibility, flow and choreography on the floor. Wear leggings, knee pads, socks and heels optional. Tap to book this class.",
         "Aerial Silks":
           "Build strength, flexibility and confidence with climbs, wraps and graceful aerial poses. Wear fitted leggings and a fitted top. Tap to book this class.",
       "Aerial Hoop":
@@ -2553,15 +2538,7 @@ const spotsLeft = maxSlots - bookedCount;
   "Develop strength, flexibility and confidence while learning beautiful aerial silks techniques. Perfect for beginners and intermediate students.",
   "/silks.jpg"
 ],
-
-[
-  "Tuesday",
-  "6:00 PM",
-  "Pole Flow",
-  "Learn graceful transitions, musicality and fluid movement around the pole.",
-  "/pole-flow.jpg"
-],
-        [
+  [
   "Wednesday",
   "3:00 PM",
   "Aerial Hoop",
@@ -2597,21 +2574,6 @@ const spotsLeft = maxSlots - bookedCount;
   "Aerial Hoop",
   "Build strength, balance and confidence while learning beginner-friendly spins, hangs and beautiful aerial hoop poses. Wear fitted leggings and a fitted top.",
   "/aerial-hoop.jpg"
-],
-  [
-    "Friday",
-    "6:00 PM",
-    "Exo",
-    "Explore sensual movement, expression, confidence and performance-based choreography.",
-    "/floor.jpg"
-  ],
-
-  [
-    "Saturday",
-    "6:00 PM",
-    "Floor Work",
-    "Learn elegant floor transitions, flexibility, lines and dance movement techniques.",
-    "/ace-floor.jpg"
   ]
 ].map((cls) => (
           <div
