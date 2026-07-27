@@ -602,17 +602,48 @@ if (expiryWarning) {
 }
 setPage("chooseClass");
 }
-  function checkPackageExpiry(email) {
-  const savedExpiry = localStorage.getItem(`legacyExpiry_${email}`);
+  async function checkPackageExpiry(email) {
+  const { data, error } = await supabase
+    .from("students")
+    .select("credits, package_expiry")
+    .eq("email", email)
+    .single();
 
-  if (savedExpiry && new Date(savedExpiry) < new Date()) {
-    localStorage.setItem(`legacyCredits_${email}`, 0);
-    localStorage.removeItem(`legacyExpiry_${email}`);
+  if (error || !data) {
+    console.log(error);
+    return false;
+  }
+
+  if (!data.package_expiry) {
+    return false;
+  }
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const expiry = new Date(data.package_expiry);
+  expiry.setHours(0, 0, 0, 0);
+
+  if (expiry < today) {
+    await supabase
+      .from("students")
+      .update({
+        credits: 0,
+        package_expiry: null
+      })
+      .eq("email", email);
+
     setCredits(0);
+    setPackageExpiry(null);
+
     alert("Your package has expired. Please purchase a new package.");
     setPage("packages");
+
     return true;
   }
+
+  return false;
+}
 
   return false;
 }
@@ -2030,7 +2061,7 @@ return;
                   const studentData =
   JSON.parse(localStorage.getItem("legacyStudent")) || student;
 
-if (checkPackageExpiry(studentData.email)) {
+if (await checkPackageExpiry(studentData.email)) {
   return;
 }
 
