@@ -573,20 +573,33 @@ setCredits(0);
   );
 setIsLoggedIn(true);
 setStudentBookings([]);
-const savedCredits = Number(data.credits) || 0;
-setPackageExpiry(data.package_expiry);
-const savedExpiry = localStorage.getItem(`legacyExpiry_${data.email}`);
+const today = new Date();
+today.setHours(0, 0, 0, 0);
 
-if (savedExpiry && new Date(savedExpiry) < new Date()) {
-  localStorage.setItem(`legacyCredits_${data.email}`, 0);
-  localStorage.removeItem(`legacyExpiry_${data.email}`);
+const expiry = data.package_expiry
+  ? new Date(data.package_expiry)
+  : null;
+
+if (expiry) {
+  expiry.setHours(0, 0, 0, 0);
+}
+
+if (expiry && expiry < today) {
+  await supabase
+    .from("students")
+    .update({
+      credits: 0,
+      package_expiry: null
+    })
+    .eq("email", data.email);
+
   setCredits(0);
-  localStorage.setItem(
-    "legacyExpiryWarning",
-    "Your package has expired. Please purchase a new package."
-  );
+  setPackageExpiry(null);
+
+  alert("Your package has expired. Please purchase a new package.");
 } else {
-  setCredits(savedCredits);
+  setCredits(Number(data.credits) || 0);
+  setPackageExpiry(data.package_expiry);
 }
 
 await loadStudentBookings(data.email);
