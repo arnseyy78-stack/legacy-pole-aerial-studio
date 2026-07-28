@@ -2122,7 +2122,17 @@ const { error: creditUpdateError } = await supabase
 if (creditUpdateError) {
   console.log("Credit update error:", creditUpdateError);
 }
-localStorage.setItem(`legacyCredits_${studentData.email}`, newCredits);
+setCredits(newCredits);
+const { data: refreshedStudent } = await supabase
+  .from("students")
+  .select("credits, package_expiry")
+  .eq("email", studentData.email)
+  .single();
+
+if (refreshedStudent) {
+  setCredits(refreshedStudent.credits);
+  setPackageExpiry(refreshedStudent.package_expiry);
+}
 
 loadBookings();
 loadStudentBookings();
