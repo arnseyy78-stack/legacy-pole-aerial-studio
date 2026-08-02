@@ -657,9 +657,6 @@ setPage("chooseClass");
 
   return false;
 }
-
-  return false;
-}
   async function buyPackage(pkg) {
   try {
   if (pkg.isTest) {
