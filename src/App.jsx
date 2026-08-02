@@ -1925,7 +1925,7 @@ return [
 const bookingDate = `${currentMonthName}-${selectedDate}`;
                   const now = new Date();
 
-const classHour = item[0].includes("6:00 PM") ? 15 : 18;
+const classHour = item[0].includes("6:00 PM") ? 18;
 
 const selectedClassDate = new Date(
   currentYear,
