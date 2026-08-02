@@ -1861,24 +1861,23 @@ const classes = {
   ],
 
   2: [
-    ["3:00 PM 1hr", "Aerial Silks", "/silks.jpg"],
+    ["6:00 PM 1hr", "Aerial Silks", "/silks.jpg"]
   ],
 
   3: [
-    ["3:00 PM 1hr", "Aerial Hoop", "/aerial-hoop.jpg"],
     ["6:00 PM 1hr", "Spinny Pole", "/climb.jpg"]
   ],
 
   4: [
-    ["3:00 PM 1hr", "Aerial Silks", "/silks.jpg"],
     ["6:00 PM 1hr", "Intro to Pole", "/ace-pole.jpg"]
   ],
 
   5: [
-    ["3:00 PM 1hr", "Aerial Hoop", "/aerial-hoop.jpg"],
+    ["6:00 PM 1hr", "Aerial Hoop", "/aerial-hoop.jpg"]
   ],
 
-  0: []
+  0: [],
+  6: []
 };
 const selectedDateISO =
   `${currentYear}-` +
