@@ -2164,7 +2164,7 @@ setPage("bookingConfirmed");
     marginBottom: "8px"
   }}
 >
-  {item[0].replace(" 1hr", " • 1 HR")}
+  {item[0].replace(" 6:00 PM", " • 1 HR")}
 </p>
 
 <h3
