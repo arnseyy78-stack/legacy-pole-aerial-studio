@@ -14,8 +14,8 @@ const [menuOpen, setMenuOpen] = useState(false);
   "Pole Fitness": "6:00 PM",
   "Spinny Pole": "6:00 PM",
   "Intro to Pole": "6:00 PM",
-  "Aerial Hoop": "3:00 PM",
-  "Aerial Silks": "3:00 PM"
+  "Aerial Hoop": "6:00 PM",
+  "Aerial Silks": "6:00 PM"
 };
   
 const getClassTime = (className) =>
