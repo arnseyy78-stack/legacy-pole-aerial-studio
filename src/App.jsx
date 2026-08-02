@@ -14,8 +14,8 @@ const [menuOpen, setMenuOpen] = useState(false);
   "Pole Fitness": "6:00 PM",
   "Spinny Pole": "6:00 PM",
   "Intro to Pole": "6:00 PM",
-  "Aerial Hoop": "6:00 PM",
-  "Aerial Silks": "6:00 PM"
+  "Aerial Hoop": "3:00 PM",
+  "Aerial Silks": "3:00 PM"
 };
   
 const getClassTime = (className) =>
@@ -1861,19 +1861,21 @@ const classes = {
   ],
 
   2: [
-    ["6:00 PM 1hr", "Aerial Silks", "/silks.jpg"]
+    ["3:00 PM 1hr", "Aerial Silks", "/silks.jpg"],
   ],
 
   3: [
+    ["3:00 PM 1hr", "Aerial Hoop", "/aerial-hoop.jpg"],
     ["6:00 PM 1hr", "Spinny Pole", "/climb.jpg"]
   ],
 
   4: [
+    ["3:00 PM 1hr", "Aerial Silks", "/silks.jpg"],
     ["6:00 PM 1hr", "Intro to Pole", "/ace-pole.jpg"]
   ],
 
   5: [
-    ["6:00 PM 1hr", "Aerial Hoop", "/aerial-hoop.jpg"]
+    ["3:00 PM 1hr", "Aerial Hoop", "/aerial-hoop.jpg"],
   ],
 
   0: []
@@ -1925,7 +1927,7 @@ return [
 const bookingDate = `${currentMonthName}-${selectedDate}`;
                   const now = new Date();
 
-const classHour = item[0].includes("6:00 PM") ? 18;
+const classHour = item[0].includes("3:00 PM") ? 15 : 18;
 
 const selectedClassDate = new Date(
   currentYear,
@@ -2540,12 +2542,20 @@ const spotsLeft = maxSlots - bookedCount;
     "Build strength, confidence and fitness while learning beginner-friendly pole techniques.",
     "/xtian-sit.jpg"
   ],
+
   [
   "Tuesday",
-  "6:00 PM",
+  "3:00 PM",
   "Aerial Silks",
   "Develop strength, flexibility and confidence while learning beautiful aerial silks techniques. Perfect for beginners and intermediate students.",
   "/silks.jpg"
+],
+  [
+  "Wednesday",
+  "3:00 PM",
+  "Aerial Hoop",
+  "Build strength, balance and confidence while learning beginner-friendly spins, hangs and beautiful aerial hoop poses. Wear fitted leggings and a fitted top.",
+  "/aerial-hoop.jpg"
 ],
   [
     "Wednesday",
@@ -2554,6 +2564,15 @@ const spotsLeft = maxSlots - bookedCount;
     "Master spinning pole techniques, control, momentum and beautiful aerial shapes.",
     "/spinny.jpg"
   ],
+
+  [
+  "Thursday",
+  "3:00 PM",
+  "Aerial Silks",
+  "Build upper body strength, climbs, wraps and beautiful aerial poses in a supportive environment.",
+  "/silks.jpg"
+],
+
 [
   "Thursday",
   "6:00 PM",
@@ -2563,7 +2582,7 @@ const spotsLeft = maxSlots - bookedCount;
 ],
 [
   "Friday",
-  "6:00 PM",
+  "3:00 PM",
   "Aerial Hoop",
   "Build strength, balance and confidence while learning beginner-friendly spins, hangs and beautiful aerial hoop poses. Wear fitted leggings and a fitted top.",
   "/aerial-hoop.jpg"
