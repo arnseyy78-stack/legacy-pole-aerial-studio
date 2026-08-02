@@ -1861,7 +1861,7 @@ const classes = {
   ],
 
   2: [
-    ["6:00 PM 1hr", "Aerial Silks", "/silks.jpg"],
+    ["6:00 PM 1hr", "Aerial Silks", "/silks.jpg"]
   ],
 
   3: [
