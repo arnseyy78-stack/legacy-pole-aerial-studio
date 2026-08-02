@@ -2544,34 +2544,18 @@ const spotsLeft = maxSlots - bookedCount;
 
   [
   "Tuesday",
-  "3:00 PM",
+  "6:00 PM",
   "Aerial Silks",
   "Develop strength, flexibility and confidence while learning beautiful aerial silks techniques. Perfect for beginners and intermediate students.",
   "/silks.jpg"
 ],
-  [
-  "Wednesday",
-  "3:00 PM",
-  "Aerial Hoop",
-  "Build strength, balance and confidence while learning beginner-friendly spins, hangs and beautiful aerial hoop poses. Wear fitted leggings and a fitted top.",
-  "/aerial-hoop.jpg"
-],
-  [
+    [
     "Wednesday",
     "6:00 PM",
     "Spinny Pole",
     "Master spinning pole techniques, control, momentum and beautiful aerial shapes.",
     "/spinny.jpg"
   ],
-
-  [
-  "Thursday",
-  "3:00 PM",
-  "Aerial Silks",
-  "Build upper body strength, climbs, wraps and beautiful aerial poses in a supportive environment.",
-  "/silks.jpg"
-],
-
 [
   "Thursday",
   "6:00 PM",
@@ -2581,7 +2565,7 @@ const spotsLeft = maxSlots - bookedCount;
 ],
 [
   "Friday",
-  "3:00 PM",
+  "6:00 PM",
   "Aerial Hoop",
   "Build strength, balance and confidence while learning beginner-friendly spins, hangs and beautiful aerial hoop poses. Wear fitted leggings and a fitted top.",
   "/aerial-hoop.jpg"
