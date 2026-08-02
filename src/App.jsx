@@ -1873,7 +1873,7 @@ const classes = {
   ],
 
   5: [
-    ["6:00 PM 1hr", "Aerial Hoop", "/aerial-hoop.jpg"],
+    ["6:00 PM 1hr", "Aerial Hoop", "/aerial-hoop.jpg"]
   ],
 
   0: []
@@ -2540,7 +2540,6 @@ const spotsLeft = maxSlots - bookedCount;
     "Build strength, confidence and fitness while learning beginner-friendly pole techniques.",
     "/xtian-sit.jpg"
   ],
-
   [
   "Tuesday",
   "6:00 PM",
