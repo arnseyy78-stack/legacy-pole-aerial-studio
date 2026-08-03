@@ -2627,9 +2627,9 @@ const spotsLeft = maxSlots - bookedCount;
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "24px" }}>
         {[
           ["Single Pass", "₱870", "1 class credit", "Perfect for trying your first class."],
-          ["Class Card", "₱4,100", "5 class credits", "Best value. Save and plan your month.", "MOST POPULAR"],
-          ["Practice Session", "₱550", "Contact studio for time", "For existing students only."],
-          ["Private Class", "₱3,100", "One on one coaching.", "Best for achieving your dream tricks."]
+          ["Class Card", "₱4,100", "5 class credits", "Best value. Save and plan your month. Consumable in 30 days.", "MOST POPULAR"],
+          ["Self Practice", "₱550", "Contact studio for time", "For existing students only."],
+          ["Private Class", "₱3,100", "One on one coaching.", "Best for achieving your dream tricks."] oh
         ].map((pkg) => (
           <div
             key={pkg[0]}
