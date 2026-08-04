@@ -2882,14 +2882,14 @@ const spotsLeft = maxSlots - bookedCount;
             name: "Class Card",
             price: "₱4,100",
             description: "5 class credits",
-            subText: "Best value. Save and plan your month. Consumable within 30 days.",
+            subText: "Best value. Save and plan your month. Consumable in 30 days.",
             amount: 410000,
             credits: 5,
             expiry: "30 Days",
             popular: true
           },
           {
-            name: "Practice Session",
+            name: "Self Studio Practice",
             price: "₱550",
             description: "Contact studio for time",
             subText: "For registered students only.",
