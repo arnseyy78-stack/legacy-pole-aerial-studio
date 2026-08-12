@@ -1858,6 +1858,7 @@ const classes = {
   3: [["6:00 PM 1hr", "Spinny Pole", "/climb.jpg"]],
   4: [["6:00 PM 1hr", "Intro to Pole", "/ace-pole.jpg"]],
   5: [["6:00 PM 1hr", "Aerial Hoop", "/aerial-hoop.jpg"]],
+     [["7:30 PM 1hr", "Aerial Hoop", "/aerial-hoop.jpg"]],
   6: [],
   0: []
 };
@@ -2548,6 +2549,13 @@ const spotsLeft = maxSlots - bookedCount;
 [
   "Friday",
   "6:00 PM",
+  "Aerial Hoop",
+  "Build strength, balance and confidence while learning beginner-friendly spins, hangs and beautiful aerial hoop poses. Wear fitted leggings and a fitted top.",
+  "/aerial-hoop.jpg"
+  ]
+        [
+  "Friday",
+  "7:30 PM",
   "Aerial Hoop",
   "Build strength, balance and confidence while learning beginner-friendly spins, hangs and beautiful aerial hoop poses. Wear fitted leggings and a fitted top.",
   "/aerial-hoop.jpg"
