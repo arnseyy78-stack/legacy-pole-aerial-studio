@@ -2232,22 +2232,19 @@ setPage("bookingConfirmed");
         lineHeight: "1.6"
       }}
     >
-      {item[1] === "Pole Fitness" &&
-  "Build strength, confidence and body control. Wear short shorts. Tap to book this class."}
-
-{item[1] === "Spinny Pole" &&
-  "Master spinning pole techniques and combinations. Wear short shorts. Tap to book this class."}
-
-{item[1] === "Intro to Pole" &&
-  "Perfect starting point for complete beginners. Wear short shorts. Tap to book this class."}
-
-{item[1] === "Aerial Silks" &&
-  "Build strength, flexibility and confidence with climbs, wraps and graceful aerial poses. Wear fitted leggings and a fitted top. Tap to book this class."}
-
-{item[1] === "Aerial Hoop" &&
-  "Build strength, confidence and aerial skills while learning spins, hangs and beautiful hoop poses. Suitable for beginners. Wear leggings and a fitted top. Tap to book this class."}
+      {{
+        "Pole Fitness":
+          "Build strength, confidence and body control. Wear short shorts. Tap to book this class.",
+        "Spinny Pole":
+          "Master spinning pole techniques and combinations. Wear short shorts. Tap to book this class.",
+        "Intro to Pole":
+          "Perfect starting point for complete beginners. Wear short shorts. Tap to book this class.",
+        "Aerial Silks":
+          "Build strength, flexibility and confidence with climbs, wraps and graceful aerial poses. Wear fitted leggings and a fitted top. Tap to book this class.",
+      "Aerial Hoop":
+  "Build strength, confidence and aerial skills while learning spins, hangs and beautiful hoop poses. Suitable for beginners. Wear leggings and a fitted top. Tap to book this class."
+      }[item[1]]}
     </p>
-
 <p
   style={{
     color: "#c8a96b",
