@@ -2246,16 +2246,18 @@ setPage("bookingConfirmed");
       }[item[1]]}
     </p>
 
-    <p
-      style={{
-        color: "#c8a96b",
-        fontSize: "13px",
-        letterSpacing: "2px"
-      }}
-    >
-      Instructor: London
-    </p>
-              </button>
+<p
+  style={{
+    color: "#c8a96b",
+    fontSize: "13px",
+    letterSpacing: "2px"
+  }}
+>
+  Instructor: London
+</p>
+</>
+)}
+</button>
             ))}
           </div>
         </>
