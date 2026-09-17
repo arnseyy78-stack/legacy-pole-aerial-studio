@@ -2262,14 +2262,6 @@ setPage("bookingConfirmed");
     color: "#c8a96b",
     marginTop: "12px"
   }}
->
-{(() => {
-  const bookedCount =
-    bookedSlots[
-      `${currentMonthName}-${selectedDate}-${item[1]}`
-    ] || 0;
-
-  const maxSlots = Number(item[3]) || 5;
       </p>
     </>
   );
