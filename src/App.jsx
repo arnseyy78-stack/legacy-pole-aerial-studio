@@ -1738,7 +1738,7 @@ setPage("adminDashboard");
       ) : (
         studentBookings.map((booking) => (
           <div key={booking.id} style={{
-            borderTop: "1px solid rgba(200,169,107,0.2)",
+            borderTop: "1px solid rgba(255,255,255,0.3)",
             paddingTop: "12px",
             marginTop: "12px"
           }}>
@@ -1777,7 +1777,7 @@ setPage("adminDashboard");
       ) : (
         studentWaitlist.map((item) => (
           <div key={item.id} style={{
-            borderTop: "1px solid rgba(200,169,107,0.2)",
+            borderTop: "1px solid rgba(255,255,255,0.3)",
             paddingTop: "12px",
             marginTop: "12px"
           }}>
@@ -1809,7 +1809,7 @@ setPage("adminDashboard");
   ...outlineButton,
   background: "#050505",
   color: "#c8a96b",
-  border: "1px solid rgba(200,169,107,0.35)"
+  border: "1px solid rgba(255,255,255,0.45)"
 }}
   >
     BACK
@@ -1828,7 +1828,7 @@ setPage("adminDashboard");
   ...outlineButton,
   background: "#050505",
   color: "#c8a96b",
-  border: "1px solid rgba(200,169,107,0.35)"
+  border: "1px solid rgba(255,255,255,0.45)"
 }}
   >
     NEXT
@@ -2261,7 +2261,7 @@ setPage("bookingConfirmed");
     >
       <span
         style={{
-          border: "1px solid rgba(200,169,107,0.35)",
+          border: "1px solid rgba(255,255,255,0.45)",
           borderRadius: "999px",
           padding: "7px 12px",
           color: "#c8a96b",
@@ -2335,7 +2335,7 @@ setPage("bookingConfirmed");
     <h2 style={sectionHeading}>Upcoming Class Bookings</h2>
     <div
   style={{
-    border: "1px solid rgba(200,169,107,0.25)",
+    border: "1px solid rgba(255,255,255,0.35)",
     borderRadius: "12px",
     padding: "12px 20px",
     marginTop: "15px",
@@ -2367,7 +2367,7 @@ setPage("bookingConfirmed");
       ? "#4CAF50"
       : "linear-gradient(180deg,#f4d58d,#c8a96b)",
     color: refreshing ? "#fff" : "#111",
-    border: "1px solid #8f6f33",
+    border: "1px solid rgba(255,255,255,0.5)",
     borderRadius: "12px",
     padding: "12px 24px",
     fontWeight: "bold",
@@ -2410,7 +2410,7 @@ setPage("bookingConfirmed");
         <div
           key={booking.id}
           style={{
-            borderTop: "1px solid rgba(200,169,107,0.25)",
+            borderTop: "1px solid rgba(255,255,255,0.35)",
             paddingTop: "15px",
             marginTop: "15px"
           }}
@@ -2446,7 +2446,7 @@ setPage("bookingConfirmed");
         <div
           key={groupKey}
           style={{
-            borderTop: "1px solid rgba(200,169,107,0.25)",
+            borderTop: "1px solid rgba(255,255,255,0.35)",
             paddingTop: "22px",
             marginTop: "22px"
           }}
@@ -2493,7 +2493,7 @@ setPage("bookingConfirmed");
           ) : (
             adminWaitlist.map((item) => (
               <div key={item.id} style={{
-                borderTop: "1px solid rgba(200,169,107,0.25)",
+                borderTop: "1px solid rgba(255,255,255,0.35)",
                 paddingTop: "15px",
                 marginTop: "15px"
               }}>
@@ -2584,7 +2584,7 @@ setPage("bookingConfirmed");
               padding: "0",
               overflow: "hidden",
               background: "linear-gradient(180deg, rgba(0,0,0,0.95), rgba(30,15,8,0.95))",
-              border: "1px solid rgba(200,169,107,0.35)",
+              border: "1px solid rgba(255,255,255,0.45)",
               boxShadow: "0 18px 45px rgba(0,0,0,0.45)"
             }}
           >
@@ -2761,7 +2761,7 @@ setPage("bookingConfirmed");
               height: "350px",
               objectFit: "cover",
               borderRadius: "20px",
-              border: "1px solid rgba(200,169,107,0.25)"
+              border: "1px solid rgba(255,255,255,0.35)"
             }}
           />
         ))}
@@ -2854,7 +2854,7 @@ setPage("bookingConfirmed");
         width="100%"
         height="380"
         style={{
-          border: "1px solid rgba(200,169,107,0.25)",
+          border: "1px solid rgba(255,255,255,0.35)",
           borderRadius: "24px",
           marginTop: "10px"
         }}
@@ -2877,7 +2877,7 @@ setPage("bookingConfirmed");
   onClick={() => setPage("chooseClass")}
   style={{
     background: "transparent",
-    border: "1px solid rgba(200,169,107,0.35)",
+    border: "1px solid rgba(255,255,255,0.45)",
     color: "#c8a96b",
     padding: "12px 22px",
     borderRadius: "999px",
@@ -3055,7 +3055,7 @@ const navbar = {
   alignItems: "center",
   padding: "15px 60px",
   minHeight: "90px",
-  borderBottom: "1px solid rgba(200,169,107,0.2)"
+  borderBottom: "1px solid rgba(255,255,255,0.3)"
 };
 
 const logoText = {
@@ -3113,7 +3113,7 @@ const goldButtonLarge = {
 const outlineButton = {
   background: "transparent",
   color: "#c8a96b",
-  border: "1px solid rgba(200,169,107,0.6)",
+  border: "1px solid rgba(255,255,255,0.7)",
   padding: "18px 34px",
   borderRadius: "999px",
   letterSpacing: "3px",
@@ -3145,7 +3145,7 @@ const glowCircle = {
   width: "430px",
   height: "560px",
   borderRadius: "260px 260px 40px 40px",
-  border: "1px solid rgba(200,169,107,0.35)",
+  border: "1px solid rgba(255,255,255,0.45)",
   boxShadow: "0 40px 120px rgba(0,0,0,0.8)",
   display: "flex",
   alignItems: "center",
@@ -3199,7 +3199,7 @@ const paragraph = {
 
 const aboutSection = {
   padding: "100px 70px",
-  borderTop: "1px solid rgba(200,169,107,0.25)",
+  borderTop: "1px solid rgba(255,255,255,0.35)",
   background: "#000"
 };
 
@@ -3215,7 +3215,7 @@ const aboutGrid = {
 const archedPanel = {
   height: "520px",
   borderRadius: "300px 300px 40px 40px",
-  border: "1px solid rgba(200,169,107,0.3)",
+  border: "1px solid rgba(255,255,255,0.4)",
   background:
     "linear-gradient(180deg, rgba(200,169,107,0.15), rgba(0,0,0,1))",
   display: "flex",
@@ -3254,7 +3254,7 @@ const inputStyle = {
   padding: "18px",
   marginBottom: "16px",
   borderRadius: "14px",
-  border: "1px solid rgba(200,169,107,0.35)",
+  border: "1px solid rgba(255,255,255,0.45)",
   background: "#070707",
   color: "#fff",
   fontSize: "16px",
@@ -3265,7 +3265,7 @@ const waiverBox = {
   maxHeight: "420px",
   overflowY: "scroll",
   padding: "25px",
-  border: "1px solid rgba(200,169,107,0.2)",
+  border: "1px solid rgba(255,255,255,0.3)",
   borderRadius: "20px",
   background: "#080808",
   color: "#000000",
@@ -3289,7 +3289,7 @@ const packageGrid = {
 
 const packageCard = {
   background: "rgba(0,0,0,0.70)",
-  border: "1px solid rgba(200,169,107,0.25)",
+  border: "1px solid rgba(255,255,255,0.35)",
   color: "#f5f1ea",
   borderRadius: "26px",
   padding: "28px",
@@ -3307,7 +3307,7 @@ const footer = {
   background: "rgba(0,0,0,0.15)",
   backdropFilter: "blur(10px)",
   WebkitBackdropFilter: "blur(10px)",
-  borderTop: "1px solid rgba(212,175,55,0.15)",
+  borderTop: "1px solid rgba(255,255,255,0.25)",
   padding: "20px 20px",
   textAlign: "center"
 };
@@ -3350,7 +3350,7 @@ const dateButton = {
 const menuButton = {
   display: "block",
   background: "transparent",
-  border: "1px solid rgba(0,0,0,0.35)",
+  border: "1px solid rgba(255,255,255,0.5)",
   color: "#000000",
   fontSize: "28px",
   borderRadius: "12px",
