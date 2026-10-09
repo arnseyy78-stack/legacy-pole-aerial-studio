@@ -756,7 +756,7 @@ return;
 >
   <span
   style={{
-    color: "#fff",
+    color: "#000000",
     fontSize: "20px",
     whiteSpace: "nowrap"
   }}
@@ -934,7 +934,7 @@ return;
       }}
     >
       <img
-        src={["/trio.jpg", "/acechair.jpg", "/floor.jpg"][slideIndex]}
+        src={["/mermaid.jpg", "/xtian-chair.jpg", "/ace-floor.jpg"][slideIndex]}
         style={{
           width: "100%",
           height: "100%",
@@ -3041,7 +3041,7 @@ const dashboardBox = {
 };
 const app = {
   minHeight: "100vh",
-  backgroundImage: "url('/studio.png')",
+  backgroundImage: "url('/studio-bg.png')",
   backgroundSize: "cover",
   backgroundPosition: "center",
   backgroundAttachment: "fixed",
@@ -3362,8 +3362,12 @@ const mobileMenuOpen = {
   position: "absolute",
   top: "55px",
   right: "0",
-  background: "rgba(0,0,0,0.95)",
-  border: "1px solid rgba(200,169,107,0.35)",
+  background: "rgba(255,255,255,0.28)",
+  backdropFilter: "blur(24px) saturate(180%)",
+  WebkitBackdropFilter: "blur(24px) saturate(180%)",
+  border: "1px solid rgba(255,255,255,0.45)",
+  boxShadow:
+    "0 18px 45px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.6), inset 0 -1px 0 rgba(255,255,255,0.25)",
   borderRadius: "20px",
   padding: "22px",
   display: "flex",
