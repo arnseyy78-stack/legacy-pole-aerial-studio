@@ -927,14 +927,14 @@ return;
         height: "650px",
         borderRadius: "20px",
         overflow: "hidden",
-        background: "#050505",
+        background: "#ffffff",
         display: "flex",
         alignItems: "center",
         justifyContent: "center"
       }}
     >
       <img
-        src={["/trio.jpg", "/duo.jpg", "/floor.jpg"][slideIndex]}
+        src={["/trio.jpg", "/chair.jpg", "/floor.jpg"][slideIndex]}
         style={{
           width: "100%",
           height: "100%",
