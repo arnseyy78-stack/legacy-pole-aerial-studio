@@ -934,7 +934,7 @@ return;
       }}
     >
       <img
-        src={["/mermaid.jpg", "/xtian-chair.jpg", "/ace-floor.jpg"][slideIndex]}
+        src={["/trio.jpg", "/acechair.jpg", "/floor.jpg"][slideIndex]}
         style={{
           width: "100%",
           height: "100%",
@@ -3041,7 +3041,7 @@ const dashboardBox = {
 };
 const app = {
   minHeight: "100vh",
-  backgroundImage: "url('/studio-bg.png')",
+  backgroundImage: "url('/studio.png')",
   backgroundSize: "cover",
   backgroundPosition: "center",
   backgroundAttachment: "fixed",
