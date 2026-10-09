@@ -1693,7 +1693,7 @@ setPage("adminDashboard");
 </button>
   </div>
 
-<h3 style={{ color: "#fff", fontSize: "30px", margin: "10px 0" }}>
+<h3 style={{ color: "#000000", fontSize: "30px", margin: "10px 0" }}>
   Credits Remaining: {credits}
 </h3>
   {packageExpiry && (
