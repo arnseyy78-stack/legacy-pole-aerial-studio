@@ -922,7 +922,7 @@ return;
     }}
   >
     <img
-      src={["/trio.jpg", "/duo.jpg", "/floor.jpg"][slideIndex]}
+      src={["/trio.jpg", "/chair.jpg", "/floor.jpg"][slideIndex]}
       style={{
         width: "100%",
         height: "650px",
