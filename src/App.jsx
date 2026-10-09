@@ -927,7 +927,7 @@ return;
         height: "650px",
         borderRadius: "20px",
         overflow: "hidden",
-        background: "#ffffff",
+        background: "transparent",
         display: "flex",
         alignItems: "center",
         justifyContent: "center"
