@@ -1900,7 +1900,7 @@ return (
 
       {selectedDate && (
         <>
-          <h3 style={{ color: "#fff", marginTop: "35px" }}>
+          <h3 style={{ color: "#000000", marginTop: "35px" }}>
             Available classes for {currentMonthName} {selectedDate}
           </h3>
 
