@@ -952,7 +952,16 @@ return;
 
     <section style={{ ...hero, gridTemplateColumns: "1fr", textAlign: "center" }}>
       <div style={{ ...heroLeft, alignItems: "center" }}>
-        <p style={goldSmallText}>WELCOME TO LEGACY</p>
+        <p
+  style={{
+    ...goldSmallText,
+    fontSize: "30px",
+    letterSpacing: "9px",
+    marginBottom: "4px"
+  }}
+>
+  WELCOME TO LEGACY
+</p>
 
         <h1 style={heroTitle}>
           Strength.
