@@ -1944,7 +1944,7 @@ if (blockedClass) {
 const currentBooked =
   bookedSlots[bookingKey] || 0;
 
-const maxSlots = Number(item[3]) || 5;
+const maxSlots = Number(item[3]) || 10;
 
 if (currentBooked >= maxSlots) {
   const studentData =
@@ -2210,18 +2210,6 @@ setPage("bookingConfirmed");
         👤 {item[5] || "Legacy Instructor"}
       </span>
 
-      <span
-        style={{
-          border: "1px solid rgba(200,169,107,0.35)",
-          borderRadius: "999px",
-          padding: "7px 12px",
-          color: "#fff",
-          fontSize: "12px",
-          fontWeight: "bold"
-        }}
-      >
-        🎯 {Number(item[3]) || 5} SLOTS ONLY
-      </span>
     </div>
   </>
 ) : (
@@ -2257,41 +2245,6 @@ setPage("bookingConfirmed");
     </p>
   </>
 )}
-                <p
-  style={{
-    color: "#c8a96b",
-    marginTop: "12px"
-  }}
->
-{(() => {
-  const bookedCount =
-    bookedSlots[
-      `${currentMonthName}-${selectedDate}-${item[1]}`
-    ] || 0;
-
-  const maxSlots = Number(item[3]) || 5;
-const spotsLeft = maxSlots - bookedCount;
-
-  return (
-    <>
-      <p style={{ color: "#c8a96b", marginTop: "12px" }}>
-        {bookedCount} / {maxSlots} booked
-      </p>
-
-      <p
-        style={{
-          color: spotsLeft <= 1 ? "#ff6b6b" : "#999",
-          fontWeight: spotsLeft <= 1 ? "bold" : "normal"
-        }}
-      >
-        {spotsLeft > 0
-          ? `${spotsLeft} spot${spotsLeft === 1 ? "" : "s"} left`
-          : "FULL"}
-      </p>
-    </>
-  );
-})()}
-</p>
               </button>
             ))}
           </div>
