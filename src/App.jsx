@@ -1801,18 +1801,28 @@ setPage("adminDashboard");
 >
           {calendarMonthOffset > 0 && (
   <button
+    aria-label="Previous month"
     onClick={async () => {
       setSelectedDate(null);
       setCalendarMonthOffset(calendarMonthOffset - 1);
     }}
     style={{
-  ...outlineButton,
-  background: "#050505",
-  color: "#c8a96b",
-  border: "1px solid rgba(255,255,255,0.45)"
+  width: "46px",
+  height: "46px",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  background: "transparent",
+  color: "#050505",
+  border: "2px solid #050505",
+  borderRadius: "50%",
+  padding: "0",
+  cursor: "pointer"
 }}
   >
-    BACK
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+      <path d="M15 5L8 12l7 7" stroke="#050505" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+    </svg>
   </button>
 )}
   <h3 style={{ color: "#c8a96b", textAlign: "center" }}>
@@ -1820,18 +1830,28 @@ setPage("adminDashboard");
   </h3>
 
   <button
+    aria-label="Next month"
     onClick={async () => {
       setSelectedDate(null);
       setCalendarMonthOffset(calendarMonthOffset + 1);
     }}
     style={{
-  ...outlineButton,
-  background: "#050505",
-  color: "#c8a96b",
-  border: "1px solid rgba(255,255,255,0.45)"
+  width: "46px",
+  height: "46px",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  background: "transparent",
+  color: "#050505",
+  border: "2px solid #050505",
+  borderRadius: "50%",
+  padding: "0",
+  cursor: "pointer"
 }}
   >
-    NEXT
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+      <path d="M9 5l7 7-7 7" stroke="#050505" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+    </svg>
   </button>
 </div>
 
