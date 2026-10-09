@@ -934,7 +934,7 @@ return;
       }}
     >
       <img
-        src={["/mtrio.jpg", "/acechair.jpg", "/floor.jpg"][slideIndex]}
+        src={["/trio.jpg", "/acechair.jpg", "/floor.jpg"][slideIndex]}
         style={{
           width: "100%",
           height: "100%",
@@ -1592,7 +1592,16 @@ setPage("adminDashboard");
     <div style={{ ...formCard, maxWidth: "950px" }}>
       <h2 style={sectionHeading}>Schedule</h2>
 <div style={dashboardBox}>
-  <p style={goldSmallText}>STUDENT DASHBOARD</p>
+  <div
+    style={{
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+      gap: "16px",
+      marginBottom: "8px"
+    }}
+  >
+  <p style={{ ...goldSmallText, margin: 0 }}>STUDENT DASHBOARD</p>
   <button
   disabled={studentRefreshing}
   onClick={async () => {
@@ -1636,7 +1645,6 @@ setPage("adminDashboard");
     border: "none",
     borderRadius: "16px",
     padding: "0",
-    marginBottom: "20px",
     cursor: studentRefreshing ? "default" : "pointer",
     boxShadow: studentRefreshing
       ? "0 1px 3px rgba(0,0,0,0.18)"
@@ -1674,6 +1682,7 @@ setPage("adminDashboard");
     />
   </svg>
 </button>
+  </div>
 
 <h3 style={{ color: "#fff", fontSize: "30px", margin: "10px 0" }}>
   Credits Remaining: {credits}
