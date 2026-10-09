@@ -1718,7 +1718,7 @@ setPage("adminDashboard");
   </>
 )}
 
-  <p style={{ color: "#999" }}>Use 1 credit per class booking</p>
+  <p style={{ color: "#000000" }}>Use 1 credit per class booking</p>
 
   <select
     value={studentView}
@@ -1734,7 +1734,7 @@ setPage("adminDashboard");
       <p style={goldSmallText}>UPCOMING CLASSES</p>
 
       {studentBookings.length === 0 ? (
-        <p style={{ color: "#999" }}>No classes booked yet.</p>
+        <p style={{ color: "#000000" }}>No classes booked yet.</p>
       ) : (
         studentBookings.map((booking) => (
           <div key={booking.id} style={{
@@ -1743,7 +1743,7 @@ setPage("adminDashboard");
             marginTop: "12px"
           }}>
             <p style={{ color: "#fff", margin: 0 }}>{booking.Class_name}</p>
-            <p style={{ color: "#999", margin: "6px 0 0" }}>
+            <p style={{ color: "#000000", margin: "6px 0 0" }}>
               {booking.Booking_date} · {classTimes[booking.Class_name] || "6:00 PM"}
             </p>
             {new Date(booking.Booking_date) < new Date() && (
@@ -1773,7 +1773,7 @@ setPage("adminDashboard");
       <p style={goldSmallText}>WAITLIST</p>
 
       {studentWaitlist.length === 0 ? (
-        <p style={{ color: "#999" }}>No waitlist classes.</p>
+        <p style={{ color: "#000000" }}>No waitlist classes.</p>
       ) : (
         studentWaitlist.map((item) => (
           <div key={item.id} style={{
@@ -1782,7 +1782,7 @@ setPage("adminDashboard");
             marginTop: "12px"
           }}>
             <p style={{ color: "#fff", margin: 0 }}>{item.Class_name}</p>
-            <p style={{ color: "#999", margin: "6px 0 0" }}>
+            <p style={{ color: "#000000", margin: "6px 0 0" }}>
               {item.Booking_date} · Waitlisted
             </p>
           </div>
@@ -1839,7 +1839,7 @@ setPage("adminDashboard");
           {["M", "T", "W", "T", "F", "S", "S"].map((d) => (
             <strong
   key={d}
-  style={{ color: "#777" }}
+  style={{ color: "#000000" }}
 >
   {d}
 </strong>
@@ -2278,7 +2278,7 @@ setPage("bookingConfirmed");
   <>
     <p
       style={{
-        color: "#999",
+        color: "#000000",
         lineHeight: "1.6"
       }}
     >
@@ -2419,7 +2419,7 @@ setPage("bookingConfirmed");
             {booking.Student_name}
           </p>
 
-          <p style={{ color: "#777", margin: "5px 0" }}>
+          <p style={{ color: "#000000", margin: "5px 0" }}>
             {booking.Student_email}
           </p>
 
@@ -2433,7 +2433,7 @@ setPage("bookingConfirmed");
         {adminView === "upcoming" && (
   <>
     {adminBookings.length === 0 ? (
-      <p style={{ color: "#999" }}>No bookings yet.</p>
+      <p style={{ color: "#000000" }}>No bookings yet.</p>
     ) : (
       Object.entries(
         adminBookings.reduce((groups, booking) => {
@@ -2473,7 +2473,7 @@ setPage("bookingConfirmed");
                 {student.Student_name}
               </p>
 
-              <p style={{ color: "#777", margin: "5px 0 0" }}>
+              <p style={{ color: "#000000", margin: "5px 0 0" }}>
                 {student.Student_email}
               </p>
             </div>
@@ -2489,7 +2489,7 @@ setPage("bookingConfirmed");
           <p style={goldSmallText}>WAITLIST</p>
 
           {adminWaitlist.length === 0 ? (
-            <p style={{ color: "#999" }}>No waitlist entries.</p>
+            <p style={{ color: "#000000" }}>No waitlist entries.</p>
           ) : (
             adminWaitlist.map((item) => (
               <div key={item.id} style={{
@@ -2498,7 +2498,7 @@ setPage("bookingConfirmed");
                 marginTop: "15px"
               }}>
                 <p style={{ color: "#fff", margin: 0 }}>{item.Student_name}</p>
-                <p style={{ color: "#777", margin: "5px 0" }}>{item.Student_email}</p>
+                <p style={{ color: "#000000", margin: "5px 0" }}>{item.Student_email}</p>
                 <p style={{ color: "#c8a96b", margin: 0 }}>
                   {item.Class_name} · {item.Booking_date}
                 </p>
@@ -2704,7 +2704,7 @@ setPage("bookingConfirmed");
                 {pkg[2]}
               </p>
 
-              <p style={{ color: "#999", lineHeight: "1.6" }}>
+              <p style={{ color: "#000000", lineHeight: "1.6" }}>
                 {pkg[3]}
               </p>
             </div>
@@ -2978,7 +2978,7 @@ setPage("bookingConfirmed");
                 {pkg.description}
               </p>
 
-              <p style={{ color: "#999", lineHeight: "1.6" }}>
+              <p style={{ color: "#000000", lineHeight: "1.6" }}>
                 {pkg.subText}
               </p>
             </div>
@@ -3021,7 +3021,7 @@ setPage("bookingConfirmed");
 
         <p style={footerSub}>POLE & AERIAL DANCE STUDIO</p>
 
-        <p style={{ color: "#999", marginTop: "20px" }}>
+        <p style={{ color: "#000000", marginTop: "20px" }}>
           bookings@legacypolestudio.com
         </p>
       </footer>
@@ -3068,7 +3068,7 @@ const logoText = {
 
 const logoSubText = {
   margin: 0,
-  color: "#777",
+  color: "#000000",
   letterSpacing: "4px",
   fontSize: "11px"
 };
@@ -3082,7 +3082,7 @@ const navLinks = {
 const navButton = {
   background: "transparent",
   border: "none",
-  color: "#aaa",
+  color: "#000000",
   letterSpacing: "3px",
   fontSize: "12px",
   cursor: "pointer"
@@ -3268,7 +3268,7 @@ const waiverBox = {
   border: "1px solid rgba(200,169,107,0.2)",
   borderRadius: "20px",
   background: "#080808",
-  color: "#b8b8b8",
+  color: "#000000",
   lineHeight: "1.9",
   fontSize: "15px"
 };
@@ -3278,7 +3278,7 @@ const checkboxLabel = {
   alignItems: "center",
   gap: "12px",
   marginTop: "25px",
-  color: "#ddd"
+  color: "#000000"
 };
 
 const packageGrid = {
@@ -3320,7 +3320,7 @@ const footerLogo = {
 };
 
 const footerSub = {
-  color: "#777",
+  color: "#000000",
   letterSpacing: "3px",
   fontSize: "12px",
   marginBottom: "8px"
