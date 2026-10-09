@@ -921,15 +921,28 @@ return;
       boxSizing: "border-box"
     }}
   >
-    <img
-      src={["/trio.jpg", "/chair.jpg", "/floor.jpg"][slideIndex]}
+    <div
       style={{
         width: "100%",
         height: "650px",
-        objectFit: "cover",
-        borderRadius: "20px", transition: "all 0.5s ease"
+        borderRadius: "20px",
+        overflow: "hidden",
+        background: "#050505",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center"
       }}
-    />
+    >
+      <img
+        src={["/trio.jpg", "/chair.jpg", "/floor.jpg"][slideIndex]}
+        style={{
+          width: "100%",
+          height: "100%",
+          objectFit: "contain",
+          transition: "all 0.5s ease"
+        }}
+      />
+    </div>
   </div>
 )}
       {/* HOME */}
