@@ -15,7 +15,8 @@ const [menuOpen, setMenuOpen] = useState(false);
   "Spinny Pole": "6:00 PM",
   "Intro to Pole": "6:00 PM",
   "Aerial Hoop": "6:00 PM",
-  "Aerial Silks": "6:00 PM"
+  "Aerial Silks": "6:00 PM",
+  "Aerial Hammock": "6:00 PM"
 };
   
 const getClassTime = (className) =>
@@ -1858,7 +1859,7 @@ const classes = {
   3: [["6:00 PM 1hr", "Spinny Pole", "/climb.jpg"]],
   4: [["6:00 PM 1hr", "Intro to Pole", "/ace-pole.jpg"]],
   5: [["6:00 PM 1hr", "Aerial Hoop", "/aerial-hoop.jpg"]],
-  6: [],
+  6: [["6:00 PM 1hr", "Aerial Hammock", "/hammock.png"]],
   0: []
 };
 const selectedDateISO =
@@ -2229,6 +2230,8 @@ setPage("bookingConfirmed");
           "Perfect starting point for complete beginners. Wear short shorts. Tap to book this class.",
         "Aerial Silks":
           "Build strength, flexibility and confidence with climbs, wraps and graceful aerial poses. Wear fitted leggings and a fitted top. Tap to book this class.",
+      "Aerial Hammock":
+  "Learn  flowy sequence with grace while spinning. Wear leggings and a fitted top that covers the back of your knees. Tap to book this class.",
       "Aerial Hoop":
   "Build strength, confidence and aerial skills while learning spins, hangs and beautiful hoop poses. Suitable for beginners. Wear leggings and a fitted top. Tap to book this class."
       }[item[1]]}
@@ -2582,8 +2585,8 @@ setPage("bookingConfirmed");
           ["Single Pass", "₱870", "1 class credit", "Perfect for trying your first class."],
           ["Class Card", "₱4,100", "5 class credits", "Best value. Save and plan your month. Consumable in 30 days.", "MOST POPULAR"],
           ["Self Practice", "₱550", "Contact studio for time", "For existing students only."],
-          ["Private Class", "₱3,100", "One on one coaching.", "Best for achieving your dream tricks."]
-  ].map((pkg) => (
+          ["Private Class", "₱3,100", "One on one coaching.", "Best for achieving your dream tricks."] oh
+        ].map((pkg) => (
           <div
             key={pkg[0]}
             style={{
