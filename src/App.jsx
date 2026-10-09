@@ -2593,11 +2593,8 @@ setPage("bookingConfirmed");
             <div
               style={{
                 width: "100%",
-                height: "320px",
                 background: "transparent",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
+                display: "block",
                 overflow: "hidden"
               }}
             >
@@ -2606,8 +2603,8 @@ setPage("bookingConfirmed");
                 alt={cls[2]}
                 style={{
                   width: "100%",
-                  height: "100%",
-                  objectFit: "contain"
+                  height: "auto",
+                  display: "block"
                 }}
               />
             </div>
