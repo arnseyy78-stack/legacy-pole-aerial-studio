@@ -3227,7 +3227,8 @@ const archedPanel = {
 const sectionHeading = {
   fontSize: "58px",
   fontWeight: "300",
-  margin: "15px 0 30px"
+  margin: "15px 0 30px",
+  color: "#000000"
 };
 
 const centerPage = {
@@ -3290,9 +3291,12 @@ const packageGrid = {
 };
 
 const packageCard = {
-  background: "rgba(0,0,0,0.70)",
-  border: "1px solid rgba(255,255,255,0.35)",
-  color: "#f5f1ea",
+  background: "rgba(255,255,255,0.3)",
+  backdropFilter: "blur(16px) saturate(150%)",
+  WebkitBackdropFilter: "blur(16px) saturate(150%)",
+  border: "1px solid rgba(255,255,255,0.5)",
+  boxShadow: "inset 0 1px 0 rgba(255,255,255,0.55)",
+  color: "#000000",
   borderRadius: "26px",
   padding: "28px",
   textAlign: "left",
