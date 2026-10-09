@@ -1025,7 +1025,7 @@ return;
       width: "100%",
       marginTop: "20px",
       border: "1px solid rgba(255,255,255,0.2)",
-      color: "#fff"
+      color: "#000000"
     }}
   >
     ADMIN LOGIN
@@ -1709,7 +1709,7 @@ setPage("adminDashboard");
       {new Date(packageExpiry).toLocaleDateString()}
     </p>
 
-    <p style={{ color: "#fff" }}>
+    <p style={{ color: "#000000" }}>
       {Math.ceil(
         (new Date(packageExpiry) - new Date()) /
           (1000 * 60 * 60 * 24)
@@ -1762,7 +1762,7 @@ setPage("adminDashboard");
             paddingTop: "12px",
             marginTop: "12px"
           }}>
-            <p style={{ color: "#fff", margin: 0 }}>{booking.Class_name}</p>
+            <p style={{ color: "#000000", margin: 0 }}>{booking.Class_name}</p>
             <p style={{ color: "#000000", margin: "6px 0 0" }}>
               {booking.Booking_date} · {classTimes[booking.Class_name] || "6:00 PM"}
             </p>
@@ -1801,7 +1801,7 @@ setPage("adminDashboard");
             paddingTop: "12px",
             marginTop: "12px"
           }}>
-            <p style={{ color: "#fff", margin: 0 }}>{item.Class_name}</p>
+            <p style={{ color: "#000000", margin: 0 }}>{item.Class_name}</p>
             <p style={{ color: "#000000", margin: "6px 0 0" }}>
               {item.Booking_date} · Waitlisted
             </p>
@@ -2281,7 +2281,7 @@ setPage("bookingConfirmed");
     {item[4] && (
       <p
         style={{
-          color: "rgba(255,255,255,0.75)",
+          color: "#000000",
           fontSize: "15px",
           lineHeight: "1.7",
           margin: "12px 0 18px"
@@ -2385,7 +2385,7 @@ setPage("bookingConfirmed");
   <div style={{ color: "#c8a96b", fontSize: "12px" }}>
     TOTAL STUDENTS
   </div>
-  <div style={{ color: "#fff", fontSize: "28px", fontWeight: "bold" }}>
+  <div style={{ color: "#000000", fontSize: "28px", fontWeight: "bold" }}>
     {totalStudents}
   </div>
 </div>
@@ -2455,7 +2455,7 @@ setPage("bookingConfirmed");
             marginTop: "15px"
           }}
         >
-          <p style={{ color: "#fff", margin: 0 }}>
+          <p style={{ color: "#000000", margin: 0 }}>
             {booking.Student_name}
           </p>
 
@@ -2493,7 +2493,7 @@ setPage("bookingConfirmed");
         >
           <p style={goldSmallText}>{bookings[0].Booking_date}</p>
 
-          <h3 style={{ color: "#fff", margin: "10px 0" }}>
+          <h3 style={{ color: "#000000", margin: "10px 0" }}>
             {bookings[0].Class_name} · {classTimes[bookings[0].Class_name] || "6:00 PM"}
           </h3>
 
@@ -2509,7 +2509,7 @@ setPage("bookingConfirmed");
                 borderBottom: "1px solid rgba(255,255,255,0.05)"
               }}
             >
-              <p style={{ color: "#fff", margin: 0 }}>
+              <p style={{ color: "#000000", margin: 0 }}>
                 {student.Student_name}
               </p>
 
@@ -2537,7 +2537,7 @@ setPage("bookingConfirmed");
                 paddingTop: "15px",
                 marginTop: "15px"
               }}>
-                <p style={{ color: "#fff", margin: 0 }}>{item.Student_name}</p>
+                <p style={{ color: "#000000", margin: 0 }}>{item.Student_name}</p>
                 <p style={{ color: "#000000", margin: "5px 0" }}>{item.Student_email}</p>
                 <p style={{ color: "#c8a96b", margin: 0 }}>
                   {item.Class_name} · {item.Booking_date}
@@ -2745,7 +2745,7 @@ setPage("bookingConfirmed");
                 </div>
               )}
 
-              <h3 style={{ color: "#fff", fontSize: "24px", marginBottom: "15px" }}>
+              <h3 style={{ color: "#000000", fontSize: "24px", marginBottom: "15px" }}>
                 {pkg[0]}
               </h3>
 
@@ -2753,7 +2753,7 @@ setPage("bookingConfirmed");
                 {pkg[1]}
               </p>
 
-              <p style={{ color: "#fff", fontWeight: "bold", marginBottom: "10px" }}>
+              <p style={{ color: "#000000", fontWeight: "bold", marginBottom: "10px" }}>
                 {pkg[2]}
               </p>
 
@@ -3021,7 +3021,7 @@ setPage("bookingConfirmed");
                 </div>
               )}
 
-              <h3 style={{ color: "#fff", fontSize: "24px", marginBottom: "15px" }}>
+              <h3 style={{ color: "#000000", fontSize: "24px", marginBottom: "15px" }}>
                 {pkg.name}
               </h3>
 
@@ -3029,7 +3029,7 @@ setPage("bookingConfirmed");
                 {pkg.price}
               </p>
 
-              <p style={{ color: "#fff", fontWeight: "bold", marginBottom: "10px" }}>
+              <p style={{ color: "#000000", fontWeight: "bold", marginBottom: "10px" }}>
                 {pkg.description}
               </p>
 
@@ -3059,7 +3059,7 @@ setPage("bookingConfirmed");
     bottom: "22px",
     right: "22px",
     background: "#25D366",
-    color: "#fff",
+    color: "#000000",
     padding: "14px 20px",
     borderRadius: "999px",
     textDecoration: "none",
@@ -3314,7 +3314,7 @@ const inputStyle = {
   borderRadius: "14px",
   border: "1px solid rgba(255,255,255,0.45)",
   background: "rgba(255,255,255,0.3)",
-  color: "#fff",
+  color: "#000000",
   fontSize: "16px",
   boxSizing: "border-box"
 };
