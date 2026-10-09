@@ -2583,25 +2583,39 @@ setPage("bookingConfirmed");
               ...packageCard,
               padding: "0",
               overflow: "hidden",
-              background: "linear-gradient(180deg, rgba(0,0,0,0.95), rgba(30,15,8,0.95))",
-              border: "1px solid rgba(255,255,255,0.45)",
-              boxShadow: "0 18px 45px rgba(0,0,0,0.45)"
+              background: "rgba(255,255,255,0.3)",
+              backdropFilter: "blur(16px) saturate(150%)",
+              WebkitBackdropFilter: "blur(16px) saturate(150%)",
+              border: "1px solid rgba(255,255,255,0.5)",
+              boxShadow: "inset 0 1px 0 rgba(255,255,255,0.55)"
             }}
           >
-            <img
-              src={cls[4]}
-              alt={cls[2]}
+            <div
               style={{
                 width: "100%",
                 height: "320px",
-                objectFit: "cover"
+                background: "transparent",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                overflow: "hidden"
               }}
-            />
+            >
+              <img
+                src={cls[4]}
+                alt={cls[2]}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "contain"
+                }}
+              />
+            </div>
 
             <div style={{ padding: "26px" }}>
               <p style={goldSmallText}>{cls[0]}</p>
 
-              <h3 style={{ color: "#fff", fontSize: "26px", margin: "10px 0" }}>
+              <h3 style={{ color: "#000000", fontSize: "26px", margin: "10px 0" }}>
                 {cls[2]}
               </h3>
 
@@ -2611,7 +2625,7 @@ setPage("bookingConfirmed");
 
 <p
   style={{
-    color: "rgba(255,255,255,0.75)",
+    color: "#000000",
     fontSize: "14px",
     lineHeight: "1.6",
     marginTop: "12px",
