@@ -3022,8 +3022,10 @@ setPage("bookingConfirmed");
 
 /* STYLES */
 const dashboardBox = {
-  border: "1px solid rgba(200,169,107,0.25)",
-  background: "rgba(0,0,0,0.70)",
+  border: "1px solid rgba(255,255,255,0.14)",
+  background: "rgba(10,9,8,0.35)",
+  backdropFilter: "blur(10px)",
+  WebkitBackdropFilter: "blur(10px)",
   borderRadius: "24px",
   padding: "24px",
   marginBottom: "28px"
@@ -3229,9 +3231,11 @@ const centerPage = {
 const formCard = {
   width: "100%",
   maxWidth: "700px",
-  background: "rgba(0,0,0,0.78)",
-backdropFilter: "blur(6px)",
-  border: "1px solid rgba(200,169,107,0.25)",
+  background: "rgba(20,18,16,0.42)",
+  backdropFilter: "blur(22px) saturate(140%)",
+  WebkitBackdropFilter: "blur(22px) saturate(140%)",
+  border: "1px solid rgba(255,255,255,0.18)",
+  boxShadow: "0 24px 60px rgba(0,0,0,0.35)",
   borderRadius: "34px",
   padding: "50px"
 };
@@ -3314,7 +3318,7 @@ const footerSub = {
 };
 const calendarBox = {
   background:
-  "linear-gradient(135deg, #fffdfd 0%, #fdf0f3 22%, #f9dee4 48%, #f2c4ce 76%, #eaa9b8 100%)",
+    "linear-gradient(135deg, #fffdfd 0%, #fdf0f3 22%, #f9dee4 48%, #f2c4ce 76%, #eaa9b8 100%)",
   borderRadius: "30px",
   padding: "30px",
   marginTop: "20px"
