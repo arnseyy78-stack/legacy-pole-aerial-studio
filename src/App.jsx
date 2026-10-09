@@ -934,7 +934,7 @@ return;
       }}
     >
       <img
-        src={["/trio.jpg", "/acechair.jpg", "/floor.jpg"][slideIndex]}
+        src={["/mtrio.jpg", "/acechair.jpg", "/floor.jpg"][slideIndex]}
         style={{
           width: "100%",
           height: "100%",
@@ -1625,24 +1625,54 @@ setPage("adminDashboard");
     }, 700);
   }}
   style={{
+    width: "58px",
+    height: "58px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
     background: studentRefreshing
-      ? "rgba(200,169,107,0.35)"
-      : "linear-gradient(180deg, #d9bd7a 0%, #c8a96b 100%)",
-    color: "#141210",
+      ? "linear-gradient(180deg, #f6c9cf 0%, #e9a3ad 100%)"
+      : "linear-gradient(180deg, #f9d3d8 0%, #efa7b2 100%)",
     border: "none",
-    borderRadius: "10px",
-    padding: "12px 26px",
+    borderRadius: "16px",
+    padding: "0",
     marginBottom: "20px",
-    fontSize: "13px",
-    fontWeight: "600",
     cursor: studentRefreshing ? "default" : "pointer",
     boxShadow: studentRefreshing
-      ? "none"
-      : "0 1px 2px rgba(0,0,0,0.35), 0 4px 14px rgba(200,169,107,0.28)",
-    transition: "all 0.25s ease"
+      ? "0 1px 3px rgba(0,0,0,0.18)"
+      : "0 2px 4px rgba(0,0,0,0.16), 0 8px 20px rgba(233,163,173,0.45)",
+    transition: "all 0.25s ease",
+    transform: studentRefreshing ? "scale(0.96)" : "scale(1)"
   }}
+  aria-label={studentRefreshing ? "Refreshed" : "Refresh dashboard"}
+  title={studentRefreshing ? "Refreshed" : "Refresh"}
 >
-  {studentRefreshing ? "Refreshed" : "Refresh"}
+  <svg
+    width="30"
+    height="30"
+    viewBox="0 0 24 24"
+    fill="none"
+    style={{
+      transition: "transform 0.5s ease",
+      transform: studentRefreshing ? "rotate(-180deg)" : "rotate(0deg)"
+    }}
+  >
+    <path
+      d="M20.5 12a8.5 8.5 0 1 1-2.6-6.1"
+      stroke="#ffffff"
+      strokeWidth="2.6"
+      strokeLinecap="round"
+      fill="none"
+    />
+    <path
+      d="M20.9 3.2v5.1h-5.1"
+      stroke="#ffffff"
+      strokeWidth="2.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      fill="none"
+    />
+  </svg>
 </button>
 
 <h3 style={{ color: "#fff", fontSize: "30px", margin: "10px 0" }}>
