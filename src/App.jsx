@@ -2715,7 +2715,9 @@ setPage("bookingConfirmed");
               display: "flex",
               flexDirection: "column",
               justifyContent: "space-between",
-              background: "linear-gradient(180deg, rgba(0,0,0,0.95), rgba(30,15,8,0.95))",
+              background: "rgba(255,255,255,0.3)",
+              backdropFilter: "blur(16px) saturate(150%)",
+              WebkitBackdropFilter: "blur(16px) saturate(150%)",
               border: pkg[4]
                 ? "2px solid #c8a96b"
                 : "1px solid rgba(200,169,107,0.35)",
@@ -2989,7 +2991,9 @@ setPage("bookingConfirmed");
               display: "flex",
               flexDirection: "column",
               justifyContent: "space-between",
-              background: "linear-gradient(180deg, rgba(0,0,0,0.95), rgba(30,15,8,0.95))",
+              background: "rgba(255,255,255,0.3)",
+              backdropFilter: "blur(16px) saturate(150%)",
+              WebkitBackdropFilter: "blur(16px) saturate(150%)",
               border: pkg.popular
                 ? "2px solid #c8a96b"
                 : "1px solid rgba(200,169,107,0.35)",
@@ -3309,7 +3313,7 @@ const inputStyle = {
   marginBottom: "16px",
   borderRadius: "14px",
   border: "1px solid rgba(255,255,255,0.45)",
-  background: "#070707",
+  background: "rgba(255,255,255,0.3)",
   color: "#fff",
   fontSize: "16px",
   boxSizing: "border-box"
