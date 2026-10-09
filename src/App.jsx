@@ -3117,29 +3117,34 @@ const heroTitle = {
   fontSize: "92px",
   lineHeight: "0.95",
   margin: "20px 0",
-  fontWeight: "300"
+  fontWeight: "300",
+  color: "#1a1a1a",
+  textShadow: "0 2px 18px rgba(255,255,255,0.85)"
 };
 
 const goldSmallText = {
-  color: "#c8a96b",
+  color: "#8a6d2f",
   letterSpacing: "5px",
   fontSize: "13px",
-  textTransform: "uppercase"
+  textTransform: "uppercase",
+  fontWeight: "bold",
+  textShadow: "0 1px 8px rgba(255,255,255,0.8)"
 };
 
 const goldLine = {
   width: "390px",
   height: "2px",
   background:
-    "linear-gradient(90deg, rgba(200,169,107,1) 0%, rgba(200,169,107,0.4) 100%)",
+    "linear-gradient(90deg, rgba(138,109,47,1) 0%, rgba(138,109,47,0.45) 100%)",
   marginTop: "32px",
   marginBottom: "32px"
 };
 
 const paragraph = {
-  color: "#b8b8b8",
+  color: "#3a3a3a",
   fontSize: "18px",
-  lineHeight: "1.9"
+  lineHeight: "1.9",
+  textShadow: "0 1px 10px rgba(255,255,255,0.8)"
 };
 
 const aboutSection = {
