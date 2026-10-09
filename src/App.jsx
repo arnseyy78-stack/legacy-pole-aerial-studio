@@ -3031,10 +3031,11 @@ setPage("bookingConfirmed");
 
 /* STYLES */
 const dashboardBox = {
-  border: "1px solid rgba(255,255,255,0.14)",
-  background: "rgba(10,9,8,0.35)",
-  backdropFilter: "blur(10px)",
-  WebkitBackdropFilter: "blur(10px)",
+  border: "1px solid rgba(255,255,255,0.5)",
+  background: "rgba(255,255,255,0.3)",
+  backdropFilter: "blur(14px) saturate(150%)",
+  WebkitBackdropFilter: "blur(14px) saturate(150%)",
+  boxShadow: "inset 0 1px 0 rgba(255,255,255,0.55)",
   borderRadius: "24px",
   padding: "24px",
   marginBottom: "28px"
@@ -3240,11 +3241,12 @@ const centerPage = {
 const formCard = {
   width: "100%",
   maxWidth: "700px",
-  background: "rgba(20,18,16,0.42)",
-  backdropFilter: "blur(22px) saturate(140%)",
-  WebkitBackdropFilter: "blur(22px) saturate(140%)",
-  border: "1px solid rgba(255,255,255,0.18)",
-  boxShadow: "0 24px 60px rgba(0,0,0,0.35)",
+  background: "rgba(255,255,255,0.35)",
+  backdropFilter: "blur(26px) saturate(160%)",
+  WebkitBackdropFilter: "blur(26px) saturate(160%)",
+  border: "1px solid rgba(255,255,255,0.55)",
+  boxShadow:
+    "0 24px 60px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.6)",
   borderRadius: "34px",
   padding: "50px"
 };
