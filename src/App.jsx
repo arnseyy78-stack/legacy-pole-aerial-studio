@@ -2582,8 +2582,8 @@ setPage("bookingConfirmed");
           ["Single Pass", "₱870", "1 class credit", "Perfect for trying your first class."],
           ["Class Card", "₱4,100", "5 class credits", "Best value. Save and plan your month. Consumable in 30 days.", "MOST POPULAR"],
           ["Self Practice", "₱550", "Contact studio for time", "For existing students only."],
-          ["Private Class", "₱3,100", "One on one coaching.", "Best for achieving your dream tricks."] oh
-        ].map((pkg) => (
+          ["Private Class", "₱3,100", "One on one coaching.", "Best for achieving your dream tricks."]
+  ].map((pkg) => (
           <div
             key={pkg[0]}
             style={{
