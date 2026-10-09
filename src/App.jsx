@@ -3313,7 +3313,7 @@ const footerSub = {
   marginBottom: "8px"
 };
 const calendarBox = {
-  background: "#efe3c8",
+  background: "linear-gradient(180deg, #fbe6ea 0%, #f7d7de 100%)",
   borderRadius: "30px",
   padding: "30px",
   marginTop: "20px"
