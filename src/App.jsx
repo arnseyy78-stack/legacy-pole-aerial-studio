@@ -1625,24 +1625,22 @@ setPage("adminDashboard");
     }, 700);
   }}
   style={{
-    background: studentRefreshing
-      ? "#4CAF50"
-      : "linear-gradient(180deg, #f4d58d 0%, #c8a96b 100%)",
-    color: studentRefreshing ? "#fff" : "#111",
-    border: "1px solid #8f6f33",
-    borderRadius: "12px",
-    padding: "11px 20px",
+    background: "transparent",
+    color: studentRefreshing ? "#c8a96b" : "#e8e2d6",
+    border: "1px solid rgba(200,169,107,0.45)",
+    borderRadius: "999px",
+    padding: "10px 22px",
     marginBottom: "18px",
-    fontSize: "13px",
-    fontWeight: "bold",
+    fontSize: "12px",
+    fontWeight: "600",
+    letterSpacing: "1.5px",
+    textTransform: "uppercase",
     cursor: studentRefreshing ? "default" : "pointer",
-    boxShadow: studentRefreshing
-      ? "0 2px 0 #2e7d32"
-      : "0 6px 0 #7b5f2d, 0 8px 18px rgba(0,0,0,0.3)",
-    transition: "all 0.2s ease"
+    opacity: studentRefreshing ? 0.75 : 1,
+    transition: "all 0.25s ease"
   }}
 >
-  {studentRefreshing ? "✓ Dashboard Refreshed" : "🔄 Refresh Dashboard"}
+  {studentRefreshing ? "Refreshed" : "Refresh"}
 </button>
 
 <h3 style={{ color: "#fff", fontSize: "30px", margin: "10px 0" }}>
