@@ -2231,7 +2231,7 @@ setPage("bookingConfirmed");
         "Aerial Silks":
           "Build strength, flexibility and confidence with climbs, wraps and graceful aerial poses. Wear fitted leggings and a fitted top. Tap to book this class.",
       "Aerial Hammock":
-  "Learn  flowy sequence with grace while spinning. Wear leggings and a fitted top that covers the back of your knees. Tap to book this class.",
+  "Flow, stretch and unwind in a soft aerial hammock. Learn gentle poses, inversions and deep stretches with full support. Wear leggings and a fitted top that covers the back of your knees. Tap to book this class.",
       "Aerial Hoop":
   "Build strength, confidence and aerial skills while learning spins, hangs and beautiful hoop poses. Suitable for beginners. Wear leggings and a fitted top. Tap to book this class."
       }[item[1]]}
@@ -2585,7 +2585,7 @@ setPage("bookingConfirmed");
           ["Single Pass", "₱870", "1 class credit", "Perfect for trying your first class."],
           ["Class Card", "₱4,100", "5 class credits", "Best value. Save and plan your month. Consumable in 30 days.", "MOST POPULAR"],
           ["Self Practice", "₱550", "Contact studio for time", "For existing students only."],
-          ["Private Class", "₱3,100", "One on one coaching.", "Best for achieving your dream tricks."] oh
+          ["Private Class", "₱3,100", "One on one coaching.", "Best for achieving your dream tricks."],
         ].map((pkg) => (
           <div
             key={pkg[0]}
