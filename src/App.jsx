@@ -1625,18 +1625,20 @@ setPage("adminDashboard");
     }, 700);
   }}
   style={{
-    background: "transparent",
-    color: studentRefreshing ? "#c8a96b" : "#e8e2d6",
-    border: "1px solid rgba(200,169,107,0.45)",
-    borderRadius: "999px",
-    padding: "10px 22px",
-    marginBottom: "18px",
-    fontSize: "12px",
+    background: studentRefreshing
+      ? "rgba(200,169,107,0.35)"
+      : "linear-gradient(180deg, #d9bd7a 0%, #c8a96b 100%)",
+    color: "#141210",
+    border: "none",
+    borderRadius: "10px",
+    padding: "12px 26px",
+    marginBottom: "20px",
+    fontSize: "13px",
     fontWeight: "600",
-    letterSpacing: "1.5px",
-    textTransform: "uppercase",
     cursor: studentRefreshing ? "default" : "pointer",
-    opacity: studentRefreshing ? 0.75 : 1,
+    boxShadow: studentRefreshing
+      ? "none"
+      : "0 1px 2px rgba(0,0,0,0.35), 0 4px 14px rgba(200,169,107,0.28)",
     transition: "all 0.25s ease"
   }}
 >
