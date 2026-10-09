@@ -3350,8 +3350,8 @@ const dateButton = {
 const menuButton = {
   display: "block",
   background: "transparent",
-  border: "1px solid rgba(200,169,107,0.5)",
-  color: "#c8a96b",
+  border: "1px solid rgba(0,0,0,0.35)",
+  color: "#000000",
   fontSize: "28px",
   borderRadius: "12px",
   padding: "8px 14px",
