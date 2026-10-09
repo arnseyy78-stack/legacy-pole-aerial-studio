@@ -1944,7 +1944,7 @@ if (blockedClass) {
 const currentBooked =
   bookedSlots[bookingKey] || 0;
 
-const maxSlots = Number(item[3]) || 5;
+const maxSlots = Number(item[3]) || 10;
 
 if (currentBooked >= maxSlots) {
   const studentData =
@@ -2220,7 +2220,7 @@ setPage("bookingConfirmed");
           fontWeight: "bold"
         }}
       >
-        🎯 {Number(item[3]) || 5} SLOTS ONLY
+        
       </span>
     </div>
   </>
