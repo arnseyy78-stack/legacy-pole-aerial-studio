@@ -2194,7 +2194,7 @@ setPage("bookingConfirmed");
     objectFit: "contain",
     borderRadius: "18px",
     marginBottom: "18px",
-    backgroundColor: "#111"
+    backgroundColor: "transparent"
   }}
 />
                 {item[6] === true && (
