@@ -2300,7 +2300,7 @@ setPage("bookingConfirmed");
 
     <p
       style={{
-        color: "#000000",
+        color: "#c8a96b",
         fontSize: "13px",
         letterSpacing: "2px"
       }}
