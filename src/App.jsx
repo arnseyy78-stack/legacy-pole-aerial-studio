@@ -193,6 +193,10 @@ const displayedDate = new Date(
   1
 );
 
+// Classes stay available through December 2027.
+const maxCalendarOffset =
+  (2027 - today.getFullYear()) * 12 + (11 - today.getMonth());
+
 const currentMonthName = displayedDate.toLocaleString("default", {
   month: "long"
 });
@@ -1870,7 +1874,7 @@ setPage("adminDashboard");
 
   <button
     aria-label="Next month"
-    disabled={calendarMonthOffset >= maxOffset}
+    disabled={calendarMonthOffset >= maxCalendarOffset}
     onClick={async () => {
       setSelectedDate(null);
       setCalendarMonthOffset(calendarMonthOffset + 1);
@@ -2014,14 +2018,7 @@ const matchingSpecialClasses = specialClasses
       true
     ];
   });
-  // Classes stay available through December 2027. Compute the offset of that
-  // month from the current one so the cap follows the calendar as time passes.
-  const endMonth = new Date(2027, 11, 1);
-  const maxOffset =
-    (endMonth.getFullYear() - today.getFullYear()) * 12 +
-    (endMonth.getMonth() - today.getMonth());
-
-  if (calendarMonthOffset > maxOffset) {
+  if (calendarMonthOffset > maxCalendarOffset) {
   return [];
 }
 
