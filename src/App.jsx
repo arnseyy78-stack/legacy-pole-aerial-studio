@@ -875,7 +875,7 @@ return;
  !localStorage.getItem("legacyAdmin") && (
   <button
     onClick={() => {
-      setPage("authChoice");
+      setPage("login");
       setMenuOpen(false);
     }}
     style={goldButton}
@@ -979,7 +979,7 @@ return;
         </p>
 
         <button
-          onClick={() => setPage("authChoice")}
+          onClick={() => setPage("login")}
           style={goldButtonLarge}
         >
           BOOK YOUR CLASS
@@ -990,50 +990,7 @@ return;
 )}
             {/* LOGIN / SIGN UP CHOICE */}
     
-      {page === "authChoice" && (
-        <section style={centerPage}>
-          <div style={formCard}>
-            <p style={goldSmallText}>BEGIN YOUR JOURNEY</p>
 
-            <h2 style={sectionHeading}>Login / Sign Up</h2>
-
-            <button
-              onClick={() => setPage("student")}
-              style={{
-                ...goldButtonLarge,
-                width: "100%"
-              }}
-            >
-              SIGN UP
-            </button>
-
-            <button
-              onClick={() => setPage("login")}
-              style={{
-                ...outlineButton,
-                width: "100%",
-                marginTop: "20px"
-              }}
-            >
-              LOGIN
-            </button>
-            {showAdminLogin && (
-  <button
-    onClick={() => setPage("adminLogin")}
-    style={{
-      ...outlineButton,
-      width: "100%",
-      marginTop: "20px",
-      border: "1px solid rgba(255,255,255,0.2)",
-      color: "#000000"
-    }}
-  >
-    ADMIN LOGIN
-  </button>
-)}
-          </div>
-        </section>
-      )}
 
       {/* STUDENT INFO */}
       {page === "student" && (
@@ -1394,6 +1351,24 @@ onChange={(e) =>
   }}
 >
   Forgot password?
+</button>
+
+<button
+  type="button"
+  onClick={() => setPage("student")}
+  style={{
+    width: "100%",
+    padding: "18px",
+    borderRadius: "999px",
+    border: "2px solid #f2aab8",
+    background: "transparent",
+    color: "#c9738a",
+    fontSize: "17px",
+    fontWeight: "700",
+    cursor: "pointer"
+  }}
+>
+  Create new account
 </button>
           </div>
         </section>
@@ -2714,7 +2689,7 @@ setPage("bookingConfirmed");
 </p>
 
               <button
-                onClick={() => setPage("authChoice")}
+                onClick={() => setPage("login")}
                 style={{ ...goldButton, width: "100%", marginTop: "18px" }}
               >
                 BOOK NOW
@@ -2804,7 +2779,7 @@ setPage("bookingConfirmed");
             </div>
 
             <button
-              onClick={() => setPage("authChoice")}
+              onClick={() => setPage("login")}
               style={{ ...goldButton, width: "100%", marginTop: "25px" }}
             >
               BOOK NOW
