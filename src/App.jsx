@@ -1285,23 +1285,43 @@ onChange={(e) =>
             {/* LOGIN */}
       {page === "login" && (
         <section style={centerPage}>
-          <div style={formCard}>
-            <p style={goldSmallText}>WELCOME BACK</p>
-
-            <h2 style={sectionHeading}>Login</h2>
+          <div
+            style={{
+              ...formCard,
+              background: "#ffffff",
+              backdropFilter: "none",
+              WebkitBackdropFilter: "none",
+              border: "1px solid rgba(0,0,0,0.08)",
+              boxShadow: "0 10px 40px rgba(0,0,0,0.12)",
+              maxWidth: "560px"
+            }}
+          >
+            <h2 style={{ ...sectionHeading, textAlign: "center", marginBottom: "30px" }}>
+              Login
+            </h2>
 
 <input
   placeholder="Email Address"
   value={loginEmail}
   onChange={(e) => setLoginEmail(e.target.value)}
-  style={inputStyle}
+  style={{
+    width: "100%",
+    padding: "18px 22px",
+    marginBottom: "16px",
+    borderRadius: "14px",
+    border: "1px solid rgba(0,0,0,0.15)",
+    background: "#ffffff",
+    color: "#000000",
+    fontSize: "16px",
+    boxSizing: "border-box"
+  }}
 />
 
 <div
   style={{
     position: "relative",
     width: "100%",
-    marginBottom: "16px"
+    marginBottom: "26px"
   }}
 >
   <input
@@ -1310,9 +1330,14 @@ onChange={(e) =>
     value={loginPassword}
     onChange={(e) => setLoginPassword(e.target.value)}
     style={{
-      ...inputStyle,
-      marginBottom: "0",
-      paddingRight: "60px"
+      width: "100%",
+      padding: "18px 60px 18px 22px",
+      borderRadius: "14px",
+      border: "1px solid rgba(0,0,0,0.15)",
+      background: "#ffffff",
+      color: "#000000",
+      fontSize: "16px",
+      boxSizing: "border-box"
     }}
   />
 
@@ -1324,7 +1349,7 @@ onChange={(e) =>
       top: "50%",
       transform: "translateY(-50%)",
       cursor: "pointer",
-      color: "#c8a96b",
+      color: "#555555",
       fontSize: "22px",
       zIndex: 999
     }}
@@ -1336,23 +1361,39 @@ onChange={(e) =>
 <button
   onClick={loginStudent}
   style={{
-    ...goldButtonLarge,
     width: "100%",
-    marginTop: "10px"
+    padding: "18px",
+    marginTop: "6px",
+    borderRadius: "999px",
+    border: "none",
+    background: "linear-gradient(180deg, #fbd7dd 0%, #f2aab8 100%)",
+    color: "#050505",
+    fontSize: "17px",
+    fontWeight: "700",
+    cursor: "pointer",
+    boxShadow: "0 2px 4px rgba(0,0,0,0.12), 0 6px 18px rgba(242,170,184,0.4)"
   }}
 >
-  LOGIN
+  Log in
 </button>
 <button
   type="button"
   onClick={() => setPage("resetPassword")}
   style={{
-    ...outlineButton,
     width: "100%",
-    marginTop: "15px"
+    padding: "18px",
+    marginTop: "16px",
+    marginBottom: "18px",
+    borderRadius: "999px",
+    border: "2px solid #f2aab8",
+    background: "transparent",
+    color: "#c9738a",
+    fontSize: "17px",
+    fontWeight: "700",
+    cursor: "pointer"
   }}
 >
-  RESET PASSWORD
+  Forgot password?
 </button>
           </div>
         </section>
@@ -2949,13 +2990,13 @@ setPage("bookingConfirmed");
             cursor: "pointer",
             flexShrink: 0,
             fontFamily: "Georgia, serif",
-            fontWeight: "500",
+            fontWeight: "700",
             letterSpacing: "1px",
             boxShadow: "0 2px 4px rgba(0,0,0,0.12), 0 6px 18px rgba(242,170,184,0.4)",
             transition: "all 0.3s ease"
           }}
         >
-          Back to Dashboard
+          BACK TO DASHBOARD
         </button>
       </div>
 
