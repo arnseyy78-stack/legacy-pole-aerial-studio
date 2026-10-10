@@ -1353,16 +1353,17 @@ onChange={(e) =>
   onClick={() => setPage("resetPassword")}
   style={{
     width: "100%",
-    padding: "18px",
-    marginTop: "16px",
+    padding: "10px 0",
+    marginTop: "8px",
     marginBottom: "18px",
-    borderRadius: "999px",
-    border: "2px solid #f2aab8",
+    border: "none",
     background: "transparent",
-    color: "#c9738a",
-    fontSize: "17px",
-    fontWeight: "700",
-    cursor: "pointer"
+    color: "#000000",
+    fontSize: "15px",
+    fontWeight: "600",
+    cursor: "pointer",
+    textAlign: "center",
+    textDecoration: "underline"
   }}
 >
   Forgot password?
