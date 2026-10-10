@@ -125,6 +125,7 @@ const [isLoggedIn, setIsLoggedIn] = useState(
   if (window.location.hash === "#legacy-admin") {
     localStorage.setItem("legacyAdminDevice", "true");
     setShowAdminLogin(true);
+    setPage("adminLogin");
   }
 
   const updateActivity = () => {
