@@ -3483,12 +3483,13 @@ const dateButton = {
 };
 const menuButton = {
   display: "block",
-  background: "transparent",
-  border: "1px solid rgba(255,255,255,0.5)",
-  color: "#000000",
-  fontSize: "28px",
+  background: "linear-gradient(180deg, #fbd7dd 0%, #f2aab8 100%)",
+  border: "1px solid rgba(255,255,255,0.6)",
+  color: "#8c3d52",
+  fontSize: "24px",
   borderRadius: "12px",
-  padding: "8px 14px",
+  padding: "6px 12px",
+  boxShadow: "0 2px 6px rgba(0,0,0,0.1), 0 4px 12px rgba(242,170,184,0.35)",
   cursor: "pointer"
 };
 
