@@ -2920,29 +2920,43 @@ setPage("bookingConfirmed");
 {page === "packages" && isLoggedIn && (
   <section style={centerPage}>
     <div style={{ ...formCard, maxWidth: "1200px" }}>
-      <p style={goldSmallText}>STUDENT PACKAGES</p>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "flex-start",
+          justifyContent: "space-between",
+          gap: "20px",
+          flexWrap: "wrap",
+          marginBottom: "35px"
+        }}
+      >
+        <div>
+          <p style={goldSmallText}>STUDENT PACKAGES</p>
 
-      <h2 style={{ ...sectionHeading, fontSize: "60px", marginBottom: "10px" }}>
-        Packages & Pricing
-      </h2>
+          <h2 style={{ ...sectionHeading, fontSize: "60px", marginBottom: "10px" }}>
+            Packages & Pricing
+          </h2>
+        </div>
 
-      <button
-  onClick={() => setPage("chooseClass")}
-  style={{
-    background: "transparent",
-    border: "1px solid rgba(255,255,255,0.45)",
-    color: "#c8a96b",
-    padding: "12px 22px",
-    borderRadius: "999px",
-    cursor: "pointer",
-    marginBottom: "35px",
-    fontWeight: "600",
-    letterSpacing: "1px",
-    transition: "all 0.3s ease"
-  }}
->
-  BACK TO DASHBOARD
-</button>
+        <button
+          onClick={() => setPage("chooseClass")}
+          style={{
+            background: "linear-gradient(180deg, #fbd7dd 0%, #f2aab8 100%)",
+            border: "none",
+            color: "#050505",
+            padding: "12px 22px",
+            borderRadius: "999px",
+            cursor: "pointer",
+            flexShrink: 0,
+            fontWeight: "700",
+            letterSpacing: "1px",
+            boxShadow: "0 2px 4px rgba(0,0,0,0.12), 0 6px 18px rgba(242,170,184,0.4)",
+            transition: "all 0.3s ease"
+          }}
+        >
+          BACK TO DASHBOARD
+        </button>
+      </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "24px" }}>
         {[
