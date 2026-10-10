@@ -2242,7 +2242,7 @@ setPage("bookingConfirmed");
     style={{
       display: "inline-block",
       background:
-        "linear-gradient(180deg, #f4d58d 0%, #c8a96b 100%)",
+        "linear-gradient(180deg, #fbd7dd 0%, #f2aab8 100%)",
       color: "#111",
       padding: "7px 14px",
       borderRadius: "999px",
@@ -2730,7 +2730,7 @@ setPage("bookingConfirmed");
               {pkg[4] && (
                 <div
                   style={{
-                    background: "#c8a96b",
+                    background: "linear-gradient(180deg, #fbd7dd 0%, #f2aab8 100%)",
                     color: "#000",
                     padding: "7px 14px",
                     borderRadius: "999px",
@@ -3006,7 +3006,7 @@ setPage("bookingConfirmed");
               {pkg.popular && (
                 <div
                   style={{
-                    background: "#c8a96b",
+                    background: "linear-gradient(180deg, #fbd7dd 0%, #f2aab8 100%)",
                     color: "#000",
                     padding: "7px 14px",
                     borderRadius: "999px",
@@ -3145,7 +3145,7 @@ const navButton = {
 };
 
 const goldButton = {
-  background: "#c8a96b",
+  background: "linear-gradient(180deg, #fbd7dd 0%, #f2aab8 100%)",
   color: "#050505",
   border: "none",
   padding: "14px 28px",
@@ -3156,7 +3156,7 @@ const goldButton = {
 };
 
 const goldButtonLarge = {
-  background: "#c8a96b",
+  background: "linear-gradient(180deg, #fbd7dd 0%, #f2aab8 100%)",
   color: "#050505",
   border: "none",
   padding: "18px 34px",
