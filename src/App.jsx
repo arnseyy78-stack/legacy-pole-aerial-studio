@@ -2948,6 +2948,7 @@ setPage("bookingConfirmed");
             borderRadius: "999px",
             cursor: "pointer",
             flexShrink: 0,
+            fontFamily: "Georgia, serif",
             fontWeight: "700",
             letterSpacing: "1px",
             boxShadow: "0 2px 4px rgba(0,0,0,0.12), 0 6px 18px rgba(242,170,184,0.4)",
