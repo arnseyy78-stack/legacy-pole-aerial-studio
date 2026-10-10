@@ -757,8 +757,9 @@ return;
 >
   <span
   style={{
-    color: "#000000",
+    color: "#e88fa2",
     fontSize: "20px",
+    fontWeight: "600",
     whiteSpace: "nowrap"
   }}
 >
