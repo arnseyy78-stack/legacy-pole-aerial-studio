@@ -1363,7 +1363,7 @@ onChange={(e) =>
     fontWeight: "600",
     cursor: "pointer",
     textAlign: "center",
-    textDecoration: "underline"
+    textDecoration: "none"
   }}
 >
   Forgot password?
