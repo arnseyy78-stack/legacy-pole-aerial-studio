@@ -757,10 +757,11 @@ return;
 >
   <span
   style={{
-    color: "#e88fa2",
-    fontSize: "20px",
-    fontWeight: "600",
-    whiteSpace: "nowrap"
+    color: "#8c3d52",
+    fontSize: "17px",
+    fontWeight: "700",
+    whiteSpace: "nowrap",
+    textShadow: "0 1px 6px rgba(255,255,255,0.85)"
   }}
 >
 {localStorage.getItem("legacyAdmin") === "true"
