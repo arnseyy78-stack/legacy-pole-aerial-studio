@@ -2955,7 +2955,7 @@ setPage("bookingConfirmed");
             transition: "all 0.3s ease"
           }}
         >
-          BACK TO DASHBOARD
+          Back to Dashboard
         </button>
       </div>
 
