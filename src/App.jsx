@@ -2400,7 +2400,7 @@ setPage("bookingConfirmed");
     display: "inline-block"
   }}
 >
-  <div style={{ color: "#c8a96b", fontSize: "12px" }}>
+  <div style={{ color: "#a8556a", fontSize: "12px", fontWeight: "bold" }}>
     TOTAL STUDENTS
   </div>
   <div style={{ color: "#000000", fontSize: "28px", fontWeight: "bold" }}>
@@ -2468,7 +2468,7 @@ setPage("bookingConfirmed");
         <div
           key={booking.id}
           style={{
-            borderTop: "1px solid rgba(255,255,255,0.35)",
+            borderTop: "1px solid rgba(0,0,0,0.12)",
             paddingTop: "15px",
             marginTop: "15px"
           }}
@@ -2481,7 +2481,7 @@ setPage("bookingConfirmed");
             {booking.Student_email}
           </p>
 
-          <p style={{ color: "#c8a96b", margin: 0 }}>
+          <p style={{ color: "#a8556a", margin: 0, fontWeight: "600" }}>
             {booking.Class_name}
           </p>
         </div>
@@ -2515,8 +2515,8 @@ setPage("bookingConfirmed");
             {bookings[0].Class_name} · {classTimes[bookings[0].Class_name] || "6:00 PM"}
           </h3>
 
-          <p style={{ color: "#c8a96b" }}>
-            Slots Filled: {bookings.length}/5
+          <p style={{ color: "#a8556a", fontWeight: "600" }}>
+            Slots Filled: {bookings.length}/10
           </p>
 
           {bookings.map((student) => (
@@ -3262,7 +3262,7 @@ const heroTitle = {
 };
 
 const goldSmallText = {
-  color: "#8a6d2f",
+  color: "#a8556a",
   letterSpacing: "5px",
   fontSize: "13px",
   textTransform: "uppercase",
