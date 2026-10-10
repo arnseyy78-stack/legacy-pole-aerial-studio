@@ -2422,22 +2422,53 @@ setPage("bookingConfirmed");
     setTimeout(() => setRefreshing(false), 700);
   }}
   style={{
+    width: "58px",
+    height: "58px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
     background: refreshing
-      ? "#4CAF50"
-      : "linear-gradient(180deg,#f4d58d,#c8a96b)",
-    color: refreshing ? "#fff" : "#111",
-    border: "1px solid rgba(255,255,255,0.5)",
-    borderRadius: "12px",
-    padding: "12px 24px",
-    fontWeight: "bold",
+      ? "linear-gradient(180deg, #f6c9cf 0%, #e9a3ad 100%)"
+      : "linear-gradient(180deg, #f9d3d8 0%, #efa7b2 100%)",
+    border: "none",
+    borderRadius: "16px",
+    padding: "0",
     cursor: refreshing ? "default" : "pointer",
     boxShadow: refreshing
-      ? "0 2px 0 #2e7d32"
-      : "0 6px 0 #7b5f2d",
-    transition: "all .2s"
+      ? "0 1px 3px rgba(0,0,0,0.18)"
+      : "0 2px 4px rgba(0,0,0,0.16), 0 8px 20px rgba(233,163,173,0.45)",
+    transition: "all 0.25s ease",
+    transform: refreshing ? "scale(0.96)" : "scale(1)"
   }}
+  aria-label={refreshing ? "Refreshed" : "Refresh data"}
+  title={refreshing ? "Refreshed" : "Refresh"}
 >
-  {refreshing ? "✓ Refreshed" : "🔄 Refresh Data"}
+  <svg
+    width="30"
+    height="30"
+    viewBox="0 0 24 24"
+    fill="none"
+    style={{
+      transition: "transform 0.5s ease",
+      transform: refreshing ? "rotate(-180deg)" : "rotate(0deg)"
+    }}
+  >
+    <path
+      d="M20.5 12a8.5 8.5 0 1 1-2.6-6.1"
+      stroke="#ffffff"
+      strokeWidth="2.6"
+      strokeLinecap="round"
+      fill="none"
+    />
+    <path
+      d="M20.9 3.2v5.1h-5.1"
+      stroke="#ffffff"
+      strokeWidth="2.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      fill="none"
+    />
+  </svg>
 </button>
 </div>
 <select
