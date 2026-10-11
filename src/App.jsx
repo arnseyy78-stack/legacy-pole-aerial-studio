@@ -2917,6 +2917,78 @@ setPage("bookingConfirmed");
         </p>
       </div>
 
+      <div style={{ marginBottom: "30px" }}>
+        <p style={goldSmallText}>FOLLOW US</p>
+
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "16px",
+            marginTop: "14px",
+            flexWrap: "wrap"
+          }}
+        >
+          <a
+            href="https://www.facebook.com/legacypolestudio/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Legacy Pole & Aerial Studio on Facebook"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "52px",
+              height: "52px",
+              borderRadius: "14px",
+              background: "rgba(255,255,255,0.35)",
+              border: "1px solid rgba(255,255,255,0.5)",
+              textDecoration: "none",
+              transition: "all 0.25s ease"
+            }}
+          >
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="#1877F2">
+              <path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5.02 3.66 9.18 8.44 9.94v-7.03H7.9v-2.91h2.54V9.85c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.23.2 2.23.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.44 2.91h-2.34V22c4.78-.76 8.45-4.92 8.45-9.94z" />
+            </svg>
+          </a>
+
+          <a
+            href="https://www.instagram.com/legacypoleandaerialstudio"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Legacy Pole & Aerial Studio on Instagram"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "52px",
+              height: "52px",
+              borderRadius: "14px",
+              background: "rgba(255,255,255,0.35)",
+              border: "1px solid rgba(255,255,255,0.5)",
+              textDecoration: "none",
+              transition: "all 0.25s ease"
+            }}
+          >
+            <svg width="26" height="26" viewBox="0 0 24 24">
+              <defs>
+                <linearGradient id="igGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#FEDA75" />
+                  <stop offset="25%" stopColor="#FA7E1E" />
+                  <stop offset="50%" stopColor="#D62976" />
+                  <stop offset="75%" stopColor="#962FBF" />
+                  <stop offset="100%" stopColor="#4F5BD5" />
+                </linearGradient>
+              </defs>
+              <rect x="2" y="2" width="20" height="20" rx="5.5" fill="url(#igGrad)" />
+              <rect x="6.2" y="6.2" width="11.6" height="11.6" rx="3.6" fill="none" stroke="#ffffff" strokeWidth="1.7" />
+              <circle cx="12" cy="12" r="3.1" fill="none" stroke="#ffffff" strokeWidth="1.7" />
+              <circle cx="16.6" cy="7.4" r="1.15" fill="#ffffff" />
+            </svg>
+          </a>
+        </div>
+      </div>
+
       <a
         href="https://share.google/AFqMpoBqHNcfTIXGf"
         target="_blank"
