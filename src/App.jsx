@@ -1957,7 +1957,7 @@ const classes = {
   1: [["6:00 PM 1hr", "Pole Fitness", "/maryppole.jpg"]],
   2: [["6:00 PM 1hr", "Aerial Silks", "/silks2.jpg"]],
   3: [["6:00 PM 1hr", "Spinny Pole", "/zenspinny.jpg"]],
-  4: [["6:00 PM 1hr", "Intro to Pole", "/aceintro.jpg"]],
+  4: [["6:00 PM 1hr", "Intro to Pole", "/aceintro2.jpg"]],
   5: [["6:00 PM 1hr", "Aerial Hoop", "/ivyhoop.png"]],
   6: [["6:00 PM 1hr", "Aerial Hammock", "/hammock.png"]],
   0: []
@@ -2630,7 +2630,7 @@ setPage("bookingConfirmed");
   "6:00 PM",
   "Intro to Pole",
   "Perfect for complete beginners. Learn foundational grips, spins and pole safety.",
-  "/aceintro.jpg"
+  "/aceintro2.jpg"
 ],
 [
   "Friday",
