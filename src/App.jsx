@@ -2637,7 +2637,7 @@ setPage("bookingConfirmed");
   "6:00 PM",
   "Aerial Hoop",
   "Build strength, balance and confidence while learning beginner-friendly spins, hangs and beautiful aerial hoop poses. Wear fitted leggings and a fitted top.",
-  "/ivyhoop.jpg"
+  "/ivyhoop.png"
   ],
 [
   "Saturday",
