@@ -723,7 +723,7 @@ return;
 >
   <span
   style={{
-    color: "#8c3d52",
+    color: "#000000",
     fontSize: "17px",
     fontWeight: "700",
     whiteSpace: "nowrap",
