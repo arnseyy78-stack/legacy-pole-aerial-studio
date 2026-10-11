@@ -129,6 +129,49 @@ const [isLoggedIn, setIsLoggedIn] = useState(
 
 }, []);
 
+useEffect(() => {
+  const ONE_MONTH = 30 * 24 * 60 * 60 * 1000;
+
+  const isLoggedIn = () =>
+    !!(localStorage.getItem("legacyStudent") || localStorage.getItem("legacyAdmin"));
+
+  const stamp = () => {
+    if (isLoggedIn()) {
+      localStorage.setItem("legacyLastActive", String(Date.now()));
+    }
+  };
+
+  const logoutIfIdle = () => {
+    if (!isLoggedIn()) return;
+    const last = Number(localStorage.getItem("legacyLastActive") || 0);
+    if (last && Date.now() - last > ONE_MONTH) {
+      localStorage.removeItem("legacyStudent");
+      localStorage.removeItem("legacyAdmin");
+      localStorage.removeItem("legacyLastActive");
+      alert("Session expired after 30 days of inactivity.");
+      window.location.href = window.location.pathname;
+    }
+  };
+
+  if (isLoggedIn() && !localStorage.getItem("legacyLastActive")) {
+    localStorage.setItem("legacyLastActive", String(Date.now()));
+  }
+
+  logoutIfIdle();
+
+  const events = ["mousemove", "keydown", "click", "scroll", "touchstart"];
+  events.forEach((e) => window.addEventListener(e, stamp, { passive: true }));
+  document.addEventListener("visibilitychange", logoutIfIdle);
+  const interval = setInterval(logoutIfIdle, 60000);
+
+  return () => {
+    events.forEach((e) => window.removeEventListener(e, stamp));
+    document.removeEventListener("visibilitychange", logoutIfIdle);
+    clearInterval(interval);
+  };
+}, []);
+
+
   const [selectedDate, setSelectedDate] = useState(null);
   const [calendarMonthOffset, setCalendarMonthOffset] = useState(0);
   const [bookedSlots, setBookedSlots] = useState({});
