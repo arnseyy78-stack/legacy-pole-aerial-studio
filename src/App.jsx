@@ -1958,7 +1958,7 @@ const classes = {
   2: [["6:00 PM 1hr", "Aerial Silks", "/silks.jpg"]],
   3: [["6:00 PM 1hr", "Spinny Pole", "/climb.jpg"]],
   4: [["6:00 PM 1hr", "Intro to Pole", "/ace-pole.jpg"]],
-  5: [["6:00 PM 1hr", "Aerial Hoop", "/aerial-hoop.jpg"]],
+  5: [["6:00 PM 1hr", "Aerial Hoop", "/ivyhoop.png"]],
   6: [["6:00 PM 1hr", "Aerial Hammock", "/hammock.png"]],
   0: []
 };
@@ -2637,7 +2637,7 @@ setPage("bookingConfirmed");
   "6:00 PM",
   "Aerial Hoop",
   "Build strength, balance and confidence while learning beginner-friendly spins, hangs and beautiful aerial hoop poses. Wear fitted leggings and a fitted top.",
-  "/aerial-hoop.jpg"
+  "/ivyhoop.jpg"
   ],
 [
   "Saturday",
