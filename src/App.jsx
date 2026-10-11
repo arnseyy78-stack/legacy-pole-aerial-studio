@@ -1954,11 +1954,11 @@ return (
 const weekday = actualSelectedDate.getDay();
 
 const classes = {
-  1: [["6:00 PM 1hr", "Pole Fitness", "/maryppole.jpg"]],
+  1: [["6:00 PM 1hr", "Pole Fitness", "/maryppole2.jpg"]],
   2: [["6:00 PM 1hr", "Aerial Silks", "/silks2.jpg"]],
-  3: [["6:00 PM 1hr", "Spinny Pole", "/zenspinny.jpg"]],
+  3: [["6:00 PM 1hr", "Spinny Pole", "/zenspinny2.jpg"]],
   4: [["6:00 PM 1hr", "Intro to Pole", "/aceintro2.jpg"]],
-  5: [["6:00 PM 1hr", "Aerial Hoop", "/ivyhoop.png"]],
+  5: [["6:00 PM 1hr", "Aerial Hoop", "/ivyhoop2.png"]],
   6: [["6:00 PM 1hr", "Aerial Hammock", "/hammock.png"]],
   0: []
 };
@@ -2608,7 +2608,7 @@ setPage("bookingConfirmed");
     "6:00 PM",
     "Pole Fitness",
     "Build strength, confidence and fitness while learning beginner-friendly pole techniques.",
-    "/maryppole.jpg"
+    "/maryppole2.jpg"
   ],
 
   [
@@ -2623,7 +2623,7 @@ setPage("bookingConfirmed");
     "6:00 PM",
     "Spinny Pole",
     "Master spinning pole techniques, control, momentum and beautiful aerial shapes.",
-    "/zenspinny.jpg"
+    "/zenspinny2.jpg"
   ],
 [
   "Thursday",
@@ -2637,7 +2637,7 @@ setPage("bookingConfirmed");
   "6:00 PM",
   "Aerial Hoop",
   "Build strength, balance and confidence while learning beginner-friendly spins, hangs and beautiful aerial hoop poses. Wear fitted leggings and a fitted top.",
-  "/ivyhoop.png"
+  "/ivyhoop2.png"
   ],
 [
   "Saturday",
