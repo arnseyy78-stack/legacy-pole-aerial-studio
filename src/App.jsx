@@ -1956,7 +1956,7 @@ const weekday = actualSelectedDate.getDay();
 const classes = {
   1: [["6:00 PM 1hr", "Pole Fitness", "/maryppole.jpg"]],
   2: [["6:00 PM 1hr", "Aerial Silks", "/silks.jpg"]],
-  3: [["6:00 PM 1hr", "Spinny Pole", "/climb.jpg"]],
+  3: [["6:00 PM 1hr", "Spinny Pole", "/zenspinny.jpg"]],
   4: [["6:00 PM 1hr", "Intro to Pole", "/ace-pole.jpg"]],
   5: [["6:00 PM 1hr", "Aerial Hoop", "/ivyhoop.png"]],
   6: [["6:00 PM 1hr", "Aerial Hammock", "/hammock.png"]],
@@ -2623,7 +2623,7 @@ setPage("bookingConfirmed");
     "6:00 PM",
     "Spinny Pole",
     "Master spinning pole techniques, control, momentum and beautiful aerial shapes.",
-    "/spinny.jpg"
+    "/zenspinny.jpg"
   ],
 [
   "Thursday",
