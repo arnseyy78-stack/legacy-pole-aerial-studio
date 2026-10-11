@@ -1954,7 +1954,7 @@ return (
 const weekday = actualSelectedDate.getDay();
 
 const classes = {
-  1: [["6:00 PM 1hr", "Pole Fitness", "/crossknee.jpg"]],
+  1: [["6:00 PM 1hr", "Pole Fitness", "/maryppole.jpg"]],
   2: [["6:00 PM 1hr", "Aerial Silks", "/silks.jpg"]],
   3: [["6:00 PM 1hr", "Spinny Pole", "/climb.jpg"]],
   4: [["6:00 PM 1hr", "Intro to Pole", "/ace-pole.jpg"]],
@@ -2608,7 +2608,7 @@ setPage("bookingConfirmed");
     "6:00 PM",
     "Pole Fitness",
     "Build strength, confidence and fitness while learning beginner-friendly pole techniques.",
-    "/xtian-sit.jpg"
+    "/maryppole.jpg"
   ],
 
   [
