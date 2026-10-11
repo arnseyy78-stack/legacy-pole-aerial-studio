@@ -119,7 +119,6 @@ const [loginEmail, setLoginEmail] = useState("");
 const [isLoggedIn, setIsLoggedIn] = useState(
   !!localStorage.getItem("legacyStudent")
 );
-  const [lastActivity, setLastActivity] = useState(Date.now());
   useEffect(() => {
 
   if (window.location.hash === "#legacy-admin") {
@@ -128,45 +127,8 @@ const [isLoggedIn, setIsLoggedIn] = useState(
     setPage("adminLogin");
   }
 
-  const updateActivity = () => {
-    setLastActivity(Date.now());
-  };
-
-  window.addEventListener("mousemove", updateActivity);
-  window.addEventListener("keydown", updateActivity);
-  window.addEventListener("click", updateActivity);
-  window.addEventListener("scroll", updateActivity);
-
-  return () => {
-    window.removeEventListener("mousemove", updateActivity);
-    window.removeEventListener("keydown", updateActivity);
-    window.removeEventListener("click", updateActivity);
-    window.removeEventListener("scroll", updateActivity);
-  };
 }, []);
-  useEffect(() => {
-  const interval = setInterval(() => {
-    const inactiveTime = Date.now() - lastActivity;
 
-    if (
-  inactiveTime > 1800000 &&
-  (localStorage.getItem("legacyStudent") || localStorage.getItem("legacyAdmin"))
-) {
-      localStorage.removeItem("legacyStudent");
-      localStorage.removeItem("legacyAdmin");
-
-setIsLoggedIn(false);
-setStudentBookings([]);
-setAdminBookings([]);
-setCredits(0);
-
-      alert("Session expired due to inactivity.");
-      setPage("home");
-    }
-  }, 10000);
-
-  return () => clearInterval(interval);
-}, [lastActivity]);
   const [selectedDate, setSelectedDate] = useState(null);
   const [calendarMonthOffset, setCalendarMonthOffset] = useState(0);
   const [bookedSlots, setBookedSlots] = useState({});
@@ -761,7 +723,7 @@ return;
 >
   <span
   style={{
-    color: "#000000",
+    color: "#8c3d52",
     fontSize: "17px",
     fontWeight: "700",
     whiteSpace: "nowrap",
