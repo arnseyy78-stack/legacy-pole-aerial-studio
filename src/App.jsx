@@ -3030,6 +3030,45 @@ setPage("bookingConfirmed");
               <circle cx="16.6" cy="7.4" r="1.15" fill="#ffffff" />
             </svg>
           </a>
+
+          <a
+            href="https://www.tiktok.com/@legacy.pole.studi?_r=1&_t=ZS-9AXBBCYVGKL"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Legacy Pole & Aerial Studio on TikTok"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "52px",
+              height: "52px",
+              borderRadius: "14px",
+              background: "rgba(255,255,255,0.35)",
+              border: "1px solid rgba(255,255,255,0.5)",
+              textDecoration: "none",
+              transition: "all 0.25s ease"
+            }}
+          >
+            <svg width="26" height="26" viewBox="0 0 24 24">
+              <rect width="24" height="24" rx="5.5" fill="#010101" />
+              <g transform="translate(2.5, 2.5) scale(0.8)">
+                <path
+                  d="M16.6 5.82s.51.5 0 0A4.28 4.28 0 0 1 15.54 3h-2.31v10.84a2.82 2.82 0 1 1-2-2.7V8.75a5.2 5.2 0 1 0 4.38 5.12V7.7a6.66 6.66 0 0 0 3.73 1.13V6.52a4.4 4.4 0 0 1-2.74-1.82z"
+                  fill="#25F4EE"
+                  transform="translate(-0.7, -0.7)"
+                />
+                <path
+                  d="M16.6 5.82s.51.5 0 0A4.28 4.28 0 0 1 15.54 3h-2.31v10.84a2.82 2.82 0 1 1-2-2.7V8.75a5.2 5.2 0 1 0 4.38 5.12V7.7a6.66 6.66 0 0 0 3.73 1.13V6.52a4.4 4.4 0 0 1-2.74-1.82z"
+                  fill="#FE2C55"
+                  transform="translate(0.7, 0.7)"
+                />
+                <path
+                  d="M16.6 5.82s.51.5 0 0A4.28 4.28 0 0 1 15.54 3h-2.31v10.84a2.82 2.82 0 1 1-2-2.7V8.75a5.2 5.2 0 1 0 4.38 5.12V7.7a6.66 6.66 0 0 0 3.73 1.13V6.52a4.4 4.4 0 0 1-2.74-1.82z"
+                  fill="#ffffff"
+                />
+              </g>
+            </svg>
+          </a>
         </div>
       </div>
 
