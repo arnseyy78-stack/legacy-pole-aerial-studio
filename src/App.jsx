@@ -585,90 +585,96 @@ setCredits(0);
   );
 setIsLoggedIn(true);
 setStudentBookings([]);
-const today = new Date();
-today.setHours(0, 0, 0, 0);
 
-const expiry = data.package_expiry
-  ? new Date(data.package_expiry)
-  : null;
-
-if (expiry) {
-  expiry.setHours(0, 0, 0, 0);
-}
-
-if (expiry && expiry < today) {
-  await supabase
-    .from("students")
-    .update({
-      credits: 0,
-      package_expiry: null
-    })
-    .eq("email", data.email);
-
-  setCredits(0);
-  setPackageExpiry(null);
-
+// Expiry check uses the same rule as the booking gate, so a package
+// that expires today is still valid until 23:59.
+if (isPackageExpired(data.package_expiry)) {
+  await clearExpiredPackage(data.email);
   alert("Your package has expired. Please purchase a new package.");
 } else {
   setCredits(Number(data.credits) || 0);
-  setPackageExpiry(data.package_expiry);
+  setPackageExpiry(data.package_expiry || null);
 }
 
 await loadStudentBookings(data.email);
 await loadStudentWaitlist(data.email);
 alert("Login successful!");
-  const expiryWarning = localStorage.getItem("legacyExpiryWarning");
-
-if (expiryWarning) {
-  setTimeout(() => {
-    alert(expiryWarning);
-    localStorage.removeItem("legacyExpiryWarning");
-  }, 1500);
-}
 setPage("chooseClass");
 }
-  async function checkPackageExpiry(email) {
-  const { data, error } = await supabase
-    .from("students")
-    .select("credits, package_expiry")
-    .eq("email", email)
-    .single();
+  // ── Package expiry: single source of truth ──────────────────────────────
+  // Returns "active" | "expired" | "none"
+  function getPackageStatus(packageExpiryValue) {
+    if (!packageExpiryValue) return "none";
 
-  if (error || !data) {
-    console.log(error);
-    return false;
+    const expiry = new Date(packageExpiryValue);
+    if (Number.isNaN(expiry.getTime())) return "none";
+
+    // Valid through the end of the expiry day, not until midnight.
+    expiry.setHours(23, 59, 59, 999);
+
+    return new Date() > expiry ? "expired" : "active";
   }
 
-  if (!data.package_expiry) {
-    return false;
+  function isPackageExpired(packageExpiryValue) {
+    return getPackageStatus(packageExpiryValue) === "expired";
   }
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  const expiry = new Date(data.package_expiry);
-  expiry.setHours(0, 0, 0, 0);
-
-  if (expiry < today) {
+  // Clears the stale package everywhere so UI and DB can never disagree.
+  async function clearExpiredPackage(email) {
     await supabase
       .from("students")
-      .update({
-        credits: 0,
-        package_expiry: null
-      })
+      .update({ credits: 0, package_expiry: null })
       .eq("email", email);
 
     setCredits(0);
     setPackageExpiry(null);
-
-    alert("Your package has expired. Please purchase a new package.");
-    setPage("packages");
-
-    return true;
   }
 
-  return false;
-}
+  // Gate every booking path. Call BEFORE any insert or email.
+  // Returns true when the caller must stop.
+  async function guardBookingEligibility(email) {
+    const { data, error } = await supabase
+      .from("students")
+      .select("credits, package_expiry")
+      .eq("email", email)
+      .single();
+
+    if (error || !data) {
+      console.log(error);
+      alert("We could not verify your package. Please sign in again.");
+      return true;
+    }
+
+    const status = getPackageStatus(data.package_expiry);
+
+    if (status !== "active") {
+      if (status === "expired") {
+        await clearExpiredPackage(email);
+        alert(
+          "Your package has expired. Please purchase a new package to book a class."
+        );
+      } else {
+        setCredits(Number(data.credits) || 0);
+        alert("You do not have an active package. Please choose a package first.");
+      }
+
+      setPage("packages");
+      return true;
+    }
+
+    // Leftover credits on an active package still shouldn't book.
+    if ((Number(data.credits) || 0) <= 0) {
+      setCredits(0);
+      alert("You do not have enough credits. Please choose a package first.");
+      setPage("packages");
+      return true;
+    }
+
+    setCredits(Number(data.credits) || 0);
+    setPackageExpiry(data.package_expiry);
+    return false;
+  }
+
   async function buyPackage(pkg) {
   try {
   if (pkg.isTest) {
@@ -1752,9 +1758,12 @@ setPage("adminDashboard");
     </p>
 
     <p style={{ color: "#000000" }}>
-      {Math.ceil(
-        (new Date(packageExpiry) - new Date()) /
-          (1000 * 60 * 60 * 24)
+      {Math.max(
+        0,
+        Math.ceil(
+          (new Date(packageExpiry).setHours(23, 59, 59, 999) - Date.now()) /
+            (1000 * 60 * 60 * 24)
+        )
       )} days remaining
     </p>
   </>
@@ -2051,7 +2060,17 @@ return [
                 style={packageCard}
                 onClick={async () => {
 const bookingDate = `${currentMonthName}-${selectedDate}`;
-                  const now = new Date();
+
+const studentData =
+  JSON.parse(localStorage.getItem("legacyStudent")) || student;
+
+// Expired / missing packages must stop here, BEFORE any
+// waitlist insert, class_blocks lookup or email goes out.
+if (await guardBookingEligibility(studentData.email)) {
+  return;
+}
+
+const now = new Date();
 
 const classHour = item[0].includes("3:00 PM") ? 15 : 18;
 
@@ -2157,17 +2176,6 @@ return;
 }
                   const studentData =
   JSON.parse(localStorage.getItem("legacyStudent")) || student;
-
-if (await checkPackageExpiry(studentData.email)) {
-  return;
-}
-
-if (credits <= 0) {
-  alert("You do not have enough credits. Please choose a package first.");
-  setPage("packages");
-  return;
-}
-
 
 const { data: existingBooking } = await supabase
   .from("Bookings")
