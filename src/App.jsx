@@ -2174,9 +2174,6 @@ await loadStudentWaitlist(studentData.email);
 alert("This class is full. You have been added to the waitlist.");
 return;
 }
-                  const studentData =
-  JSON.parse(localStorage.getItem("legacyStudent")) || student;
-
 const { data: existingBooking } = await supabase
   .from("Bookings")
   .select("*")
