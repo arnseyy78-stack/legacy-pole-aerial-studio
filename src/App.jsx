@@ -630,9 +630,30 @@ setPage("chooseClass");
     setPackageExpiry(null);
   }
 
+  // End of the expiry day, as a Date. Null when there is no usable expiry.
+  function getPackageExpiryEnd(packageExpiryValue) {
+    if (!packageExpiryValue) return null;
+
+    const expiry = new Date(packageExpiryValue);
+    if (Number.isNaN(expiry.getTime())) return null;
+
+    expiry.setHours(23, 59, 59, 999);
+    return expiry;
+  }
+
+  function formatBookingDate(date) {
+    return date.toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric"
+    });
+  }
+
   // Gate every booking path. Call BEFORE any insert or email.
+  // classDate is the Date of the class being booked; a package must still
+  // be valid on that day, not merely valid at the moment of the click.
   // Returns true when the caller must stop.
-  async function guardBookingEligibility(email) {
+  async function guardBookingEligibility(email, classDate = null) {
     const { data, error } = await supabase
       .from("students")
       .select("credits, package_expiry")
@@ -660,6 +681,26 @@ setPage("chooseClass");
 
       setPage("packages");
       return true;
+    }
+
+    // The package is active today — but the class being booked may fall
+    // after the expiry day. Compare the class date, not "now".
+    if (classDate) {
+      const expiryEnd = getPackageExpiryEnd(data.package_expiry);
+      const classDay = new Date(classDate);
+      classDay.setHours(23, 59, 59, 999);
+
+      if (expiryEnd && classDay > expiryEnd) {
+        setCredits(Number(data.credits) || 0);
+        setPackageExpiry(data.package_expiry);
+        alert(
+          "That class falls outside your package.\n\n" +
+            `Your package is valid until ${formatBookingDate(expiryEnd)}.\n` +
+            `This class is on ${formatBookingDate(classDay)}.\n\n` +
+            "Please choose an earlier class, or purchase a new package."
+        );
+        return true;
+      }
     }
 
     // Leftover credits on an active package still shouldn't book.
@@ -2064,14 +2105,6 @@ const bookingDate = `${currentMonthName}-${selectedDate}`;
 const studentData =
   JSON.parse(localStorage.getItem("legacyStudent")) || student;
 
-// Expired / missing packages must stop here, BEFORE any
-// waitlist insert, class_blocks lookup or email goes out.
-if (await guardBookingEligibility(studentData.email)) {
-  return;
-}
-
-const now = new Date();
-
 const classHour = item[0].includes("3:00 PM") ? 15 : 18;
 
 const selectedClassDate = new Date(
@@ -2082,6 +2115,16 @@ const selectedClassDate = new Date(
   0,
   0
 );
+
+// Expired / missing packages must stop here, BEFORE any
+// waitlist insert, class_blocks lookup or email goes out.
+// The class date goes in too, so a package that lapses before the
+// class cannot book it.
+if (await guardBookingEligibility(studentData.email, selectedClassDate)) {
+  return;
+}
+
+const now = new Date();
 
 if (selectedClassDate <= now) {
   alert(
