@@ -71,8 +71,7 @@ async function handlePaymentReturn() {
   if (error) {
     console.log("Could not refresh student credits:", error);
   } else {
-    setCredits(Number(freshStudent?.credits) || 0);
-    setPackageExpiry(freshStudent?.package_expiry || null);
+    await syncPackageOnRead(studentData.email, freshStudent);
   }
 
   localStorage.removeItem("legacySelectedPackage");
@@ -628,6 +627,32 @@ setPage("chooseClass");
 
     setCredits(0);
     setPackageExpiry(null);
+  }
+
+  // Run on EVERY read of "credits, package_expiry". If the package has
+  // lapsed, zero the credits in Supabase and return the cleared values,
+  // so a refresh can't leave a dead package looking alive.
+  async function syncPackageOnRead(email, row) {
+    const safe = {
+      credits: Number(row?.credits) || 0,
+      package_expiry: row?.package_expiry || null
+    };
+
+    if (!email || !safe.package_expiry) {
+      // Already clear: just keep local state honest.
+      setCredits(safe.credits);
+      setPackageExpiry(safe.package_expiry);
+      return safe;
+    }
+
+    if (isPackageExpired(safe.package_expiry)) {
+      await clearExpiredPackage(email);
+      return { credits: 0, package_expiry: null };
+    }
+
+    setCredits(safe.credits);
+    setPackageExpiry(safe.package_expiry);
+    return safe;
   }
 
   // End of the expiry day, as a Date. Null when there is no usable expiry.
@@ -1723,8 +1748,7 @@ setPage("adminDashboard");
     if (error) {
       console.log("Student refresh error:", error);
     } else {
-      setCredits(Number(freshStudent?.credits) || 0);
-      setPackageExpiry(freshStudent?.package_expiry || null);
+      await syncPackageOnRead(studentData?.email, freshStudent);
     }
 
     setTimeout(() => {
@@ -2304,8 +2328,7 @@ const { data: refreshedStudent } = await supabase
   .single();
 
 if (refreshedStudent) {
-  setCredits(refreshedStudent.credits);
-  setPackageExpiry(refreshedStudent.package_expiry);
+  await syncPackageOnRead(studentData.email, refreshedStudent);
 }
 
 loadBookings();
