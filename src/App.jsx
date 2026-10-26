@@ -189,6 +189,7 @@ const [adminWaitlist, setAdminWaitlist] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
 const [totalStudents, setTotalStudents] = useState(0);
 const [packageExpiry, setPackageExpiry] = useState(null);
+const [packageType, setPackageType] = useState(null);
 const [credits, setCredits] = useState(0);
   const [specialClasses, setSpecialClasses] = useState([]);
   const today = new Date();
@@ -657,11 +658,12 @@ setPage("chooseClass");
   async function clearExpiredPackage(email) {
     await supabase
       .from("students")
-      .update({ credits: 0, package_expiry: null })
+      .update({ credits: 0, package_expiry: null, package_type: null })
       .eq("email", email);
 
     setCredits(0);
     setPackageExpiry(null);
+    setPackageType(null);
   }
 
   // Signup was interrupted (closed tab, went to email, WebView reloaded).
@@ -694,23 +696,26 @@ setPage("chooseClass");
   async function syncPackageOnRead(email, row) {
     const safe = {
       credits: Number(row?.credits) || 0,
-      package_expiry: row?.package_expiry || null
+      package_expiry: row?.package_expiry || null,
+      package_type: row?.package_type || null
     };
 
     if (!email || !safe.package_expiry) {
       // Already clear: just keep local state honest.
       setCredits(safe.credits);
       setPackageExpiry(safe.package_expiry);
+      setPackageType(safe.package_type);
       return safe;
     }
 
     if (isPackageExpired(safe.package_expiry)) {
       await clearExpiredPackage(email);
-      return { credits: 0, package_expiry: null };
+      return { credits: 0, package_expiry: null, package_type: null };
     }
 
     setCredits(safe.credits);
     setPackageExpiry(safe.package_expiry);
+    setPackageType(safe.package_type);
     return safe;
   }
 
@@ -740,7 +745,7 @@ setPage("chooseClass");
   async function guardBookingEligibility(email, classDate = null) {
     const { data, error } = await supabase
       .from("students")
-      .select("credits, package_expiry")
+      .select("credits, package_expiry, package_type")
       .eq("email", email)
       .single();
 
@@ -749,6 +754,8 @@ setPage("chooseClass");
       alert("We could not verify your package. Please sign in again.");
       return true;
     }
+
+    const isUnlimited = data.package_type === "unlimited";
 
     const status = getPackageStatus(data.package_expiry);
 
@@ -787,8 +794,9 @@ setPage("chooseClass");
       }
     }
 
-    // Leftover credits on an active package still shouldn't book.
-    if ((Number(data.credits) || 0) <= 0) {
+    // Unlimited passes have no credit balance to run down — the expiry is
+    // the only limit, and it was already checked above.
+    if (!isUnlimited && (Number(data.credits) || 0) <= 0) {
       setCredits(0);
       alert("You do not have enough credits. Please choose a package first.");
       setPage("packages");
@@ -797,6 +805,7 @@ setPage("chooseClass");
 
     setCredits(Number(data.credits) || 0);
     setPackageExpiry(data.package_expiry);
+    setPackageType(data.package_type || null);
     return false;
   }
 
@@ -818,16 +827,33 @@ setPage("chooseClass");
       className: "Test package selected",
       amount: "FREE",
       credits: pkg.credits,
-      expiry: "30 Days"
+      expiry: pkg.expiry || "30 Days"
     })
   });
 
 const packageCredits = pkg.credits || 0;
 
+// Honour the card's own validity instead of assuming 30 days.
+const validDays = Number(pkg.expiryDays) || 30;
+
 const expiryDate = new Date();
-expiryDate.setDate(expiryDate.getDate() + 30);
+expiryDate.setDate(expiryDate.getDate() + validDays);
+
+const { error: testPackageError } = await supabase
+  .from("students")
+  .update({
+    credits: packageCredits,
+    package_expiry: expiryDate.toISOString(),
+    package_type: pkg.unlimited ? "unlimited" : "credits"
+  })
+  .eq("email", studentData.email);
+
+if (testPackageError) {
+  console.log("Test package update error:", testPackageError);
+}
 
 setCredits(packageCredits);
+setPackageType(pkg.unlimited ? "unlimited" : "credits");
 
 localStorage.setItem(
   `legacyCredits_${studentData.email}`,
@@ -2910,7 +2936,7 @@ setPage("bookingConfirmed");
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "24px" }}>
         {[
           ["Single Pass", "₱870", "1 class credit", "Perfect for trying your first class."],
-          ["Class Card", "₱4,100", "5 class credits", "Best value. Save and plan your month. Consumable in 30 days.", "MOST POPULAR"],
+          ["1 Week Unlimited", "₱2,500", "Unlimited classes for 7 days", "Best value. Attend as many classes as you like for one week.", "MOST POPULAR"],
           ["Self Practice", "₱550", "Contact studio for time", "For existing students only."],
           ["Private Class", "₱3,100", "One on one coaching.", "Best for achieving your dream tricks."],
         ].map((pkg) => (
@@ -3290,13 +3316,15 @@ setPage("bookingConfirmed");
             expiry: "30 Days"
           },
           {
-            name: "Class Card",
-            price: "₱4,100",
-            description: "5 class credits",
-            subText: "Best value. Save and plan your month. Consumable in 30 days.",
-            amount: 410000,
-            credits: 5,
-            expiry: "30 Days",
+            name: "1 Week Unlimited",
+            price: "₱2,500",
+            description: "Unlimited classes for 7 days",
+            subText: "Best value. Attend as many classes as you like for one week.",
+            amount: 250000,
+            credits: 7,
+            unlimited: true,
+            expiry: "7 Days",
+            expiryDays: 7,
             popular: true
           },
           {
