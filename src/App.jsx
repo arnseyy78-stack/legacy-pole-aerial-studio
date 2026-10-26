@@ -629,6 +629,7 @@ if (isPackageExpired(data.package_expiry)) {
 } else {
   setCredits(Number(data.credits) || 0);
   setPackageExpiry(data.package_expiry || null);
+  setPackageType(data.package_type || null);
 }
 
 await loadStudentBookings(data.email);
