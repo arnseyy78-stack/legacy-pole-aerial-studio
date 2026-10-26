@@ -1830,7 +1830,7 @@ setPage("adminDashboard");
 
     const { data: freshStudent, error } = await supabase
       .from("students")
-      .select("credits, package_expiry")
+      .select("credits, package_expiry, package_type")
       .eq("email", studentData?.email)
       .single();
 
@@ -1896,8 +1896,16 @@ setPage("adminDashboard");
   </div>
 
 <h3 style={{ color: "#000000", fontSize: "30px", margin: "10px 0" }}>
-  Credits Remaining: {credits}
+  {packageType === "unlimited"
+    ? "Unlimited Pass"
+    : `Credits Remaining: ${credits}`}
 </h3>
+
+{packageType === "unlimited" && (
+  <p style={{ color: "#000000" }}>
+    Book as many classes as you like until your pass expires.
+  </p>
+)}
   {packageExpiry && (
   <>
     <p
@@ -2389,7 +2397,20 @@ await fetch("/api/send-email", {
   })
 });
 
-const newCredits = credits - 1;
+// Unlimited passes don't spend credits — the 7-day expiry is the limit.
+// Read the type fresh from the DB so a stale state value can't turn an
+// unlimited pass into a credit one mid-booking.
+const { data: typeRow } = await supabase
+  .from("students")
+  .select("package_type")
+  .eq("email", studentData.email)
+  .single();
+
+const isUnlimitedPass = typeRow?.package_type === "unlimited";
+
+const newCredits = isUnlimitedPass
+  ? Number(credits) || 0
+  : (Number(credits) || 0) - 1;
 
 setCredits(newCredits);
 
@@ -2397,9 +2418,11 @@ const updateData = {
   credits: newCredits
 };
 
-if (newCredits <= 0) {
+if (!isUnlimitedPass && newCredits <= 0) {
   updateData.package_expiry = null;
+  updateData.package_type = null;
   setPackageExpiry(null);
+  setPackageType(null);
 }
 const { error: creditUpdateError } = await supabase
   .from("students")
