@@ -1930,13 +1930,20 @@ setPage("adminDashboard");
     </p>
 
     <p style={{ color: "#000000" }}>
-      {Math.max(
-        0,
-        Math.ceil(
-          (new Date(packageExpiry).setHours(23, 59, 59, 999) - Date.now()) /
-            (1000 * 60 * 60 * 24)
-        )
-      )} days remaining
+      {(() => {
+        const daysLeft = Math.max(
+          0,
+          Math.round(
+            (new Date(packageExpiry).setHours(23, 59, 59, 999) -
+              new Date().setHours(0, 0, 0, 0)) /
+              (1000 * 60 * 60 * 24)
+          )
+        );
+
+        return daysLeft === 0
+          ? "Expires today"
+          : `${daysLeft} days remaining`;
+      })()}
     </p>
   </>
 )}
@@ -2447,7 +2454,7 @@ if (creditUpdateError) {
 setCredits(newCredits);
 const { data: refreshedStudent } = await supabase
   .from("students")
-  .select("credits, package_expiry")
+  .select("credits, package_expiry, package_type")
   .eq("email", studentData.email)
   .single();
 
