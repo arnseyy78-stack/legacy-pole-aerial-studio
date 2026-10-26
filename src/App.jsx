@@ -811,14 +811,7 @@ setPage("chooseClass");
 
   async function buyPackage(pkg) {
   try {
-  // Admin / ?test=true bypass: activate the pass without going through
-  // PayMongo, so the studio can test without paying. Students who are not
-  // admin get the normal checkout below.
-  const isTester =
-    localStorage.getItem("legacyAdmin") === "true" ||
-    new URLSearchParams(window.location.search).get("test") === "true";
-
-  if (pkg.isTest || (isTester && pkg.unlimited)) {
+  if (pkg.isTest) {
   const studentData =
     JSON.parse(localStorage.getItem("legacyStudent")) || student;
 
@@ -872,7 +865,11 @@ localStorage.setItem(
   expiryDate.toISOString()
 );
 
-alert(`${pkg.name} confirmed. ${packageCredits} credits added.`);
+alert(
+  pkg.unlimited
+    ? `${pkg.name} confirmed. Your pass is active until ${expiryDate.toLocaleDateString()}.`
+    : `${pkg.name} confirmed. ${packageCredits} credits added.`
+);
 setPage("chooseClass");
 return;
 }
