@@ -811,7 +811,14 @@ setPage("chooseClass");
 
   async function buyPackage(pkg) {
   try {
-  if (pkg.isTest) {
+  // Admin / ?test=true bypass: activate the pass without going through
+  // PayMongo, so the studio can test without paying. Students who are not
+  // admin get the normal checkout below.
+  const isTester =
+    localStorage.getItem("legacyAdmin") === "true" ||
+    new URLSearchParams(window.location.search).get("test") === "true";
+
+  if (pkg.isTest || (isTester && pkg.unlimited)) {
   const studentData =
     JSON.parse(localStorage.getItem("legacyStudent")) || student;
 
@@ -2959,7 +2966,7 @@ setPage("bookingConfirmed");
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "24px" }}>
         {[
           ["Single Pass", "₱870", "1 class credit", "Perfect for trying your first class."],
-          ["1 Week Unlimited", "₱2,500", "Unlimited classes for 7 days", "Best value. Attend as many classes as you like for one week.", "MOST POPULAR"],
+          ["1 Week Unlimited", "₱2,600", "Unlimited classes for 7 days", "Best value. Attend as many classes as you like for one week.", "MOST POPULAR"],
           ["Self Practice", "₱550", "Contact studio for time", "For existing students only."],
           ["Private Class", "₱3,100", "One on one coaching.", "Best for achieving your dream tricks."],
         ].map((pkg) => (
@@ -3340,10 +3347,10 @@ setPage("bookingConfirmed");
           },
           {
             name: "1 Week Unlimited",
-            price: "₱2,500",
+            price: "₱2,600",
             description: "Unlimited classes for 7 days",
             subText: "Best value. Attend as many classes as you like for one week.",
-            amount: 250000,
+            amount: 260000,
             credits: 7,
             unlimited: true,
             expiry: "7 Days",
