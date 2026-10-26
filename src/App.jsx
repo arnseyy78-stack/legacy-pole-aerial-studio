@@ -3352,6 +3352,7 @@ setPage("bookingConfirmed");
             unlimited: true,
             expiry: "7 Days",
             expiryDays: 7,
+            isTest: true,
             popular: true
           },
           {
