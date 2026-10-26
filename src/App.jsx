@@ -37,24 +37,8 @@ if (params.get("dashboard") === "true") {
 
 // Signup was interrupted (closed tab, went to email). Put them back on
 // the code screen with their email intact instead of the login page.
-const pendingVerify = localStorage.getItem("legacyPendingVerify");
+restorePendingVerification();
 
-if (pendingVerify) {
-  setStudent((prev) => ({ ...prev, email: pendingVerify }));
-
-  const { data: pendingStudent } = await supabase
-    .from("students")
-    .select("verified")
-    .eq("email", pendingVerify)
-    .maybeSingle();
-
-  if (pendingStudent && !pendingStudent.verified) {
-    setPage("verifyEmail");
-  } else if (pendingStudent?.verified) {
-    localStorage.removeItem("legacyPendingVerify");
-    setPage("login");
-  }
-}
   const interval = setInterval(() => {    setSlideIndex((prev) => (prev + 1) % 3);
   }, 4000);
 
@@ -655,6 +639,30 @@ setPage("chooseClass");
 
     setCredits(0);
     setPackageExpiry(null);
+  }
+
+  // Signup was interrupted (closed tab, went to email, WebView reloaded).
+  // Restore the pending signup so they land on the code screen with their
+  // email intact, instead of being dropped on login.
+  async function restorePendingVerification() {
+    const pendingVerify = localStorage.getItem("legacyPendingVerify");
+
+    if (!pendingVerify) return;
+
+    setStudent((prev) => ({ ...prev, email: pendingVerify }));
+
+    const { data: pendingStudent } = await supabase
+      .from("students")
+      .select("verified")
+      .eq("email", pendingVerify)
+      .maybeSingle();
+
+    if (pendingStudent && !pendingStudent.verified) {
+      setPage("verifyEmail");
+    } else if (pendingStudent?.verified) {
+      localStorage.removeItem("legacyPendingVerify");
+      setPage("login");
+    }
   }
 
   // Run on EVERY read of "credits, package_expiry". If the package has
