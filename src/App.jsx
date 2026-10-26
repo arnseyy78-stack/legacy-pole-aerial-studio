@@ -242,6 +242,17 @@ function handleStudentChange(e) {
     [e.target.name]: e.target.value
   });
 }
+
+// Phone fields: block anything that isn't part of a phone number as it's
+// typed, so a stray letter never reaches Supabase in the first place.
+function handlePhoneChange(e) {
+  const cleaned = e.target.value.replace(/[^\d+\-() ]/g, "");
+
+  setStudent({
+    ...student,
+    [e.target.name]: cleaned
+  });
+}
 async function loadSpecialClasses() {
   const { data, error } = await supabase
     .from("special_classes")
@@ -455,6 +466,18 @@ function saveStudentInfo() {
 
   if (!emailPattern.test(student.email)) {
     alert("Please enter a valid email address.");
+    return;
+  }
+
+  const phonePattern = /^[+]?[\d\s\-()]{7,15}$/;
+
+  if (!phonePattern.test(student.phone.trim())) {
+    alert("Please enter a valid phone number.");
+    return;
+  }
+
+  if (!phonePattern.test(student.emergencyPhone.trim())) {
+    alert("Please enter a valid emergency contact number.");
     return;
   }
 
@@ -1140,10 +1163,11 @@ return;
 
             <input
   type="tel"
+  inputMode="tel"
   name="phone"
   placeholder="Phone Number"
   value={student.phone}
-  onChange={handleStudentChange}
+  onChange={handlePhoneChange}
   style={inputStyle}
 />
 
@@ -1156,10 +1180,12 @@ return;
             />
 
             <input
+              type="tel"
+              inputMode="tel"
               name="emergencyPhone"
               placeholder="Emergency Contact Number"
               value={student.emergencyPhone}
-              onChange={handleStudentChange}
+              onChange={handlePhoneChange}
               style={inputStyle}
             />
 <button
