@@ -34,6 +34,27 @@ if (params.get("dashboard") === "true") {
     window.location.pathname
   );
 }
+
+// Signup was interrupted (closed tab, went to email). Put them back on
+// the code screen with their email intact instead of the login page.
+const pendingVerify = localStorage.getItem("legacyPendingVerify");
+
+if (pendingVerify) {
+  setStudent((prev) => ({ ...prev, email: pendingVerify }));
+
+  const { data: pendingStudent } = await supabase
+    .from("students")
+    .select("verified")
+    .eq("email", pendingVerify)
+    .maybeSingle();
+
+  if (pendingStudent && !pendingStudent.verified) {
+    setPage("verifyEmail");
+  } else if (pendingStudent?.verified) {
+    localStorage.removeItem("legacyPendingVerify");
+    setPage("login");
+  }
+}
   const interval = setInterval(() => {    setSlideIndex((prev) => (prev + 1) % 3);
   }, 4000);
 
@@ -512,6 +533,13 @@ if (!response.ok) {
   alert("Verification email could not be sent.");
   return;
 }
+
+// Remember who is mid-signup so a reload / closed tab can come back
+// to the code screen instead of dropping them on login.
+localStorage.setItem(
+  "legacyPendingVerify",
+  student.email.trim().toLowerCase()
+);
 
 setPage("verifyEmail");}
   
@@ -1606,6 +1634,7 @@ onChange={(e) =>
           }
 
           alert("Email verified successfully. You can now login.");
+          localStorage.removeItem("legacyPendingVerify");
           setEnteredCode("");
           setPage("login");
         }}
