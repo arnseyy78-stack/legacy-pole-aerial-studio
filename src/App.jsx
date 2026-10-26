@@ -811,7 +811,13 @@ setPage("chooseClass");
 
   async function buyPackage(pkg) {
   try {
-  if (pkg.isTest) {
+  // Admin-gated bypass: activate the unlimited pass without PayMongo so the
+  // studio can test with a dummy account. Students get the real checkout.
+  const isTester =
+    localStorage.getItem("legacyAdmin") === "true" ||
+    new URLSearchParams(window.location.search).get("test") === "true";
+
+  if (pkg.isTest || (isTester && pkg.unlimited)) {
   const studentData =
     JSON.parse(localStorage.getItem("legacyStudent")) || student;
 
@@ -3354,7 +3360,6 @@ setPage("bookingConfirmed");
             unlimited: true,
             expiry: "7 Days",
             expiryDays: 7,
-            isTest: true,
             popular: true
           },
           {
