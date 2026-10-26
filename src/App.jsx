@@ -1935,7 +1935,9 @@ setPage("adminDashboard");
   </>
 )}
 
-  <p style={{ color: "#000000" }}>Use 1 credit per class booking</p>
+  {packageType !== "unlimited" && (
+    <p style={{ color: "#000000" }}>Use 1 credit per class booking</p>
+  )}
 
   <select
     value={studentView}
