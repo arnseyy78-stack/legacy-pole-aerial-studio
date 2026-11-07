@@ -39,6 +39,10 @@ if (params.get("dashboard") === "true") {
 // the code screen with their email intact instead of the login page.
 restorePendingVerification();
 
+// Same idea for the scheduling pages: if a student closed the tab or
+// reloaded, return them to the calendar they were on.
+restoreBookingPage();
+
   const interval = setInterval(() => {    setSlideIndex((prev) => (prev + 1) % 3);
   }, 4000);
 
@@ -754,6 +758,7 @@ async function bookPractice(isoDate, slot, dayObj) {
   // Back to the dashboard once they dismiss the confirmation, so the new
   // slot shows in MY PRACTICE SLOTS straight away.
   setPracticeDate("");
+  rememberBookingPage("");
   setPage("chooseClass");
 }
 
@@ -1023,6 +1028,7 @@ async function bookPrivate(isoDate, slot) {
 
   setPrivateDate("");
   setPrivateSlot("");
+  rememberBookingPage("");
   setPage("chooseClass");
 }
 
@@ -1272,6 +1278,34 @@ setPage("chooseClass");
   // Signup was interrupted (closed tab, went to email, WebView reloaded).
   // Restore the pending signup so they land on the code screen with their
   // email intact, instead of being dropped on login.
+  // Remember which scheduling page the student is on, so closing the tab
+  // and coming back returns them there instead of the dashboard. Mirrors
+  // how legacyPendingVerify restores the email-verification screen.
+  function rememberBookingPage(pageName) {
+    const studentData = JSON.parse(localStorage.getItem("legacyStudent"));
+    if (!studentData?.email) return;
+
+    localStorage.setItem(
+      `legacyBookingPage_${studentData.email}`,
+      pageName
+    );
+  }
+
+  // Return the student to the scheduling page they were last on, so a
+  // closed tab or reload doesn't drop them back to the dashboard.
+  function restoreBookingPage() {
+    const studentData = JSON.parse(localStorage.getItem("legacyStudent"));
+    if (!studentData?.email) return;
+
+    const saved = localStorage.getItem(
+      `legacyBookingPage_${studentData.email}`
+    );
+
+    if (saved === "practice" || saved === "privateClass") {
+      setPage(saved);
+    }
+  }
+
   async function restorePendingVerification() {
     const pendingVerify = localStorage.getItem("legacyPendingVerify");
 
@@ -1509,6 +1543,10 @@ if (isSelfPractice) {
   );
 }
 
+rememberBookingPage(
+  isSelfPractice ? "practice" : isPrivateClass ? "privateClass" : ""
+);
+
 setPage(
   isSelfPractice ? "practice" : isPrivateClass ? "privateClass" : "chooseClass"
 );
@@ -1671,26 +1709,6 @@ return;
       style={navButton}
     >
       PACKAGES
-    </button>
-
-    <button
-      onClick={() => {
-        setPage("practice");
-        setMenuOpen(false);
-      }}
-      style={navButton}
-    >
-      STUDIO PRACTICE
-    </button>
-
-    <button
-      onClick={() => {
-        setPage("privateClass");
-        setMenuOpen(false);
-      }}
-      style={navButton}
-    >
-      PRIVATE CLASS
     </button>
   </>
 )}
