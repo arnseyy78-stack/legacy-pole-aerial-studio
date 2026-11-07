@@ -64,19 +64,35 @@ async function handlePaymentReturn() {
 
   if (!studentData?.email) return;
 
-  // Give the PayMongo webhook a moment to update Supabase.
-  await new Promise((resolve) => setTimeout(resolve, 2500));
+  // Wait for the PayMongo webhook to write the package. Before, this waited
+  // a flat 2.5s and then read once — if the webhook was slower, the student
+  // landed on a dashboard with no package and could not book the class they
+  // had just paid for. Poll instead, and carry package_type through.
+  let freshStudent = null;
 
-  const { data: freshStudent, error } = await supabase
-    .from("students")
-    .select("credits, package_expiry")
-    .eq("email", studentData.email)
-    .single();
+  for (let attempt = 0; attempt < 6; attempt++) {
+    const { data, error } = await supabase
+      .from("students")
+      .select("credits, package_expiry, package_type")
+      .eq("email", studentData.email)
+      .single();
 
-  if (error) {
-    console.log("Could not refresh student credits:", error);
-  } else {
+    if (error) {
+      console.log("Could not refresh student credits:", error);
+    } else if (data?.package_expiry) {
+      freshStudent = data;
+      break;
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+  }
+
+  if (freshStudent) {
     await syncPackageOnRead(studentData.email, freshStudent);
+  } else {
+    console.log(
+      "Package still not present after waiting — the webhook may be delayed."
+    );
   }
 
   localStorage.removeItem("legacySelectedPackage");
@@ -2190,11 +2206,11 @@ const weekday = actualSelectedDate.getDay();
 
 const classes = {
   1: [["6:00 PM 1hr", "Pole Fitness", "/marypole2.jpg"]],
-  2: [["6:00 PM 1hr", "Aerial Silks", "/silks2.jpg"]],
+  2: [["6:00 PM 1hr", "Aerial Hammock", "/hammock.png"]],
   3: [["6:00 PM 1hr", "Spinny Pole", "/zenspinny2.jpg"]],
   4: [["6:00 PM 1hr", "Intro to Pole", "/aceintro3.jpg"]],
   5: [["6:00 PM 1hr", "Aerial Hoop", "/ivyhoop2.jpg"]],
-  6: [["6:00 PM 1hr", "Aerial Hammock", "/hammock.png"]],
+  6: [],
   0: []
 };
 const selectedDateISO =
@@ -2861,9 +2877,9 @@ setPage("bookingConfirmed");
   [
   "Tuesday",
   "6:00 PM",
-  "Aerial Silks",
-  "Develop strength, flexibility and confidence while learning beautiful aerial silks techniques. Perfect for beginners and intermediate students.",
-  "/silks2.jpg"
+  "Aerial Hammock",
+  "Flow, stretch and unwind in a soft aerial hammock. Learn gentle poses, inversions and deep stretches with full support. Wear leggings and a fitted top.",
+  "/hammock.png"
 ],
     [
     "Wednesday",
@@ -2887,11 +2903,11 @@ setPage("bookingConfirmed");
   "/ivyhoop2.jpg"
   ],
 [
-  "Saturday",
+  "Friday",
   "6:00 PM",
-  "Aerial Hammock",
-  "Flow, stretch and unwind in a soft aerial hammock. Learn gentle poses, inversions and deep stretches with full support. Wear leggings and a fitted top.",
-  "/hammock.png"
+  "Aerial Hoop",
+  "Build strength, balance and confidence while learning beginner-friendly spins, hangs and beautiful aerial hoop poses. Wear fitted leggings and a fitted top.",
+  "/ivyhoop2.jpg"
   ]
 ].map((cls) => (
           <div
@@ -2978,7 +2994,7 @@ setPage("bookingConfirmed");
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "24px" }}>
         {[
-          ["Single Pass", "₱870", "1 class credit", "Perfect for trying your first class."],
+          ["Single Pass", "₱870", "1 class credit · Valid for 7 days", "Perfect for trying your first class."],
           ["1 Week Unlimited", "₱2,600", "Unlimited classes for 7 days", "Best value. Attend as many classes as you like for one week.", "MOST POPULAR"],
           ["Self Practice", "₱550", "Contact studio for time", "For existing students only."],
           ["Private Class", "₱3,100", "One on one coaching.", "Best for achieving your dream tricks."],
@@ -3353,10 +3369,11 @@ setPage("bookingConfirmed");
             name: "Single Pass",
             price: "₱870",
             description: "1 class credit",
-            subText: "Pole or Aerial.",
+            subText: "Pole or Aerial. Valid for 7 days.",
             amount: 87000,
             credits: 1,
-            expiry: "30 Days"
+            expiry: "7 Days",
+            expiryDays: 7
           },
           {
             name: "1 Week Unlimited",
