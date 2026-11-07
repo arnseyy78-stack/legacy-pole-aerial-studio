@@ -1414,11 +1414,10 @@ setPage("chooseClass");
 
   async function buyPackage(pkg) {
   try {
-  // Admin-gated bypass: activate the unlimited pass without PayMongo so the
-  // studio can test with a dummy account. Students get the real checkout.
-  const isTester =
-    localStorage.getItem("legacyAdmin") === "true" ||
-    new URLSearchParams(window.location.search).get("test") === "true";
+  // Admin-only bypass: lets the studio activate a pass without PayMongo for
+  // testing. Gated on the admin flag alone — the old ?test=true URL bypass
+  // was removed because it let anyone activate any pass free.
+  const isTester = localStorage.getItem("legacyAdmin") === "true";
 
   if (pkg.isTest || isTester) {
   const studentData =
@@ -1672,6 +1671,26 @@ return;
       style={navButton}
     >
       PACKAGES
+    </button>
+
+    <button
+      onClick={() => {
+        setPage("practice");
+        setMenuOpen(false);
+      }}
+      style={navButton}
+    >
+      STUDIO PRACTICE
+    </button>
+
+    <button
+      onClick={() => {
+        setPage("privateClass");
+        setMenuOpen(false);
+      }}
+      style={navButton}
+    >
+      PRIVATE CLASS
     </button>
   </>
 )}
