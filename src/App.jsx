@@ -469,6 +469,39 @@ async function loadStudentWaitlist(emailOverride = null) {
 
   setStudentWaitlist(data || []);
 }
+// Month order, for turning "November-14" back into a sortable date.
+const MONTH_ORDER = {
+  January: 1,
+  February: 2,
+  March: 3,
+  April: 4,
+  May: 5,
+  June: 6,
+  July: 7,
+  August: 8,
+  September: 9,
+  October: 10,
+  November: 11,
+  December: 12
+};
+
+// A waitlist entry is stale once its class date has passed. Compared
+// against today, so yesterday's entries stop cluttering the admin view.
+function isWaitlistEntryStale(bookingDate) {
+  if (!bookingDate) return true;
+
+  const [monthName, dayPart] = String(bookingDate).split("-");
+  const monthNum = MONTH_ORDER[monthName];
+  const day = Number(dayPart);
+
+  if (!monthNum || !day) return false;
+
+  const today = new Date();
+  const entry = new Date(today.getFullYear(), monthNum - 1, day, 23, 59, 59);
+
+  return entry < today;
+}
+
 async function loadAdminWaitlist() {
   const { data, error } = await supabase
     .from("Waitlist")
@@ -479,7 +512,32 @@ async function loadAdminWaitlist() {
     return;
   }
 
-  setAdminWaitlist(data || []);
+  const rows = data || [];
+
+  // Delete anything whose class date has already passed, so the admin
+  // waitlist only ever shows entries still worth acting on.
+  const stale = rows.filter((item) =>
+    isWaitlistEntryStale(item.Booking_date)
+  );
+
+  if (stale.length > 0) {
+    const staleIds = stale.map((item) => item.id);
+
+    const { error: deleteError } = await supabase
+      .from("Waitlist")
+      .delete()
+      .in("id", staleIds);
+
+    if (deleteError) {
+      console.log("Stale waitlist delete failed:", deleteError);
+    } else {
+      await loadStudentWaitlist();
+    }
+  }
+
+  setAdminWaitlist(
+    rows.filter((item) => !isWaitlistEntryStale(item.Booking_date))
+  );
 }
 
 // ── Studio Practice data ──────────────────────────────────────────────
@@ -3008,6 +3066,7 @@ setPage("bookingConfirmed");
   <option value="today">Today's Classes</option>
   <option value="upcoming">Upcoming Classes</option>
   <option value="waitlist">Waitlist</option>
+  <option value="practice">Studio Practice</option>
 </select>
         
 {adminView === "today" && (
@@ -3121,6 +3180,82 @@ setPage("bookingConfirmed");
               </div>
                         ))
                       )}
+          </div>
+        </>
+      )}
+
+      {adminView === "practice" && (
+        <>
+          <div style={{ marginTop: "40px" }}>
+            <p style={goldSmallText}>STUDIO PRACTICE BOOKINGS</p>
+
+            {practiceBookings.length === 0 ? (
+              <p style={{ color: "#000000" }}>No practice bookings yet.</p>
+            ) : (
+              Object.entries(
+                practiceBookings.reduce((groups, row) => {
+                  const key = `${row.practice_date}|${row.practice_slot}`;
+                  if (!groups[key]) groups[key] = [];
+                  groups[key].push(row);
+                  return groups;
+                }, {})
+              )
+                .sort((a, b) => a[0].localeCompare(b[0]))
+                .map(([groupKey, rows]) => {
+                  const [datePart, slotPart] = groupKey.split("|");
+
+                  return (
+                    <div
+                      key={groupKey}
+                      style={{
+                        borderTop: "1px solid rgba(0,0,0,0.12)",
+                        paddingTop: "20px",
+                        marginTop: "20px"
+                      }}
+                    >
+                      <p style={goldSmallText}>
+                        {new Date(`${datePart}T00:00:00`).toLocaleDateString(
+                          "en-US",
+                          {
+                            weekday: "long",
+                            month: "long",
+                            day: "numeric"
+                          }
+                        )}
+                      </p>
+
+                      <h3 style={{ color: "#000000", margin: "10px 0" }}>
+                        {slotPart} · {rows.length}/{PRACTICE_CAPACITY} booked
+                      </h3>
+
+                      {rows.length >= PRACTICE_CAPACITY && (
+                        <p style={{ color: "#a8556a", fontWeight: "600" }}>
+                          FULL
+                        </p>
+                      )}
+
+                      {rows.map((student) => (
+                        <div
+                          key={student.id}
+                          style={{
+                            padding: "10px 0",
+                            borderBottom:
+                              "1px solid rgba(255,255,255,0.05)"
+                          }}
+                        >
+                          <p style={{ color: "#000000", margin: 0 }}>
+                            {student.student_name}
+                          </p>
+
+                          <p style={{ color: "#000000", margin: "5px 0 0" }}>
+                            {student.student_email}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  );
+                })
+            )}
           </div>
         </>
       )}
