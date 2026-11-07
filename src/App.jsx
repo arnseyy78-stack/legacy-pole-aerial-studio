@@ -674,6 +674,11 @@ async function bookPractice(isoDate, slot, dayObj) {
         day: "numeric"
       })} at ${slot}.`
   );
+
+  // Back to the dashboard once they dismiss the confirmation, so the new
+  // slot shows in MY PRACTICE SLOTS straight away.
+  setPracticeDate("");
+  setPage("chooseClass");
 }
 
 // How many are already booked into a given date + slot.
