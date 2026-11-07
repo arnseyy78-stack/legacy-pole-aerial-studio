@@ -506,7 +506,7 @@ async function loadStudentPractice(emailOverride = null) {
   const { data, error } = await supabase
     .from("practice_bookings")
     .select("*")
-    .eq("Student_email", email);
+    .eq("student_email", email);
 
   if (error) {
     console.log(error);
@@ -558,9 +558,9 @@ async function bookPractice(isoDate, slot, dayObj) {
 
   const { data: freshRows, error: freshError } = await supabase
     .from("practice_bookings")
-    .select("Practice_date, Practice_slot, Student_email")
-    .eq("Practice_date", isoDate)
-    .eq("Practice_slot", slot);
+    .select("practice_date, practice_slot, student_email")
+    .eq("practice_date", isoDate)
+    .eq("practice_slot", slot);
 
   setPracticeLoading(false);
 
@@ -572,7 +572,7 @@ async function bookPractice(isoDate, slot, dayObj) {
 
   const taken = (freshRows || []).length;
   const alreadyMine = (freshRows || []).some(
-    (r) => r.Student_email === studentData.email
+    (r) => r.student_email === studentData.email
   );
 
   if (alreadyMine) {
@@ -602,10 +602,10 @@ async function bookPractice(isoDate, slot, dayObj) {
 
   const { error } = await supabase.from("practice_bookings").insert([
     {
-      Student_name: studentData.fullName,
-      Student_email: studentData.email,
-      Practice_date: isoDate,
-      Practice_slot: slot
+      student_name: studentData.fullName,
+      student_email: studentData.email,
+      practice_date: isoDate,
+      practice_slot: slot
     }
   ]);
 
@@ -674,7 +674,7 @@ async function bookPractice(isoDate, slot, dayObj) {
 // How many are already booked into a given date + slot.
 function practiceCountFor(isoDate, slot) {
   return practiceBookings.filter(
-    (b) => b.Practice_date === isoDate && b.Practice_slot === slot
+    (b) => b.practice_date === isoDate && b.practice_slot === slot
   ).length;
 }
 
@@ -2224,10 +2224,10 @@ setPage("adminDashboard");
             }}
           >
             <p style={{ color: "#000000", margin: 0 }}>
-              Studio Practice · {b.Practice_slot}
+              Studio Practice · {b.practice_slot}
             </p>
             <p style={{ color: "#000000", margin: "4px 0 0" }}>
-              {new Date(b.Practice_date).toLocaleDateString("en-US", {
+              {new Date(b.practice_date).toLocaleDateString("en-US", {
                 weekday: "long",
                 month: "long",
                 day: "numeric"
@@ -3485,7 +3485,7 @@ setPage("bookingConfirmed");
                 const full = taken >= PRACTICE_CAPACITY;
                 const alreadyMine = studentPractice.some(
                   (b) =>
-                    b.Practice_date === iso && b.Practice_slot === slot
+                    b.practice_date === iso && b.practice_slot === slot
                 );
 
                 return (
@@ -3542,10 +3542,10 @@ setPage("bookingConfirmed");
               }}
             >
               <p style={{ color: "#000000", margin: 0, fontWeight: "600" }}>
-                Studio Practice · {b.Practice_slot}
+                Studio Practice · {b.practice_slot}
               </p>
               <p style={{ color: "#000000", margin: "4px 0 0" }}>
-                {new Date(b.Practice_date).toLocaleDateString("en-US", {
+                {new Date(b.practice_date).toLocaleDateString("en-US", {
                   weekday: "long",
                   month: "long",
                   day: "numeric"
