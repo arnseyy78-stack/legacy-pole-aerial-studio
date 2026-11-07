@@ -834,7 +834,7 @@ setPage("chooseClass");
     localStorage.getItem("legacyAdmin") === "true" ||
     new URLSearchParams(window.location.search).get("test") === "true";
 
-  if (pkg.isTest || (isTester && pkg.unlimited)) {
+  if (pkg.isTest || isTester) {
   const studentData =
     JSON.parse(localStorage.getItem("legacyStudent")) || student;
 
