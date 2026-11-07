@@ -3638,7 +3638,7 @@ setPage("bookingConfirmed");
                   </p>
                   <p
                     style={{
-                      color: "#8c3d52",
+                      color: "#6F8E88",
                       fontWeight: "600",
                       margin: "4px 0 10px"
                     }}
