@@ -206,6 +206,7 @@ const [adminWaitlist, setAdminWaitlist] = useState([]);
 const [totalStudents, setTotalStudents] = useState(0);
 const [packageExpiry, setPackageExpiry] = useState(null);
 const [packageType, setPackageType] = useState(null);
+const [lastBookedClass, setLastBookedClass] = useState("");
 const [credits, setCredits] = useState(0);
   const [specialClasses, setSpecialClasses] = useState([]);
   const today = new Date();
@@ -2484,6 +2485,7 @@ loadStudentBookings();
 loadStudentWaitlist();
 loadAdminWaitlist();
 
+setLastBookedClass(item[1]);
 setPage("bookingConfirmed");
 
 }}
@@ -3127,7 +3129,13 @@ setPage("bookingConfirmed");
         <h3 style={{ color: "#c8a96b" }}>✅ Before Class</h3>
 
         <p>✔ Arrive 10-15 minutes early. If you missed warm up you can no longer attend the class. This is for your safety. To avoid injuries.</p>
-        <p>✔ Wear short shorts. Do not apply body lotion before class.</p>
+        {["Aerial Silks", "Aerial Hoop", "Aerial Hammock"].includes(
+          lastBookedClass
+        ) ? (
+          <p>✔ Wear leggings, long sleeves and socks. Do not apply body lotion before class.</p>
+        ) : (
+          <p>✔ Wear short shorts. Do not apply body lotion before class.</p>
+        )}
         <p>✔ Bring water and towel.</p>
         <p>✔ Also bring hold holder, so you can film your progress.</p>
         <p>✔ Advise your instructor of any injuries or pregnancy.</p>
@@ -3393,7 +3401,8 @@ setPage("bookingConfirmed");
             description: "Contact studio for time",
             subText: "For registered students only.",
             amount: 55000,
-            expiry: "30 Days"
+            expiry: "7 Days",
+            expiryDays: 7
           },
           {
             name: "Private Class",
@@ -3401,7 +3410,8 @@ setPage("bookingConfirmed");
             description: "One on one coaching.",
             subText: "Best for achieving your dream tricks.",
             amount: 310000,
-            expiry: "30 Days"
+            expiry: "7 Days",
+            expiryDays: 7
           }
         ].map((pkg) => (
           <div
