@@ -679,24 +679,46 @@ function practiceCountFor(isoDate, slot) {
   ).length;
 }
 
-// The next 7 days, skipping Sundays.
-function practiceDays() {
-  const days = [];
-  const cursor = new Date();
+// The day the Self Studio Practice pass was bought. The pass expiry is
+// written 7 days out at purchase, so the purchase day is expiry minus 7.
+function practiceWindowStart() {
+  if (!packageExpiry) return null;
 
-  for (let i = 0; days.length < 7 && i < 20; i++) {
-    const d = new Date(
-      cursor.getFullYear(),
-      cursor.getMonth(),
-      cursor.getDate() + i
-    );
+  const start = new Date(packageExpiry);
+  start.setDate(start.getDate() - 7);
+  start.setHours(0, 0, 0, 0);
 
-    if (d.getDay() === 0) continue; // closed Sunday
+  return start;
+}
 
-    days.push(d);
+// A date is bookable when it falls inside the purchased window and is not
+// in the past. Sundays are closed.
+function isPracticeBookable(d) {
+  const start = practiceWindowStart();
+
+  if (!start) return false;
+
+  const day = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+
+  if (day < start) return false;
+
+  // The window ends at the end of the expiry day.
+  if (packageExpiry) {
+    const end = new Date(packageExpiry);
+    end.setHours(23, 59, 59, 999);
+
+    if (day > end) return false;
   }
 
-  return days;
+  if (day.getDay() === 0) return false;
+
+  // Today's slots may still be bookable — bookPractice does the time check.
+  const today = new Date();
+  if (day < new Date(today.getFullYear(), today.getMonth(), today.getDate())) {
+    return false;
+  }
+
+  return true;
 }
 
 function saveStudentInfo() {
@@ -3398,103 +3420,147 @@ setPage("bookingConfirmed");
         </button>
       </div>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
-          gap: "14px",
-          marginTop: "24px"
-        }}
-      >
-        {practiceDays().map((d) => {
-          const iso = toISODate(d);
-          const isToday = iso === toISODate(new Date());
+      {(() => {
+        const start = practiceWindowStart();
+        const today = new Date();
 
-          return (
-            <div
-              key={iso}
+        // Show the month the window starts in, matching the class calendar.
+        const monthDate = start || today;
+        const year = monthDate.getFullYear();
+        const month = monthDate.getMonth();
+
+        const monthName = monthDate.toLocaleString("default", {
+          month: "long"
+        });
+
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const firstWeekday = new Date(year, month, 1).getDay();
+        const adjustedFirst = firstWeekday === 0 ? 6 : firstWeekday - 1;
+
+        return (
+          <div style={calendarBox}>
+            <h3
               style={{
-                border: isToday
-                  ? "2px solid #c8a96b"
-                  : "1px solid rgba(0,0,0,0.12)",
-                borderRadius: "18px",
-                padding: "16px",
-                background: "rgba(255,255,255,0.45)"
+                color: "#c8a96b",
+                textAlign: "center",
+                marginBottom: "22px"
               }}
             >
-              <p
-                style={{
-                  color: "#a8556a",
-                  fontSize: "12px",
-                  fontWeight: "bold",
-                  letterSpacing: "1px",
-                  margin: "0 0 4px"
-                }}
-              >
-                {d.toLocaleDateString("en-US", { weekday: "long" })}
-              </p>
+              {monthName} {year}
+            </h3>
 
-              <p
-                style={{
-                  color: "#000000",
-                  margin: "0 0 12px",
-                  fontWeight: "600",
-                  fontSize: "17px"
-                }}
-              >
-                {d.toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric"
-                })}
-              </p>
+            <div style={calendarGrid}>
+              {["M", "T", "W", "T", "F", "S", "S"].map((d, i) => (
+                <strong key={`${d}-${i}`} style={{ color: "#000000" }}>
+                  {d}
+                </strong>
+              ))}
 
-              {PRACTICE_SLOTS.map((slot) => {
-                const taken = practiceCountFor(iso, slot);
-                const full = taken >= PRACTICE_CAPACITY;
-                const alreadyMine = studentPractice.some(
-                  (b) =>
-                    b.practice_date === iso && b.practice_slot === slot
+              {[
+                ...Array(adjustedFirst).fill(null),
+                ...Array(daysInMonth)
+              ].map((_, i) => {
+                if (i < adjustedFirst) {
+                  return <div key={`empty-${i}`}></div>;
+                }
+
+                const day = i - adjustedFirst + 1;
+                const thisDate = new Date(year, month, day);
+                const iso = toISODate(thisDate);
+                const bookable = isPracticeBookable(thisDate);
+                const isSelected = practiceDate === iso;
+
+                const mineHere = studentPractice.some(
+                  (b) => b.practice_date === iso
                 );
 
                 return (
                   <button
-                    key={slot}
-                    disabled={full || alreadyMine || practiceLoading}
-                    onClick={() => bookPractice(iso, slot, d)}
+                    key={iso}
+                    disabled={!bookable}
+                    onClick={() => setPracticeDate(iso)}
                     style={{
-                      width: "100%",
-                      marginBottom: "8px",
-                      padding: "11px",
-                      borderRadius: "12px",
-                      border: "none",
-                      cursor:
-                        full || alreadyMine ? "not-allowed" : "pointer",
-                      background: alreadyMine
+                      ...dateButton,
+                      background: isSelected
+                        ? "#c8a96b"
+                        : mineHere
                         ? "rgba(200,169,107,0.35)"
-                        : full
-                        ? "rgba(0,0,0,0.08)"
-                        : "linear-gradient(180deg, #fbd7dd 0%, #f2aab8 100%)",
-                      color: full ? "#888" : "#050505",
-                      fontWeight: "600",
-                      fontSize: "13px"
+                        : bookable
+                        ? "rgba(255,255,255,0.45)"
+                        : "rgba(0,0,0,0.08)",
+                      color: bookable ? "#050505" : "#999",
+                      cursor: bookable ? "pointer" : "not-allowed",
+                      opacity: bookable ? 1 : 0.45
                     }}
                   >
-                    {slot}
-                    <br />
-                    <span style={{ fontSize: "11px", fontWeight: "normal" }}>
-                      {alreadyMine
-                        ? "Booked"
-                        : full
-                        ? "Full"
-                        : `${taken}/${PRACTICE_CAPACITY} booked`}
-                    </span>
+                    {day}
                   </button>
                 );
               })}
             </div>
-          );
-        })}
-      </div>
+          </div>
+        );
+      })()}
+
+      {practiceDate && (
+        <>
+          <h3 style={{ color: "#000000", marginTop: "30px" }}>
+            Practice slots for{" "}
+            {new Date(`${practiceDate}T00:00:00`).toLocaleDateString("en-US", {
+              weekday: "long",
+              month: "long",
+              day: "numeric"
+            })}
+          </h3>
+
+          <div style={packageGrid}>
+            {PRACTICE_SLOTS.map((slot) => {
+              const taken = practiceCountFor(practiceDate, slot);
+              const full = taken >= PRACTICE_CAPACITY;
+              const alreadyMine = studentPractice.some(
+                (b) =>
+                  b.practice_date === practiceDate && b.practice_slot === slot
+              );
+
+              return (
+                <button
+                  key={slot}
+                  disabled={full || alreadyMine || practiceLoading}
+                  onClick={() =>
+                    bookPractice(
+                      practiceDate,
+                      slot,
+                      new Date(`${practiceDate}T00:00:00`)
+                    )
+                  }
+                  style={{
+                    ...packageCard,
+                    minHeight: "auto",
+                    textAlign: "center",
+                    cursor: full || alreadyMine ? "not-allowed" : "pointer",
+                    background: alreadyMine
+                      ? "rgba(200,169,107,0.35)"
+                      : full
+                      ? "rgba(0,0,0,0.08)"
+                      : "rgba(255,255,255,0.3)"
+                  }}
+                >
+                  <p style={{ ...packagePrice, fontSize: "24px", margin: "0 0 8px" }}>
+                    {slot}
+                  </p>
+                  <p style={{ color: "#000000", margin: 0, fontSize: "13px" }}>
+                    {alreadyMine
+                      ? "Booked"
+                      : full
+                      ? "Full"
+                      : `${taken}/${PRACTICE_CAPACITY} booked`}
+                  </p>
+                </button>
+              );
+            })}
+          </div>
+        </>
+      )}
 
       {studentPractice.length > 0 && (
         <div style={{ marginTop: "30px" }}>
