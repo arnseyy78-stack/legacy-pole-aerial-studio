@@ -3057,182 +3057,240 @@ setPage("bookingConfirmed");
 </div>
         
 
-  {/* Upcoming */}
-  {adminBookings.length > 0 && (
-  <>
-    <div style={{
-  borderLeft: "4px solid #f2aab8",
-  paddingLeft: "14px",
-  marginBottom: "18px"
-}}>
-  <p style={{ color: "#8c3d52", letterSpacing: "4px", fontSize: "15px", fontWeight: "bold", margin: 0, textTransform: "uppercase" }}>Upcoming Classes</p>
-  <p style={{ color: "#666666", fontSize: "12px", margin: "4px 0 0" }}>Classes students have booked ahead</p>
-</div>
-    {(
-      Object.entries(
-        adminBookings.reduce((groups, booking) => {
-          const key = `${booking.Booking_date}-${booking.Class_name}`;
-          if (!groups[key]) groups[key] = [];
-          groups[key].push(booking);
-          return groups;
-        }, {})
-      ).map(([groupKey, bookings]) => (
+  {/* ── ADMIN: grouped by date ───────────────────────────────────── */}
+  {(() => {
+    // One entry per date, so a day's classes, waitlist and practice
+    // sit together under a single heading.
+    const byDate = {};
+
+    const ensure = (key) => {
+      if (!byDate[key]) {
+        byDate[key] = { classes: {}, waitlist: [], practice: {} };
+      }
+      return byDate[key];
+    };
+
+    adminBookings.forEach((b) => {
+      const day = ensure(b.Booking_date);
+      const classKey = `${b.Class_name}|${classTimes[b.Class_name] || "6:00 PM"}`;
+      if (!day.classes[classKey]) day.classes[classKey] = [];
+      day.classes[classKey].push(b);
+    });
+
+    adminWaitlist.forEach((w) => {
+      if (!w.Booking_date) return;
+      ensure(w.Booking_date).waitlist.push(w);
+    });
+
+    practiceBookings.forEach((p) => {
+      const label = new Date(`${p.practice_date}T00:00:00`).toLocaleDateString(
+        "en-US",
+        { month: "long", day: "numeric" }
+      );
+      const day = ensure(label);
+      const slotKey = p.practice_slot;
+      if (!day.practice[slotKey]) day.practice[slotKey] = [];
+      day.practice[slotKey].push(p);
+    });
+
+    const monthOrder = {
+      January: 1, February: 2, March: 3, April: 4, May: 5, June: 6,
+      July: 7, August: 8, September: 9, October: 10, November: 11,
+      December: 12
+    };
+
+    const dates = Object.keys(byDate).sort((a, b) => {
+      const [am, ad] = a.split("-");
+      const [bm, bd] = b.split("-");
+      const amn = monthOrder[am] ?? 13;
+      const bmn = monthOrder[bm] ?? 13;
+      if (amn !== bmn) return amn - bmn;
+      return Number(ad) - Number(bd);
+    });
+
+    if (dates.length === 0) {
+      return <p style={{ color: "#000000" }}>No active bookings.</p>;
+    }
+
+    return dates.map((dateKey) => {
+      const day = byDate[dateKey];
+      const classEntries = Object.entries(day.classes);
+      const practiceSlots = Object.entries(day.practice);
+
+      return (
         <div
-          key={groupKey}
+          key={dateKey}
           style={{
-            borderTop: "1px solid rgba(255,255,255,0.35)",
-            paddingTop: "22px",
-            marginTop: "22px"
+            borderTop: "2px solid rgba(140,61,82,0.35)",
+            paddingTop: "26px",
+            marginTop: "34px"
           }}
         >
-          <p style={goldSmallText}>{bookings[0].Booking_date}</p>
-
-          <h3 style={{ color: "#000000", margin: "10px 0" }}>
-            {bookings[0].Class_name} · {classTimes[bookings[0].Class_name] || "6:00 PM"}
+          {/* DATE */}
+          <h3
+            style={{
+              color: "#8c3d52",
+              fontSize: "26px",
+              fontWeight: "700",
+              letterSpacing: "1px",
+              margin: "0 0 20px"
+            }}
+          >
+            {dateKey}
           </h3>
 
-          <p style={{ color: "#a8556a", fontWeight: "600" }}>
-            Slots Filled: {bookings.length}/10
-          </p>
+          {/* CLASSES */}
+          {classEntries.map(([classKey, rows]) => {
+            const [className, classTime] = classKey.split("|");
 
-          {bookings.map((student) => (
+            return (
+              <div
+                key={classKey}
+                style={{
+                  borderLeft: "4px solid #f2aab8",
+                  paddingLeft: "14px",
+                  marginBottom: "26px"
+                }}
+              >
+                <p
+                  style={{
+                    color: "#8c3d52",
+                    fontSize: "13px",
+                    fontWeight: "bold",
+                    letterSpacing: "3px",
+                    textTransform: "uppercase",
+                    margin: 0
+                  }}
+                >
+                  {className}
+                </p>
+                <p style={{ color: "#000000", margin: "4px 0 0" }}>
+                  {classTime}
+                </p>
+                <p
+                  style={{
+                    color: "#a8556a",
+                    fontWeight: "600",
+                    margin: "8px 0 10px"
+                  }}
+                >
+                  Slots Filled: {rows.length}/10
+                </p>
+
+                {rows.map((student, i) => (
+                  <div key={student.id} style={{ marginBottom: "10px" }}>
+                    <p style={{ color: "#000000", margin: 0 }}>
+                      {i + 1}. {student.Student_name}
+                    </p>
+                    <p style={{ color: "#555555", margin: "3px 0 0 18px" }}>
+                      {student.Student_email}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            );
+          })}
+
+          {/* WAITLIST — only when this date has any */}
+          {day.waitlist.length > 0 && (
             <div
-              key={student.id}
               style={{
-                padding: "10px 0",
-                borderBottom: "1px solid rgba(255,255,255,0.05)"
+                borderLeft: "4px solid #c9738a",
+                paddingLeft: "14px",
+                marginBottom: "26px"
               }}
             >
-              <p style={{ color: "#000000", margin: 0 }}>
-                {student.Student_name}
+              <p
+                style={{
+                  color: "#8c3d52",
+                  fontSize: "13px",
+                  fontWeight: "bold",
+                  letterSpacing: "3px",
+                  textTransform: "uppercase",
+                  margin: 0
+                }}
+              >
+                Waitlist
+              </p>
+              <p
+                style={{
+                  color: "#a8556a",
+                  fontWeight: "600",
+                  margin: "8px 0 10px"
+                }}
+              >
+                Waiting: {day.waitlist.length}
               </p>
 
-              <p style={{ color: "#000000", margin: "5px 0 0" }}>
-                {student.Student_email}
-              </p>
+              {day.waitlist.map((student, i) => (
+                <div key={student.id} style={{ marginBottom: "10px" }}>
+                  <p style={{ color: "#000000", margin: 0 }}>
+                    {i + 1}. {student.Student_name}
+                  </p>
+                  <p style={{ color: "#555555", margin: "3px 0 0 18px" }}>
+                    {student.Student_email}
+                  </p>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      ))
-    )}
-  </>
-)}
-        {
-  /* Waitlist — only when there is something on it */
-  adminWaitlist.length > 0 && (
-  <>
-    <div style={{ marginTop: "50px" }}>
-          <div style={{
-  borderLeft: "4px solid #c9738a",
-  paddingLeft: "14px",
-  marginBottom: "18px"
-}}>
-  <p style={{ color: "#8c3d52", letterSpacing: "4px", fontSize: "15px", fontWeight: "bold", margin: 0, textTransform: "uppercase" }}>Waitlist</p>
-  <p style={{ color: "#666666", fontSize: "12px", margin: "4px 0 0" }}>Students waiting for a space to open</p>
-</div>
+          )}
 
-          {(
+          {/* SELF PRACTICE — only when this date has any */}
+          {practiceSlots.length > 0 && (
+            <div
+              style={{
+                borderLeft: "4px solid #6b7a8f",
+                paddingLeft: "14px",
+                marginBottom: "26px"
+              }}
+            >
+              <p
+                style={{
+                  color: "#4a5a6b",
+                  fontSize: "13px",
+                  fontWeight: "bold",
+                  letterSpacing: "3px",
+                  textTransform: "uppercase",
+                  margin: 0
+                }}
+              >
+                Self Practice
+              </p>
 
-            adminWaitlist.map((item) => (
-              <div key={item.id} style={{
-                borderTop: "1px solid rgba(255,255,255,0.35)",
-                paddingTop: "15px",
-                marginTop: "15px"
-              }}>
-                <p style={{ color: "#000000", margin: 0 }}>{item.Student_name}</p>
-                <p style={{ color: "#000000", margin: "5px 0" }}>{item.Student_email}</p>
-                <p style={{ color: "#c8a96b", margin: 0 }}>
-                  {item.Class_name} · {item.Booking_date}
-                </p>
-              </div>
-                        ))
-                      )}
-          </div>
-        </>
-      )}
+              {practiceSlots.map(([slot, rows]) => (
+                <div key={slot} style={{ marginTop: "10px" }}>
+                  <p style={{ color: "#000000", fontWeight: "600", margin: 0 }}>
+                    {slot}
+                  </p>
+                  <p
+                    style={{
+                      color: "#4a5a6b",
+                      fontWeight: "600",
+                      margin: "4px 0 10px"
+                    }}
+                  >
+                    Slots Filled: {rows.length}/{PRACTICE_CAPACITY}
+                    {rows.length >= PRACTICE_CAPACITY ? " · FULL" : ""}
+                  </p>
 
-      {
-  /* Practice — only when there are bookings */
-  practiceBookings.length > 0 && (
-        <>
-          <div style={{ marginTop: "40px" }}>
-            <div style={{
-  borderLeft: "4px solid #6b7a8f",
-  paddingLeft: "14px",
-  marginBottom: "18px"
-}}>
-  <p style={{ color: "#4a5a6b", letterSpacing: "4px", fontSize: "15px", fontWeight: "bold", margin: 0, textTransform: "uppercase" }}>Studio Practice</p>
-  <p style={{ color: "#666666", fontSize: "12px", margin: "4px 0 0" }}>Solo practice hours, 5 students per slot</p>
-</div>
-
-            {(
-              Object.entries(
-                practiceBookings.reduce((groups, row) => {
-                  const key = `${row.practice_date}|${row.practice_slot}`;
-                  if (!groups[key]) groups[key] = [];
-                  groups[key].push(row);
-                  return groups;
-                }, {})
-              )
-                .sort((a, b) => a[0].localeCompare(b[0]))
-                .map(([groupKey, rows]) => {
-                  const [datePart, slotPart] = groupKey.split("|");
-
-                  return (
-                    <div
-                      key={groupKey}
-                      style={{
-                        borderTop: "1px solid rgba(0,0,0,0.12)",
-                        paddingTop: "20px",
-                        marginTop: "20px"
-                      }}
-                    >
-                      <p style={goldSmallText}>
-                        {new Date(`${datePart}T00:00:00`).toLocaleDateString(
-                          "en-US",
-                          {
-                            weekday: "long",
-                            month: "long",
-                            day: "numeric"
-                          }
-                        )}
+                  {rows.map((student, i) => (
+                    <div key={student.id} style={{ marginBottom: "10px" }}>
+                      <p style={{ color: "#000000", margin: 0 }}>
+                        {i + 1}. {student.student_name}
                       </p>
-
-                      <h3 style={{ color: "#000000", margin: "10px 0" }}>
-                        {slotPart} · {rows.length}/{PRACTICE_CAPACITY} booked
-                      </h3>
-
-                      {rows.length >= PRACTICE_CAPACITY && (
-                        <p style={{ color: "#a8556a", fontWeight: "600" }}>
-                          FULL
-                        </p>
-                      )}
-
-                      {rows.map((student) => (
-                        <div
-                          key={student.id}
-                          style={{
-                            padding: "10px 0",
-                            borderBottom:
-                              "1px solid rgba(255,255,255,0.05)"
-                          }}
-                        >
-                          <p style={{ color: "#000000", margin: 0 }}>
-                            {student.student_name}
-                          </p>
-
-                          <p style={{ color: "#000000", margin: "5px 0 0" }}>
-                            {student.student_email}
-                          </p>
-                        </div>
-                      ))}
+                      <p style={{ color: "#555555", margin: "3px 0 0 18px" }}>
+                        {student.student_email}
+                      </p>
                     </div>
-                  );
-                })
-            )}
-          </div>
-        </>
-      )}
+                  ))}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      );
+    });
+  })()}
     </div>
   </section>
 )}
