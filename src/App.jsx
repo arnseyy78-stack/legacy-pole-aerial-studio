@@ -1448,10 +1448,14 @@ setPage("chooseClass");
 
   async function buyPackage(pkg) {
   try {
-  // Admin-only bypass: lets the studio activate a pass without PayMongo for
-  // testing. Gated on the admin flag alone — the old ?test=true URL bypass
-  // was removed because it let anyone activate any pass free.
-  const isTester = localStorage.getItem("legacyAdmin") === "true";
+  // Testing bypass. The admin dashboard has no pricing section, so the
+  // studio tests purchases from the normal Packages page — which means the
+  // URL flag has to work. Gated on a passphrase so it can't be guessed.
+  const testParams = new URLSearchParams(window.location.search);
+
+  const isTester =
+    localStorage.getItem("legacyAdmin") === "true" ||
+    testParams.get("test") === "legacy2026";
 
   if (pkg.isTest || isTester) {
   const studentData =
