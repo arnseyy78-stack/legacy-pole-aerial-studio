@@ -679,36 +679,41 @@ function practiceCountFor(isoDate, slot) {
   ).length;
 }
 
-// The day the Self Studio Practice pass was bought. The pass expiry is
-// written 7 days out at purchase, so the purchase day is expiry minus 7.
-function practiceWindowStart() {
-  if (!packageExpiry) return null;
+// The Self Studio Practice booking window, written at purchase and kept in
+// localStorage. Inferring it from packageExpiry greyed out the whole
+// calendar whenever the expiry was missing or not exactly 7 days out.
+// Source of truth is the stored purchase day; we keep 6 days open from it.
+function practiceWindow() {
+  const studentData = JSON.parse(localStorage.getItem("legacyStudent"));
+  const key = studentData?.email
+    ? `legacyPracticeStart_${studentData.email}`
+    : null;
 
-  const start = new Date(packageExpiry);
-  start.setDate(start.getDate() - 7);
-  start.setHours(0, 0, 0, 0);
+  const stored = key ? localStorage.getItem(key) : null;
 
-  return start;
+  if (!stored) return null;
+
+  const start = new Date(`${stored}T00:00:00`);
+  if (Number.isNaN(start.getTime())) return null;
+
+  const end = new Date(start);
+  end.setDate(end.getDate() + 5); // 6 days total, counting the purchase day
+  end.setHours(23, 59, 59, 999);
+
+  return { start, end };
 }
 
 // A date is bookable when it falls inside the purchased window and is not
 // in the past. Sundays are closed.
 function isPracticeBookable(d) {
-  const start = practiceWindowStart();
+  const window = practiceWindow();
 
-  if (!start) return false;
+  if (!window) return false;
 
   const day = new Date(d.getFullYear(), d.getMonth(), d.getDate());
 
-  if (day < start) return false;
-
-  // The window ends at the end of the expiry day.
-  if (packageExpiry) {
-    const end = new Date(packageExpiry);
-    end.setHours(23, 59, 59, 999);
-
-    if (day > end) return false;
-  }
+  if (day < window.start) return false;
+  if (day > window.end) return false;
 
   if (day.getDay() === 0) return false;
 
@@ -1117,6 +1122,15 @@ const validDays = Number(pkg.expiryDays) || 30;
 
 const expiryDate = new Date();
 expiryDate.setDate(expiryDate.getDate() + validDays);
+
+// Self Studio Practice: record the purchase day so the practice calendar
+// opens exactly 6 days from it, rather than inferring from the expiry.
+if (pkg.name === "Self Studio Practice") {
+  localStorage.setItem(
+    `legacyPracticeStart_${studentData.email}`,
+    toISODate(new Date())
+  );
+}
 
 const { error: testPackageError } = await supabase
   .from("students")
@@ -3394,9 +3408,6 @@ setPage("bookingConfirmed");
           <h2 style={{ ...sectionHeading, marginBottom: "10px" }}>
             Book a Practice Slot
           </h2>
-          <p style={{ color: "#000000", margin: 0 }}>
-            4–5 PM or 5–6 PM · up to 5 students per hour · uses 1 credit
-          </p>
         </div>
 
         <button
