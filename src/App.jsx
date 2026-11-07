@@ -2200,99 +2200,12 @@ setPage("adminDashboard");
     <p style={{ color: "#000000" }}>Use 1 credit per class booking</p>
   )}
 
-  {/* ── STUDIO PRACTICE BOOKING ─────────────────────────────────────── */}
-  <div style={{ marginTop: "28px" }}>
-    <p style={goldSmallText}>STUDIO PRACTICE</p>
-    <p style={{ color: "#000000", marginTop: "6px" }}>
-      Book a solo practice slot. 4–5 PM or 5–6 PM, up to 5 students per hour.
-      Uses 1 credit.
-    </p>
-
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
-        gap: "12px",
-        marginTop: "16px"
-      }}
-    >
-      {practiceDays().map((d) => {
-        const iso = toISODate(d);
-
-        return (
-          <div
-            key={iso}
-            style={{
-              border: "1px solid rgba(0,0,0,0.12)",
-              borderRadius: "18px",
-              padding: "14px",
-              background: "rgba(255,255,255,0.45)"
-            }}
-          >
-            <p
-              style={{
-                color: "#a8556a",
-                fontSize: "12px",
-                fontWeight: "bold",
-                letterSpacing: "1px",
-                margin: "0 0 4px"
-              }}
-            >
-              {d.toLocaleDateString("en-US", { weekday: "short" })}
-            </p>
-
-            <p style={{ color: "#000000", margin: "0 0 10px", fontWeight: "600" }}>
-              {d.toLocaleDateString("en-US", {
-                month: "short",
-                day: "numeric"
-              })}
-            </p>
-
-            {PRACTICE_SLOTS.map((slot) => {
-              const taken = practiceCountFor(iso, slot);
-              const full = taken >= PRACTICE_CAPACITY;
-              const alreadyMine = studentPractice.some(
-                (b) => b.Practice_date === iso && b.Practice_slot === slot
-              );
-
-              return (
-                <button
-                  key={slot}
-                  disabled={full || alreadyMine}
-                  onClick={() => bookPractice(iso, slot, d)}
-                  style={{
-                    width: "100%",
-                    marginBottom: "8px",
-                    padding: "10px",
-                    borderRadius: "12px",
-                    border: "none",
-                    cursor: full || alreadyMine ? "not-allowed" : "pointer",
-                    background: alreadyMine
-                      ? "rgba(200,169,107,0.35)"
-                      : full
-                      ? "rgba(0,0,0,0.08)"
-                      : "linear-gradient(180deg, #fbd7dd 0%, #f2aab8 100%)",
-                    color: full ? "#888" : "#050505",
-                    fontWeight: "600",
-                    fontSize: "13px"
-                  }}
-                >
-                  {slot}
-                  <br />
-                  <span style={{ fontSize: "11px", fontWeight: "normal" }}>
-                    {alreadyMine
-                      ? "Booked"
-                      : full
-                      ? "Full"
-                      : `${taken}/${PRACTICE_CAPACITY} booked`}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        );
-      })}
-    </div>
+  <button
+    onClick={() => setPage("practice")}
+    style={{ ...goldButton, width: "100%", marginTop: "18px" }}
+  >
+    BOOK STUDIO PRACTICE
+  </button>
 
     {studentPractice.length > 0 && (
       <div style={{ marginTop: "20px" }}>
@@ -3470,7 +3383,181 @@ setPage("bookingConfirmed");
     </div>
   </section>
 )}
-    {/* BOOKING CONFIRMATION */}
+        {/* STUDIO PRACTICE */}
+{page === "practice" && isLoggedIn && (
+  <section style={centerPage}>
+    <div style={{ ...formCard, maxWidth: "1100px" }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "flex-start",
+          justifyContent: "space-between",
+          gap: "20px",
+          flexWrap: "wrap",
+          marginBottom: "10px"
+        }}
+      >
+        <div>
+          <p style={goldSmallText}>STUDIO PRACTICE</p>
+          <h2 style={{ ...sectionHeading, marginBottom: "10px" }}>
+            Book a Practice Slot
+          </h2>
+          <p style={{ color: "#000000", margin: 0 }}>
+            4–5 PM or 5–6 PM · up to 5 students per hour · uses 1 credit
+          </p>
+        </div>
+
+        <button
+          onClick={() => setPage("chooseClass")}
+          style={{
+            background: "linear-gradient(180deg, #fbd7dd 0%, #f2aab8 100%)",
+            border: "none",
+            color: "#050505",
+            padding: "12px 22px",
+            borderRadius: "999px",
+            cursor: "pointer",
+            flexShrink: 0,
+            fontFamily: "Georgia, serif",
+            fontWeight: "700",
+            letterSpacing: "1px",
+            boxShadow:
+              "0 2px 4px rgba(0,0,0,0.12), 0 6px 18px rgba(242,170,184,0.4)"
+          }}
+        >
+          BACK TO DASHBOARD
+        </button>
+      </div>
+
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
+          gap: "14px",
+          marginTop: "24px"
+        }}
+      >
+        {practiceDays().map((d) => {
+          const iso = toISODate(d);
+          const isToday = iso === toISODate(new Date());
+
+          return (
+            <div
+              key={iso}
+              style={{
+                border: isToday
+                  ? "2px solid #c8a96b"
+                  : "1px solid rgba(0,0,0,0.12)",
+                borderRadius: "18px",
+                padding: "16px",
+                background: "rgba(255,255,255,0.45)"
+              }}
+            >
+              <p
+                style={{
+                  color: "#a8556a",
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                  letterSpacing: "1px",
+                  margin: "0 0 4px"
+                }}
+              >
+                {d.toLocaleDateString("en-US", { weekday: "long" })}
+              </p>
+
+              <p
+                style={{
+                  color: "#000000",
+                  margin: "0 0 12px",
+                  fontWeight: "600",
+                  fontSize: "17px"
+                }}
+              >
+                {d.toLocaleDateString("en-US", {
+                  month: "short",
+                  day: "numeric"
+                })}
+              </p>
+
+              {PRACTICE_SLOTS.map((slot) => {
+                const taken = practiceCountFor(iso, slot);
+                const full = taken >= PRACTICE_CAPACITY;
+                const alreadyMine = studentPractice.some(
+                  (b) =>
+                    b.Practice_date === iso && b.Practice_slot === slot
+                );
+
+                return (
+                  <button
+                    key={slot}
+                    disabled={full || alreadyMine || practiceLoading}
+                    onClick={() => bookPractice(iso, slot, d)}
+                    style={{
+                      width: "100%",
+                      marginBottom: "8px",
+                      padding: "11px",
+                      borderRadius: "12px",
+                      border: "none",
+                      cursor:
+                        full || alreadyMine ? "not-allowed" : "pointer",
+                      background: alreadyMine
+                        ? "rgba(200,169,107,0.35)"
+                        : full
+                        ? "rgba(0,0,0,0.08)"
+                        : "linear-gradient(180deg, #fbd7dd 0%, #f2aab8 100%)",
+                      color: full ? "#888" : "#050505",
+                      fontWeight: "600",
+                      fontSize: "13px"
+                    }}
+                  >
+                    {slot}
+                    <br />
+                    <span style={{ fontSize: "11px", fontWeight: "normal" }}>
+                      {alreadyMine
+                        ? "Booked"
+                        : full
+                        ? "Full"
+                        : `${taken}/${PRACTICE_CAPACITY} booked`}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          );
+        })}
+      </div>
+
+      {studentPractice.length > 0 && (
+        <div style={{ marginTop: "30px" }}>
+          <p style={goldSmallText}>MY PRACTICE SLOTS</p>
+
+          {studentPractice.map((b) => (
+            <div
+              key={b.id}
+              style={{
+                borderTop: "1px solid rgba(0,0,0,0.12)",
+                paddingTop: "12px",
+                marginTop: "12px"
+              }}
+            >
+              <p style={{ color: "#000000", margin: 0, fontWeight: "600" }}>
+                Studio Practice · {b.Practice_slot}
+              </p>
+              <p style={{ color: "#000000", margin: "4px 0 0" }}>
+                {new Date(b.Practice_date).toLocaleDateString("en-US", {
+                  weekday: "long",
+                  month: "long",
+                  day: "numeric"
+                })}
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  </section>
+)}
+
+{/* BOOKING CONFIRMATION */}
 {page === "bookingConfirmed" && (
   <section style={centerPage}>
     <div style={{ ...formCard, maxWidth: "900px" }}>
