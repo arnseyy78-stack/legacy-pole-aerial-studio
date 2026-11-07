@@ -1119,15 +1119,20 @@ localStorage.setItem(
   expiryDate.toISOString()
 );
 
-alert(
-  pkg.unlimited
-    ? `${pkg.name} confirmed. Your pass is active until ${expiryDate.toLocaleDateString()}.`
-    : `${pkg.name} confirmed. ${packageCredits} credits added.`
-);
+const isSelfPractice = pkg.name === "Self Studio Practice";
 
-// A Self Studio Practice purchase goes straight to the practice calendar —
-// that is what the pass is for.
-setPage(pkg.name === "Self Studio Practice" ? "practice" : "chooseClass");
+// Self Studio Practice is bought to book practice slots, so it goes
+// straight to the calendar with no credits-added message. Everything else
+// keeps its confirmation.
+if (!isSelfPractice) {
+  alert(
+    pkg.unlimited
+      ? `${pkg.name} confirmed. Your pass is active until ${expiryDate.toLocaleDateString()}.`
+      : `${pkg.name} confirmed. ${packageCredits} credits added.`
+  );
+}
+
+setPage(isSelfPractice ? "practice" : "chooseClass");
 return;
 }
     const studentData =
