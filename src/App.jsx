@@ -54,6 +54,8 @@ useEffect(() => {
   loadTotalStudents();
   loadPracticeBookings();
   loadStudentPractice();
+  loadPrivateBookings();
+  loadStudentPrivate();
 
 async function handlePaymentReturn() {
   const params = new URLSearchParams(window.location.search);
@@ -217,6 +219,21 @@ const [credits, setCredits] = useState(0);
 // 5 students per hour, Monday-Saturday.
 const PRACTICE_SLOTS = ["4:00 PM", "5:00 PM"];
 const PRACTICE_CAPACITY = 5;
+// ── Private Class ─────────────────────────────────────────────────────
+// Mirrors Studio Practice but 1 student per hour, Mon-Sat only.
+const PRIVATE_SLOTS = [
+  "9:00 AM",
+  "10:00 AM",
+  "1:00 PM",
+  "2:00 PM",
+  "3:00 PM"
+];
+const PRIVATE_CAPACITY = 1;
+const [privateBookings, setPrivateBookings] = useState([]);
+const [studentPrivate, setStudentPrivate] = useState([]);
+const [privateDate, setPrivateDate] = useState("");
+const [privateSlot, setPrivateSlot] = useState("");
+const [privateLoading, setPrivateLoading] = useState(false);
 const [practiceBookings, setPracticeBookings] = useState([]);
 const [studentPractice, setStudentPractice] = useState([]);
 const [practiceDate, setPracticeDate] = useState("");
@@ -770,6 +787,244 @@ function practiceWindow() {
   return { start, end };
 }
 
+// ── Private Class data ────────────────────────────────────────────────
+async function loadPrivateBookings() {
+  const { data, error } = await supabase
+    .from("private_bookings")
+    .select("*");
+
+  if (error) {
+    console.log(error);
+    return;
+  }
+
+  setPrivateBookings(data || []);
+}
+
+async function loadStudentPrivate(emailOverride = null) {
+  const studentData = JSON.parse(localStorage.getItem("legacyStudent"));
+  const email = emailOverride || studentData?.email;
+
+  if (!email) {
+    setStudentPrivate([]);
+    return;
+  }
+
+  const { data, error } = await supabase
+    .from("private_bookings")
+    .select("*")
+    .eq("student_email", email);
+
+  if (error) {
+    console.log(error);
+    setStudentPrivate([]);
+    return;
+  }
+
+  setStudentPrivate(data || []);
+}
+
+// The Private Class window runs 7 days from its own purchase, stored
+// separately from the practice window so the two cannot overwrite.
+function privateWindow() {
+  const studentData = JSON.parse(localStorage.getItem("legacyStudent"));
+  const key = studentData?.email
+    ? `legacyPrivateStart_${studentData.email}`
+    : null;
+
+  const stored = key ? localStorage.getItem(key) : null;
+  if (!stored) return null;
+
+  const start = new Date(`${stored}T00:00:00`);
+  if (Number.isNaN(start.getTime())) return null;
+
+  const end = new Date(start);
+  end.setDate(end.getDate() + 6);
+  end.setHours(23, 59, 59, 999);
+
+  return { start, end };
+}
+
+// Same rules as practice, but Monday-Saturday only.
+function isPrivateBookable(d) {
+  const window = privateWindow();
+  if (!window) return false;
+
+  const day = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+
+  if (day < window.start) return false;
+  if (day > window.end) return false;
+  if (day.getDay() === 0) return false;
+
+  const today = new Date();
+  if (day < new Date(today.getFullYear(), today.getMonth(), today.getDate())) {
+    return false;
+  }
+
+  return true;
+}
+
+function privateCountFor(isoDate, slot) {
+  return privateBookings.filter(
+    (b) => b.private_date === isoDate && b.private_slot === slot
+  ).length;
+}
+
+// Book a Private Class. 1 student per hour, costs 1 credit.
+async function bookPrivate(isoDate, slot) {
+  const studentData =
+    JSON.parse(localStorage.getItem("legacyStudent")) || student;
+
+  const hourMap = {
+    "9:00 AM": 9,
+    "10:00 AM": 10,
+    "1:00 PM": 13,
+    "2:00 PM": 14,
+    "3:00 PM": 15
+  };
+
+  const dayObj = new Date(`${isoDate}T00:00:00`);
+
+  const slotDateTime = new Date(
+    dayObj.getFullYear(),
+    dayObj.getMonth(),
+    dayObj.getDate(),
+    hourMap[slot] ?? 9,
+    0,
+    0
+  );
+
+  if (await guardBookingEligibility(studentData.email, slotDateTime)) {
+    return;
+  }
+
+  if (slotDateTime <= new Date()) {
+    alert("That private class slot has already passed.");
+    return;
+  }
+
+  setPrivateLoading(true);
+
+  const { data: freshRows, error: freshError } = await supabase
+    .from("private_bookings")
+    .select("private_date, private_slot, student_email")
+    .eq("private_date", isoDate)
+    .eq("private_slot", slot);
+
+  setPrivateLoading(false);
+
+  if (freshError) {
+    console.log(freshError);
+    alert("Could not check availability. Please try again.");
+    return;
+  }
+
+  const taken = (freshRows || []).length;
+  const alreadyMine = (freshRows || []).some(
+    (r) => r.student_email === studentData.email
+  );
+
+  if (alreadyMine) {
+    alert("You have already booked this private class slot.");
+    return;
+  }
+
+  if (taken >= PRIVATE_CAPACITY) {
+    alert(
+      "Sorry, this private class slot is taken.\n\n" +
+        "Please choose another time or date."
+    );
+    await loadPrivateBookings();
+    return;
+  }
+
+  const confirmed = window.confirm(
+    `Confirm Private Class\n\n` +
+      `Date: ${dayObj.toLocaleDateString("en-US", {
+        weekday: "long",
+        month: "long",
+        day: "numeric"
+      })}\n` +
+      `Time: ${slot}\n\n` +
+      `Do you wish to continue?`
+  );
+
+  if (!confirmed) return;
+
+  const { error } = await supabase.from("private_bookings").insert([
+    {
+      student_name: studentData.fullName,
+      student_email: studentData.email,
+      private_date: isoDate,
+      private_slot: slot
+    }
+  ]);
+
+  if (error) {
+    console.log(error);
+    alert("Private class booking failed. Please try again.");
+    return;
+  }
+
+  const { data: typeRow } = await supabase
+    .from("students")
+    .select("package_type")
+    .eq("email", studentData.email)
+    .single();
+
+  const isUnlimitedPass = typeRow?.package_type === "unlimited";
+
+  const newCredits = isUnlimitedPass
+    ? Number(credits) || 0
+    : (Number(credits) || 0) - 1;
+
+  const updateData = { credits: newCredits };
+
+  if (!isUnlimitedPass && newCredits <= 0) {
+    updateData.package_expiry = null;
+    updateData.package_type = null;
+    setPackageExpiry(null);
+    setPackageType(null);
+  }
+
+  const { error: creditError } = await supabase
+    .from("students")
+    .update(updateData)
+    .eq("email", studentData.email);
+
+  if (creditError) {
+    console.log("Private credit update error:", creditError);
+  }
+
+  setCredits(newCredits);
+
+  await loadPrivateBookings();
+  await loadStudentPrivate(studentData.email);
+
+  const { data: refreshed } = await supabase
+    .from("students")
+    .select("credits, package_expiry, package_type")
+    .eq("email", studentData.email)
+    .single();
+
+  if (refreshed) {
+    await syncPackageOnRead(studentData.email, refreshed);
+  }
+
+  alert(
+    `Private Class confirmed.\n\n` +
+      `${dayObj.toLocaleDateString("en-US", {
+        weekday: "long",
+        month: "long",
+        day: "numeric"
+      })} at ${slot}.`
+  );
+
+  setPrivateDate("");
+  setPrivateSlot("");
+  setPage("chooseClass");
+}
+
 // A date is bookable when it falls inside the purchased window and is not
 // in the past. Sundays are closed.
 function isPracticeBookable(d) {
@@ -978,6 +1233,8 @@ await loadStudentBookings(data.email);
 await loadStudentWaitlist(data.email);
 await loadPracticeBookings();
 await loadStudentPractice(data.email);
+await loadPrivateBookings();
+await loadStudentPrivate(data.email);
 alert("Login successful!");
 setPage("chooseClass");
 }
@@ -1199,6 +1456,15 @@ if (pkg.name === "Self Studio Practice") {
   );
 }
 
+// Private Class: its own 7-day window, stored separately so the two
+// purchase days can't overwrite each other.
+if (pkg.name === "Private Class") {
+  localStorage.setItem(
+    `legacyPrivateStart_${studentData.email}`,
+    toISODate(new Date())
+  );
+}
+
 const { error: testPackageError } = await supabase
   .from("students")
   .update({
@@ -1226,12 +1492,15 @@ localStorage.setItem(
 );
 
 const isSelfPractice = pkg.name === "Self Studio Practice";
+const isPrivateClass = pkg.name === "Private Class";
 
 // Self Studio Practice is bought to book practice slots, so it sends the
 // student straight to the calendar. Everything else keeps its own
 // confirmation message.
 if (isSelfPractice) {
   alert("1 hr added for Studio Self Practice. Please choose date and time.");
+} else if (isPrivateClass) {
+  alert("1 hr added for Private Class. Please choose date and time.");
 } else {
   alert(
     pkg.unlimited
@@ -1240,7 +1509,9 @@ if (isSelfPractice) {
   );
 }
 
-setPage(isSelfPractice ? "practice" : "chooseClass");
+setPage(
+  isSelfPractice ? "practice" : isPrivateClass ? "privateClass" : "chooseClass"
+);
 return;
 }
     const studentData =
@@ -3776,6 +4047,236 @@ setPage("bookingConfirmed");
                   month: "long",
                   day: "numeric"
                 })}
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  </section>
+)}
+
+    {/* PRIVATE CLASS */}
+{page === "privateClass" && isLoggedIn && (
+  <section style={centerPage}>
+    <div style={{ ...formCard, maxWidth: "1100px" }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "flex-start",
+          justifyContent: "space-between",
+          gap: "20px",
+          flexWrap: "wrap",
+          marginBottom: "10px"
+        }}
+      >
+        <div>
+          <p style={goldSmallText}>PRIVATE CLASS</p>
+          <h2 style={{ ...sectionHeading, marginBottom: "10px" }}>
+            Book a Private Class
+          </h2>
+        </div>
+
+        <button
+          onClick={() => setPage("chooseClass")}
+          style={{
+            background: "linear-gradient(180deg, #fbd7dd 0%, #f2aab8 100%)",
+            border: "none",
+            color: "#050505",
+            padding: "12px 22px",
+            borderRadius: "999px",
+            cursor: "pointer",
+            flexShrink: 0,
+            fontFamily: "Georgia, serif",
+            fontWeight: "700",
+            letterSpacing: "1px",
+            boxShadow:
+              "0 2px 4px rgba(0,0,0,0.12), 0 6px 18px rgba(242,170,184,0.4)"
+          }}
+        >
+          BACK TO DASHBOARD
+        </button>
+      </div>
+
+      {(() => {
+        const window = privateWindow();
+        const today = new Date();
+        const monthDate = (window && window.start) || today;
+        const year = monthDate.getFullYear();
+        const month = monthDate.getMonth();
+
+        const monthName = monthDate.toLocaleString("default", {
+          month: "long"
+        });
+
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const firstWeekday = new Date(year, month, 1).getDay();
+        const adjustedFirst = firstWeekday === 0 ? 6 : firstWeekday - 1;
+
+        return (
+          <div style={calendarBox}>
+            <h3
+              style={{
+                color: "#c8a96b",
+                textAlign: "center",
+                marginBottom: "22px"
+              }}
+            >
+              {monthName} {year}
+            </h3>
+
+            <div style={calendarGrid}>
+              {["M", "T", "W", "T", "F", "S", "S"].map((d, i) => (
+                <strong key={`${d}-${i}`} style={{ color: "#000000" }}>
+                  {d}
+                </strong>
+              ))}
+
+              {[
+                ...Array(adjustedFirst).fill(null),
+                ...Array(daysInMonth)
+              ].map((_, i) => {
+                if (i < adjustedFirst) {
+                  return <div key={`empty-${i}`}></div>;
+                }
+
+                const day = i - adjustedFirst + 1;
+                const thisDate = new Date(year, month, day);
+                const iso = toISODate(thisDate);
+                const bookable = isPrivateBookable(thisDate);
+                const isSelected = privateDate === iso;
+
+                const mineHere = studentPrivate.some(
+                  (b) => b.private_date === iso
+                );
+
+                return (
+                  <button
+                    key={iso}
+                    disabled={!bookable}
+                    onClick={() => {
+                      setPrivateDate(iso);
+                      setPrivateSlot("");
+                    }}
+                    style={{
+                      ...dateButton,
+                      background: isSelected
+                        ? "#c8a96b"
+                        : mineHere
+                        ? "rgba(200,169,107,0.35)"
+                        : bookable
+                        ? "rgba(255,255,255,0.45)"
+                        : "rgba(0,0,0,0.08)",
+                      color: bookable ? "#050505" : "#999",
+                      cursor: bookable ? "pointer" : "not-allowed",
+                      opacity: bookable ? 1 : 0.45
+                    }}
+                  >
+                    {day}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })()}
+
+      {privateDate && (
+        <>
+          <h3 style={{ color: "#000000", marginTop: "30px" }}>
+            Choose a time for{" "}
+            {new Date(`${privateDate}T00:00:00`).toLocaleDateString("en-US", {
+              weekday: "long",
+              month: "long",
+              day: "numeric"
+            })}
+          </h3>
+
+          <select
+            value={privateSlot}
+            onChange={(e) => setPrivateSlot(e.target.value)}
+            style={{
+              width: "100%",
+              padding: "16px 46px 16px 20px",
+              marginTop: "14px",
+              borderRadius: "14px",
+              border: "1px solid rgba(0,0,0,0.12)",
+              background: "#ffffff",
+              color: "#000000",
+              fontSize: "16px",
+              fontWeight: "500",
+              boxSizing: "border-box",
+              cursor: "pointer",
+              appearance: "none",
+              WebkitAppearance: "none",
+              backgroundImage:
+                "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M6 9l6 6 6-6' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E\")",
+              backgroundRepeat: "no-repeat",
+              backgroundPosition: "right 18px center",
+              backgroundSize: "20px 20px",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.08)"
+            }}
+          >
+            <option value="">Select a time</option>
+
+            {PRIVATE_SLOTS.map((slot) => {
+              const taken = privateCountFor(privateDate, slot);
+              const full = taken >= PRIVATE_CAPACITY;
+              const alreadyMine = studentPrivate.some(
+                (b) =>
+                  b.private_date === privateDate && b.private_slot === slot
+              );
+
+              return (
+                <option
+                  key={slot}
+                  value={slot}
+                  disabled={full || alreadyMine}
+                >
+                  {slot}
+                  {alreadyMine ? " — Booked" : full ? " — Taken" : ""}
+                </option>
+              );
+            })}
+          </select>
+
+          {privateSlot && (
+            <button
+              disabled={privateLoading}
+              onClick={() => bookPrivate(privateDate, privateSlot)}
+              style={{
+                ...goldButtonLarge,
+                width: "100%",
+                marginTop: "18px"
+              }}
+            >
+              BOOK THIS TIME
+            </button>
+          )}
+        </>
+      )}
+
+      {studentPrivate.length > 0 && (
+        <div style={{ marginTop: "30px" }}>
+          <p style={goldSmallText}>MY PRIVATE CLASSES</p>
+
+          {studentPrivate.map((b) => (
+            <div
+              key={b.id}
+              style={{
+                borderTop: "1px solid rgba(0,0,0,0.12)",
+                paddingTop: "12px",
+                marginTop: "12px"
+              }}
+            >
+              <p style={{ color: "#000000", margin: 0, fontWeight: "600" }}>
+                Private Class · {b.private_slot}
+              </p>
+              <p style={{ color: "#000000", margin: "4px 0 0" }}>
+                {new Date(`${b.private_date}T00:00:00`).toLocaleDateString(
+                  "en-US",
+                  { weekday: "long", month: "long", day: "numeric" }
+                )}
               </p>
             </div>
           ))}
