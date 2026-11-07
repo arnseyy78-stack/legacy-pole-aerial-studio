@@ -3140,7 +3140,7 @@ setPage("bookingConfirmed");
         <p>✔ Late cancellations may forfeit credits</p>
         <p>✔ No-shows will forfeit class credits</p>
         <p>✔ Credits are non-transferable</p>
-        <p>✔ Package credits expire after 30 days</p>
+        <p>✔ Package credits expire after 7 days</p>
       </div>
 
       <button
