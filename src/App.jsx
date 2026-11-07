@@ -3840,9 +3840,10 @@ setPage("bookingConfirmed");
           {
             name: "Self Studio Practice",
             price: "₱550",
-            description: "Contact studio for time",
-            subText: "For registered students only.",
+            description: "1 practice hour",
+            subText: "Book a solo slot, 4–5 PM or 5–6 PM. For registered students only.",
             amount: 55000,
+            credits: 1,
             expiry: "7 Days",
             expiryDays: 7
           },
