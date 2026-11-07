@@ -1121,10 +1121,12 @@ localStorage.setItem(
 
 const isSelfPractice = pkg.name === "Self Studio Practice";
 
-// Self Studio Practice is bought to book practice slots, so it goes
-// straight to the calendar with no credits-added message. Everything else
-// keeps its confirmation.
-if (!isSelfPractice) {
+// Self Studio Practice is bought to book practice slots, so it sends the
+// student straight to the calendar. Everything else keeps its own
+// confirmation message.
+if (isSelfPractice) {
+  alert("1 hr added for Studio Self Practice. Please choose date and time.");
+} else {
   alert(
     pkg.unlimited
       ? `${pkg.name} confirmed. Your pass is active until ${expiryDate.toLocaleDateString()}.`
