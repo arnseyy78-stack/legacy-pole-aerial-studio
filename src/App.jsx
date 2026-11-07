@@ -3432,11 +3432,11 @@ setPage("bookingConfirmed");
       </div>
 
       {(() => {
-        const start = practiceWindowStart();
+        const window = practiceWindow();
         const today = new Date();
 
         // Show the month the window starts in, matching the class calendar.
-        const monthDate = start || today;
+        const monthDate = (window && window.start) || today;
         const year = monthDate.getFullYear();
         const month = monthDate.getMonth();
 
