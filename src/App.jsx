@@ -52,6 +52,8 @@ useEffect(() => {
   loadStudentWaitlist();
   loadAdminWaitlist();
   loadTotalStudents();
+  loadPracticeBookings();
+  loadStudentPractice();
 
 async function handlePaymentReturn() {
   const params = new URLSearchParams(window.location.search);
@@ -880,6 +882,8 @@ if (isPackageExpired(data.package_expiry)) {
 
 await loadStudentBookings(data.email);
 await loadStudentWaitlist(data.email);
+await loadPracticeBookings();
+await loadStudentPractice(data.email);
 alert("Login successful!");
 setPage("chooseClass");
 }
