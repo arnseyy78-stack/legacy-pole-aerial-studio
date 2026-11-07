@@ -983,6 +983,8 @@ async function bookPrivate(isoDate, slot) {
         day: "numeric"
       })}\n` +
       `Time: ${slot}\n\n` +
+      `Note: To add another student there will be additional P500.00, ` +
+      `please contact the studio.\n\n` +
       `Do you wish to continue?`
   );
 
