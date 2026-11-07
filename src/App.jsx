@@ -2615,6 +2615,33 @@ setPage("adminDashboard");
       </div>
     )}
 
+    {studentPrivate.length > 0 && (
+      <div style={{ marginTop: "20px" }}>
+        <p style={goldSmallText}>MY PRIVATE CLASSES</p>
+
+        {studentPrivate.map((b) => (
+          <div
+            key={b.id}
+            style={{
+              borderTop: "1px solid rgba(255,255,255,0.3)",
+              paddingTop: "10px",
+              marginTop: "10px"
+            }}
+          >
+            <p style={{ color: "#000000", margin: 0 }}>
+              Private Class · {b.private_slot}
+            </p>
+            <p style={{ color: "#000000", margin: "4px 0 0" }}>
+              {new Date(`${b.private_date}T00:00:00`).toLocaleDateString(
+                "en-US",
+                { weekday: "long", month: "long", day: "numeric" }
+              )}
+            </p>
+          </div>
+        ))}
+      </div>
+    )}
+
     <div style={{ marginTop: "24px" }}>
       <p style={goldSmallText}>UPCOMING CLASSES</p>
 
