@@ -2817,7 +2817,7 @@ const weekday = actualSelectedDate.getDay();
 
 const classes = {
   1: [["6:00 PM 1hr", "Pole Fitness", "/marypole2.jpg"]],
-  2: [["6:00 PM 1hr", "Aerial Hammock", "/hammock.png"]],
+  2: [["6:00 PM 1hr", "Aerial Silks", "/silks2.jpg"]],
   3: [["6:00 PM 1hr", "Spinny Pole", "/zenspinny2.jpg"]],
   4: [["6:00 PM 1hr", "Intro to Pole", "/aceintro3.jpg"]],
   5: [["6:00 PM 1hr", "Aerial Hoop", "/ivyhoop2.jpg"]],
