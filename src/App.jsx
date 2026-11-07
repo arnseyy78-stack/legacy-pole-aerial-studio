@@ -583,7 +583,11 @@ async function bookPractice(isoDate, slot, dayObj) {
   }
 
   if (taken >= PRACTICE_CAPACITY) {
-    alert("That practice slot is full. Please choose another time.");
+    alert(
+      "Sorry, this practice slot is now full.\n\n" +
+        "Someone else booked the last space while you were confirming. " +
+        "Please choose another time or date."
+    );
     await loadPracticeBookings();
     return;
   }
@@ -682,7 +686,7 @@ function practiceCountFor(isoDate, slot) {
 // The Self Studio Practice booking window, written at purchase and kept in
 // localStorage. Inferring it from packageExpiry greyed out the whole
 // calendar whenever the expiry was missing or not exactly 7 days out.
-// Source of truth is the stored purchase day; we keep 6 days open from it.
+// Source of truth is the stored purchase day; we keep 7 days open from it.
 function practiceWindow() {
   const studentData = JSON.parse(localStorage.getItem("legacyStudent"));
   const key = studentData?.email
@@ -697,7 +701,7 @@ function practiceWindow() {
   if (Number.isNaN(start.getTime())) return null;
 
   const end = new Date(start);
-  end.setDate(end.getDate() + 5); // 6 days total, counting the purchase day
+  end.setDate(end.getDate() + 6); // 7 days total, counting the purchase day
   end.setHours(23, 59, 59, 999);
 
   return { start, end };
@@ -3560,11 +3564,7 @@ setPage("bookingConfirmed");
                     {slot}
                   </p>
                   <p style={{ color: "#000000", margin: 0, fontSize: "13px" }}>
-                    {alreadyMine
-                      ? "Booked"
-                      : full
-                      ? "Full"
-                      : `${taken}/${PRACTICE_CAPACITY} booked`}
+                    {alreadyMine ? "Booked" : full ? "Full" : "Available"}
                   </p>
                 </button>
               );
