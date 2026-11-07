@@ -3613,14 +3613,14 @@ setPage("bookingConfirmed");
           {privateSlots.length > 0 && (
             <div
               style={{
-                borderLeft: "4px solid #c9738a",
+                borderLeft: "4px solid #6F8E88",
                 paddingLeft: "14px",
                 marginBottom: "26px"
               }}
             >
               <p
                 style={{
-                  color: "#8c3d52",
+                  color: "#6F8E88",
                   fontSize: "13px",
                   fontWeight: "bold",
                   letterSpacing: "3px",
