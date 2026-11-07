@@ -4577,9 +4577,10 @@ setPage("bookingConfirmed");
           {
             name: "Private Class",
             price: "₱3,100",
-            description: "One on one coaching.",
-            subText: "Best for achieving your dream tricks.",
+            description: "One-hour private coaching",
+            subText: "Book a solo session with your instructor. Mon–Sat.",
             amount: 310000,
+            credits: 1,
             expiry: "7 Days",
             expiryDays: 7
           }
