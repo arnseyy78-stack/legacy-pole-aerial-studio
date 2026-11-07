@@ -3082,11 +3082,14 @@ setPage("bookingConfirmed");
       ensure(w.Booking_date).waitlist.push(w);
     });
 
+    // Practice stores a real date; classes and waitlist store
+    // "November-9". Normalise to the SAME key shape, or the two never
+    // merge and the sort breaks (Number(undefined) is NaN).
     practiceBookings.forEach((p) => {
-      const label = new Date(`${p.practice_date}T00:00:00`).toLocaleDateString(
-        "en-US",
-        { month: "long", day: "numeric" }
-      );
+      const d = new Date(`${p.practice_date}T00:00:00`);
+      const monthName = d.toLocaleDateString("en-US", { month: "long" });
+      const label = `${monthName}-${d.getDate()}`;
+
       const day = ensure(label);
       const slotKey = p.practice_slot;
       if (!day.practice[slotKey]) day.practice[slotKey] = [];
@@ -3099,13 +3102,19 @@ setPage("bookingConfirmed");
       December: 12
     };
 
+    const parseKey = (key) => {
+      const [monthName, dayPart] = String(key).split("-");
+      return {
+        month: monthOrder[monthName] ?? 13,
+        day: Number(dayPart) || 0
+      };
+    };
+
     const dates = Object.keys(byDate).sort((a, b) => {
-      const [am, ad] = a.split("-");
-      const [bm, bd] = b.split("-");
-      const amn = monthOrder[am] ?? 13;
-      const bmn = monthOrder[bm] ?? 13;
-      if (amn !== bmn) return amn - bmn;
-      return Number(ad) - Number(bd);
+      const ak = parseKey(a);
+      const bk = parseKey(b);
+      if (ak.month !== bk.month) return ak.month - bk.month;
+      return ak.day - bk.day;
     });
 
     if (dates.length === 0) {
