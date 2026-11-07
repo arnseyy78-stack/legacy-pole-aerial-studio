@@ -1500,7 +1500,7 @@ const isPrivateClass = pkg.name === "Private Class";
 if (isSelfPractice) {
   alert("1 hr added for Studio Self Practice. Please choose date and time.");
 } else if (isPrivateClass) {
-  alert("1 hr added for Private Class. Please choose date and time.");
+  alert("Private Class confirmed. Please select date and time.");
 } else {
   alert(
     pkg.unlimited
