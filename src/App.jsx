@@ -2234,7 +2234,6 @@ setPage("adminDashboard");
         ))}
       </div>
     )}
-  </div>
 
   <select
     value={studentView}
