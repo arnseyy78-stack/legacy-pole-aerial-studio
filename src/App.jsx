@@ -3841,7 +3841,7 @@ setPage("bookingConfirmed");
           ["Single Pass", "₱870", "1 class credit · Valid for 7 days", "Perfect for trying your first class."],
           ["1 Week Unlimited", "₱2,600", "Unlimited classes for 7 days", "Best value. Attend as many classes as you like for one week.", "MOST POPULAR"],
           ["Self Practice", "₱550", "Contact studio for time", "For existing students only."],
-          ["Private Class", "₱3,100", "One on one coaching.", "Best for achieving your dream tricks."],
+          ["Private Class", "₱2,500", "One on one coaching.", "Best for achieving your dream tricks."],
         ].map((pkg) => (
           <div
             key={pkg[0]}
@@ -4715,10 +4715,10 @@ setPage("bookingConfirmed");
           },
           {
             name: "Private Class",
-            price: "₱3,100",
+            price: "₱2,500",
             description: "One-hour private coaching",
             subText: "Book a solo session with your instructor. Mon–Sat.",
-            amount: 310000,
+            amount: 250000,
             credits: 1,
             expiry: "7 Days",
             expiryDays: 7
