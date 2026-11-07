@@ -237,6 +237,7 @@ const [privateLoading, setPrivateLoading] = useState(false);
 const [practiceBookings, setPracticeBookings] = useState([]);
 const [studentPractice, setStudentPractice] = useState([]);
 const [practiceDate, setPracticeDate] = useState("");
+const [practiceSlot, setPracticeSlot] = useState("");
 const [practiceLoading, setPracticeLoading] = useState(false);
   const [specialClasses, setSpecialClasses] = useState([]);
   const today = new Date();
@@ -4074,7 +4075,33 @@ setPage("bookingConfirmed");
             })}
           </h3>
 
-          <div style={packageGrid}>
+          <select
+            value={practiceSlot}
+            onChange={(e) => setPracticeSlot(e.target.value)}
+            style={{
+              width: "100%",
+              padding: "16px 46px 16px 20px",
+              marginTop: "14px",
+              borderRadius: "14px",
+              border: "1px solid rgba(0,0,0,0.12)",
+              background: "#ffffff",
+              color: "#000000",
+              fontSize: "16px",
+              fontWeight: "500",
+              boxSizing: "border-box",
+              cursor: "pointer",
+              appearance: "none",
+              WebkitAppearance: "none",
+              backgroundImage:
+                "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M6 9l6 6 6-6' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E\")",
+              backgroundRepeat: "no-repeat",
+              backgroundPosition: "right 18px center",
+              backgroundSize: "20px 20px",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.08)"
+            }}
+          >
+            <option value="">Select a time</option>
+
             {PRACTICE_SLOTS.map((slot) => {
               const taken = practiceCountFor(practiceDate, slot);
               const full = taken >= PRACTICE_CAPACITY;
@@ -4084,38 +4111,37 @@ setPage("bookingConfirmed");
               );
 
               return (
-                <button
+                <option
                   key={slot}
-                  disabled={full || alreadyMine || practiceLoading}
-                  onClick={() =>
-                    bookPractice(
-                      practiceDate,
-                      slot,
-                      new Date(`${practiceDate}T00:00:00`)
-                    )
-                  }
-                  style={{
-                    ...packageCard,
-                    minHeight: "auto",
-                    textAlign: "center",
-                    cursor: full || alreadyMine ? "not-allowed" : "pointer",
-                    background: alreadyMine
-                      ? "rgba(200,169,107,0.35)"
-                      : full
-                      ? "rgba(0,0,0,0.08)"
-                      : "rgba(255,255,255,0.3)"
-                  }}
+                  value={slot}
+                  disabled={full || alreadyMine}
                 >
-                  <p style={{ ...packagePrice, fontSize: "24px", margin: "0 0 8px" }}>
-                    {slot}
-                  </p>
-                  <p style={{ color: "#000000", margin: 0, fontSize: "13px" }}>
-                    {alreadyMine ? "Booked" : full ? "Full" : "Available"}
-                  </p>
-                </button>
+                  {slot}
+                  {alreadyMine ? " — Booked" : full ? " — Full" : ""}
+                </option>
               );
             })}
-          </div>
+          </select>
+
+          {practiceSlot && (
+            <button
+              disabled={practiceLoading}
+              onClick={() =>
+                bookPractice(
+                  practiceDate,
+                  practiceSlot,
+                  new Date(`${practiceDate}T00:00:00`)
+                )
+              }
+              style={{
+                ...goldButtonLarge,
+                width: "100%",
+                marginTop: "18px"
+              }}
+            >
+              BOOK THIS TIME
+            </button>
+          )}
         </>
       )}
 
