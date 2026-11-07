@@ -2821,7 +2821,7 @@ const classes = {
   3: [["6:00 PM 1hr", "Spinny Pole", "/zenspinny2.jpg"]],
   4: [["6:00 PM 1hr", "Intro to Pole", "/aceintro3.jpg"]],
   5: [["6:00 PM 1hr", "Aerial Hoop", "/ivyhoop2.jpg"]],
-  6: [],
+  6: [["6:00 PM 1hr", "Aerial Hammock", "/hammock.png"]],
   0: []
 };
 const selectedDateISO =
