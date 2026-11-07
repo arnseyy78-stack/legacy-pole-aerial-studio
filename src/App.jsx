@@ -3055,21 +3055,10 @@ setPage("bookingConfirmed");
   </svg>
 </button>
 </div>
-<select
-  value={adminView}
-  onChange={(e) => setAdminView(e.target.value)}
-  style={{
-    ...inputStyle,
-    marginBottom: "20px"
-  }}
->
-  <option value="today">Today's Classes</option>
-  <option value="upcoming">Upcoming Classes</option>
-  <option value="waitlist">Waitlist</option>
-  <option value="practice">Studio Practice</option>
-</select>
         
-{adminView === "today" && (
+{
+  /* Today */
+  true && (
   <>
     {adminBookings
       .filter((booking) => {
@@ -3105,7 +3094,9 @@ setPage("bookingConfirmed");
       ))}
   </>
 )}
-        {adminView === "upcoming" && (
+        {
+  /* Upcoming */
+  true && (
   <>
     {adminBookings.length === 0 ? (
       <p style={{ color: "#000000" }}>No bookings yet.</p>
@@ -3158,7 +3149,9 @@ setPage("bookingConfirmed");
     )}
   </>
 )}
-        {adminView === "waitlist" && (
+        {
+  /* Waitlist */
+  true && (
   <>
     <div style={{ marginTop: "50px" }}>
           <p style={goldSmallText}>WAITLIST</p>
@@ -3184,7 +3177,9 @@ setPage("bookingConfirmed");
         </>
       )}
 
-      {adminView === "practice" && (
+      {
+  /* Practice */
+  true && (
         <>
           <div style={{ marginTop: "40px" }}>
             <p style={goldSmallText}>STUDIO PRACTICE BOOKINGS</p>
