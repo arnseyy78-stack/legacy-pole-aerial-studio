@@ -594,7 +594,6 @@ async function bookPractice(isoDate, slot, dayObj) {
         day: "numeric"
       })}\n` +
       `Time: ${slot}\n\n` +
-      `1 credit will be deducted.\n\n` +
       `Do you wish to continue?`
   );
 
@@ -2238,37 +2237,7 @@ setPage("adminDashboard");
       </div>
     )}
 
-  <select
-    value={studentView}
-    onChange={(e) => setStudentView(e.target.value)}
-    style={{
-      width: "100%",
-      padding: "16px 46px 16px 20px",
-      marginBottom: "20px",
-      borderRadius: "14px",
-      border: "1px solid rgba(0,0,0,0.12)",
-      background: "#ffffff",
-      color: "#000000",
-      fontSize: "16px",
-      fontWeight: "500",
-      boxSizing: "border-box",
-      cursor: "pointer",
-      appearance: "none",
-      WebkitAppearance: "none",
-      backgroundImage:
-        "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M6 9l6 6 6-6' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E\")",
-      backgroundRepeat: "no-repeat",
-      backgroundPosition: "right 18px center",
-      backgroundSize: "20px 20px",
-      boxShadow: "0 2px 8px rgba(0,0,0,0.08)"
-    }}
-  >
-    <option value="upcoming">Upcoming Classes</option>
-    <option value="waitlist">Waitlist</option>
-  </select>
-
-  {studentView === "upcoming" && (
-    <div style={{ marginTop: "20px" }}>
+    <div style={{ marginTop: "24px" }}>
       <p style={goldSmallText}>UPCOMING CLASSES</p>
 
       {studentBookings.length === 0 ? (
@@ -2304,28 +2273,23 @@ setPage("adminDashboard");
         ))
       )}
     </div>
-  )}
 
-  {studentView === "waitlist" && (
+  {studentWaitlist.length > 0 && (
     <div style={{ marginTop: "20px" }}>
       <p style={goldSmallText}>WAITLIST</p>
 
-      {studentWaitlist.length === 0 ? (
-        <p style={{ color: "#000000" }}>No waitlist classes.</p>
-      ) : (
-        studentWaitlist.map((item) => (
-          <div key={item.id} style={{
-            borderTop: "1px solid rgba(255,255,255,0.3)",
-            paddingTop: "12px",
-            marginTop: "12px"
-          }}>
-            <p style={{ color: "#000000", margin: 0 }}>{item.Class_name}</p>
-            <p style={{ color: "#000000", margin: "6px 0 0" }}>
-              {item.Booking_date} · Waitlisted
-            </p>
-          </div>
-        ))
-      )}
+      {studentWaitlist.map((item) => (
+        <div key={item.id} style={{
+          borderTop: "1px solid rgba(255,255,255,0.3)",
+          paddingTop: "12px",
+          marginTop: "12px"
+        }}>
+          <p style={{ color: "#000000", margin: 0 }}>{item.Class_name}</p>
+          <p style={{ color: "#000000", margin: "6px 0 0" }}>
+            {item.Booking_date} · Waitlisted
+          </p>
+        </div>
+      ))}
     </div>
   )}
 </div>
