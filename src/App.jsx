@@ -3094,13 +3094,19 @@ setPage("bookingConfirmed");
       ))}
   </>
 )}
-        {
-  /* Upcoming */
-  true && (
+
+  {/* Upcoming */}
+  {adminBookings.length > 0 && (
   <>
-    {adminBookings.length === 0 ? (
-      <p style={{ color: "#000000" }}>No bookings yet.</p>
-    ) : (
+    <div style={{
+  borderLeft: "4px solid #c8a96b",
+  paddingLeft: "14px",
+  marginBottom: "18px"
+}}>
+  <p style={{ color: "#c8a96b", letterSpacing: "4px", fontSize: "15px", fontWeight: "bold", margin: 0, textTransform: "uppercase" }}>Upcoming Classes</p>
+  <p style={{ color: "#666666", fontSize: "12px", margin: "4px 0 0" }}>Classes students have booked ahead</p>
+</div>
+    {(
       Object.entries(
         adminBookings.reduce((groups, booking) => {
           const key = `${booking.Booking_date}-${booking.Class_name}`;
@@ -3154,7 +3160,14 @@ setPage("bookingConfirmed");
   adminWaitlist.length > 0 && (
   <>
     <div style={{ marginTop: "50px" }}>
-          <p style={goldSmallText}>WAITLIST</p>
+          <div style={{
+  borderLeft: "4px solid #8a6d2f",
+  paddingLeft: "14px",
+  marginBottom: "18px"
+}}>
+  <p style={{ color: "#8a6d2f", letterSpacing: "4px", fontSize: "15px", fontWeight: "bold", margin: 0, textTransform: "uppercase" }}>Waitlist</p>
+  <p style={{ color: "#666666", fontSize: "12px", margin: "4px 0 0" }}>Students waiting for a space to open</p>
+</div>
 
           {(
 
@@ -3181,7 +3194,14 @@ setPage("bookingConfirmed");
   practiceBookings.length > 0 && (
         <>
           <div style={{ marginTop: "40px" }}>
-            <p style={goldSmallText}>STUDIO PRACTICE BOOKINGS</p>
+            <div style={{
+  borderLeft: "4px solid #a8556a",
+  paddingLeft: "14px",
+  marginBottom: "18px"
+}}>
+  <p style={{ color: "#a8556a", letterSpacing: "4px", fontSize: "15px", fontWeight: "bold", margin: 0, textTransform: "uppercase" }}>Studio Practice</p>
+  <p style={{ color: "#666666", fontSize: "12px", margin: "4px 0 0" }}>Solo practice hours, 5 students per slot</p>
+</div>
 
             {(
               Object.entries(
