@@ -3056,54 +3056,16 @@ setPage("bookingConfirmed");
 </button>
 </div>
         
-{
-  /* Today */
-  true && (
-  <>
-    {adminBookings
-      .filter((booking) => {
-        const today = new Date();
-        const month = today.toLocaleString("default", {
-          month: "long"
-        });
-        const day = today.getDate();
-
-        return booking.Booking_date === `${month}-${day}`;
-      })
-      .map((booking) => (
-        <div
-          key={booking.id}
-          style={{
-            borderTop: "1px solid rgba(0,0,0,0.12)",
-            paddingTop: "15px",
-            marginTop: "15px"
-          }}
-        >
-          <p style={{ color: "#000000", margin: 0 }}>
-            {booking.Student_name}
-          </p>
-
-          <p style={{ color: "#000000", margin: "5px 0" }}>
-            {booking.Student_email}
-          </p>
-
-          <p style={{ color: "#a8556a", margin: 0, fontWeight: "600" }}>
-            {booking.Class_name}
-          </p>
-        </div>
-      ))}
-  </>
-)}
 
   {/* Upcoming */}
   {adminBookings.length > 0 && (
   <>
     <div style={{
-  borderLeft: "4px solid #c8a96b",
+  borderLeft: "4px solid #f2aab8",
   paddingLeft: "14px",
   marginBottom: "18px"
 }}>
-  <p style={{ color: "#c8a96b", letterSpacing: "4px", fontSize: "15px", fontWeight: "bold", margin: 0, textTransform: "uppercase" }}>Upcoming Classes</p>
+  <p style={{ color: "#8c3d52", letterSpacing: "4px", fontSize: "15px", fontWeight: "bold", margin: 0, textTransform: "uppercase" }}>Upcoming Classes</p>
   <p style={{ color: "#666666", fontSize: "12px", margin: "4px 0 0" }}>Classes students have booked ahead</p>
 </div>
     {(
@@ -3161,11 +3123,11 @@ setPage("bookingConfirmed");
   <>
     <div style={{ marginTop: "50px" }}>
           <div style={{
-  borderLeft: "4px solid #8a6d2f",
+  borderLeft: "4px solid #c9738a",
   paddingLeft: "14px",
   marginBottom: "18px"
 }}>
-  <p style={{ color: "#8a6d2f", letterSpacing: "4px", fontSize: "15px", fontWeight: "bold", margin: 0, textTransform: "uppercase" }}>Waitlist</p>
+  <p style={{ color: "#8c3d52", letterSpacing: "4px", fontSize: "15px", fontWeight: "bold", margin: 0, textTransform: "uppercase" }}>Waitlist</p>
   <p style={{ color: "#666666", fontSize: "12px", margin: "4px 0 0" }}>Students waiting for a space to open</p>
 </div>
 
@@ -3195,11 +3157,11 @@ setPage("bookingConfirmed");
         <>
           <div style={{ marginTop: "40px" }}>
             <div style={{
-  borderLeft: "4px solid #a8556a",
+  borderLeft: "4px solid #6b7a8f",
   paddingLeft: "14px",
   marginBottom: "18px"
 }}>
-  <p style={{ color: "#a8556a", letterSpacing: "4px", fontSize: "15px", fontWeight: "bold", margin: 0, textTransform: "uppercase" }}>Studio Practice</p>
+  <p style={{ color: "#4a5a6b", letterSpacing: "4px", fontSize: "15px", fontWeight: "bold", margin: 0, textTransform: "uppercase" }}>Studio Practice</p>
   <p style={{ color: "#666666", fontSize: "12px", margin: "4px 0 0" }}>Solo practice hours, 5 students per slot</p>
 </div>
 
