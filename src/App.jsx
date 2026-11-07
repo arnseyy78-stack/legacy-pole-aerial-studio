@@ -124,6 +124,8 @@ handlePaymentReturn();
         loadStudentWaitlist();
         loadAdminWaitlist();
         loadTotalStudents();
+        loadPracticeBookings();
+        loadStudentPractice();
       }
     )
     .subscribe();
@@ -208,6 +210,15 @@ const [packageExpiry, setPackageExpiry] = useState(null);
 const [packageType, setPackageType] = useState(null);
 const [lastBookedClass, setLastBookedClass] = useState("");
 const [credits, setCredits] = useState(0);
+// ── Studio Practice ────────────────────────────────────────────────────
+// Its own table (practice_bookings), its own calendar, 4-5 PM + 5-6 PM,
+// 5 students per hour, Monday-Saturday.
+const PRACTICE_SLOTS = ["4:00 PM", "5:00 PM"];
+const PRACTICE_CAPACITY = 5;
+const [practiceBookings, setPracticeBookings] = useState([]);
+const [studentPractice, setStudentPractice] = useState([]);
+const [practiceDate, setPracticeDate] = useState("");
+const [practiceLoading, setPracticeLoading] = useState(false);
   const [specialClasses, setSpecialClasses] = useState([]);
   const today = new Date();
   const [adminView, setAdminView] = useState("upcoming");
@@ -468,6 +479,225 @@ async function loadAdminWaitlist() {
 
   setAdminWaitlist(data || []);
 }
+
+// ── Studio Practice data ──────────────────────────────────────────────
+async function loadPracticeBookings() {
+  const { data, error } = await supabase
+    .from("practice_bookings")
+    .select("*");
+
+  if (error) {
+    console.log(error);
+    return;
+  }
+
+  setPracticeBookings(data || []);
+}
+
+async function loadStudentPractice(emailOverride = null) {
+  const studentData = JSON.parse(localStorage.getItem("legacyStudent"));
+  const email = emailOverride || studentData?.email;
+
+  if (!email) {
+    setStudentPractice([]);
+    return;
+  }
+
+  const { data, error } = await supabase
+    .from("practice_bookings")
+    .select("*")
+    .eq("Student_email", email);
+
+  if (error) {
+    console.log(error);
+    setStudentPractice([]);
+    return;
+  }
+
+  setStudentPractice(data || []);
+}
+
+// ISO date (YYYY-MM-DD) for a Date. Local, not UTC — a UTC conversion
+// would shift the day for anything booked after 4pm Manila time.
+function toISODate(d) {
+  return (
+    `${d.getFullYear()}-` +
+    `${String(d.getMonth() + 1).padStart(2, "0")}-` +
+    `${String(d.getDate()).padStart(2, "0")}`
+  );
+}
+
+// Book a Studio Practice slot. Costs 1 credit, same as a class.
+async function bookPractice(isoDate, slot, dayObj) {
+  const studentData =
+    JSON.parse(localStorage.getItem("legacyStudent")) || student;
+
+  const slotHour = slot === "4:00 PM" ? 16 : 17;
+
+  const slotDateTime = new Date(
+    dayObj.getFullYear(),
+    dayObj.getMonth(),
+    dayObj.getDate(),
+    slotHour,
+    0,
+    0
+  );
+
+  // Same gate as classes: expiry checked against the slot's own date.
+  if (await guardBookingEligibility(studentData.email, slotDateTime)) {
+    return;
+  }
+
+  if (slotDateTime <= new Date()) {
+    alert("That practice slot has already passed.");
+    return;
+  }
+
+  // Re-count from the server, so a stale local list can't oversell a slot.
+  setPracticeLoading(true);
+
+  const { data: freshRows, error: freshError } = await supabase
+    .from("practice_bookings")
+    .select("Practice_date, Practice_slot, Student_email")
+    .eq("Practice_date", isoDate)
+    .eq("Practice_slot", slot);
+
+  setPracticeLoading(false);
+
+  if (freshError) {
+    console.log(freshError);
+    alert("Could not check availability. Please try again.");
+    return;
+  }
+
+  const taken = (freshRows || []).length;
+  const alreadyMine = (freshRows || []).some(
+    (r) => r.Student_email === studentData.email
+  );
+
+  if (alreadyMine) {
+    alert("You have already booked this practice slot.");
+    return;
+  }
+
+  if (taken >= PRACTICE_CAPACITY) {
+    alert("That practice slot is full. Please choose another time.");
+    await loadPracticeBookings();
+    return;
+  }
+
+  const confirmed = window.confirm(
+    `Confirm Studio Practice\n\n` +
+      `Date: ${dayObj.toLocaleDateString("en-US", {
+        weekday: "long",
+        month: "long",
+        day: "numeric"
+      })}\n` +
+      `Time: ${slot}\n\n` +
+      `1 credit will be deducted.\n\n` +
+      `Do you wish to continue?`
+  );
+
+  if (!confirmed) return;
+
+  const { error } = await supabase.from("practice_bookings").insert([
+    {
+      Student_name: studentData.fullName,
+      Student_email: studentData.email,
+      Practice_date: isoDate,
+      Practice_slot: slot
+    }
+  ]);
+
+  if (error) {
+    console.log(error);
+    alert("Practice booking failed. Please try again.");
+    return;
+  }
+
+  // Deduct the credit — unless this is an unlimited pass.
+  const { data: typeRow } = await supabase
+    .from("students")
+    .select("package_type")
+    .eq("email", studentData.email)
+    .single();
+
+  const isUnlimitedPass = typeRow?.package_type === "unlimited";
+
+  const newCredits = isUnlimitedPass
+    ? Number(credits) || 0
+    : (Number(credits) || 0) - 1;
+
+  const updateData = { credits: newCredits };
+
+  if (!isUnlimitedPass && newCredits <= 0) {
+    updateData.package_expiry = null;
+    updateData.package_type = null;
+    setPackageExpiry(null);
+    setPackageType(null);
+  }
+
+  const { error: creditError } = await supabase
+    .from("students")
+    .update(updateData)
+    .eq("email", studentData.email);
+
+  if (creditError) {
+    console.log("Practice credit update error:", creditError);
+  }
+
+  setCredits(newCredits);
+
+  await loadPracticeBookings();
+  await loadStudentPractice(studentData.email);
+
+  const { data: refreshed } = await supabase
+    .from("students")
+    .select("credits, package_expiry, package_type")
+    .eq("email", studentData.email)
+    .single();
+
+  if (refreshed) {
+    await syncPackageOnRead(studentData.email, refreshed);
+  }
+
+  alert(
+    `Studio Practice confirmed.\n\n` +
+      `${dayObj.toLocaleDateString("en-US", {
+        weekday: "long",
+        month: "long",
+        day: "numeric"
+      })} at ${slot}.`
+  );
+}
+
+// How many are already booked into a given date + slot.
+function practiceCountFor(isoDate, slot) {
+  return practiceBookings.filter(
+    (b) => b.Practice_date === isoDate && b.Practice_slot === slot
+  ).length;
+}
+
+// The next 7 days, skipping Sundays.
+function practiceDays() {
+  const days = [];
+  const cursor = new Date();
+
+  for (let i = 0; days.length < 7 && i < 20; i++) {
+    const d = new Date(
+      cursor.getFullYear(),
+      cursor.getMonth(),
+      cursor.getDate() + i
+    );
+
+    if (d.getDay() === 0) continue; // closed Sunday
+
+    days.push(d);
+  }
+
+  return days;
+}
+
 function saveStudentInfo() {
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -1969,6 +2199,129 @@ setPage("adminDashboard");
   {packageType !== "unlimited" && (
     <p style={{ color: "#000000" }}>Use 1 credit per class booking</p>
   )}
+
+  {/* ── STUDIO PRACTICE BOOKING ─────────────────────────────────────── */}
+  <div style={{ marginTop: "28px" }}>
+    <p style={goldSmallText}>STUDIO PRACTICE</p>
+    <p style={{ color: "#000000", marginTop: "6px" }}>
+      Book a solo practice slot. 4–5 PM or 5–6 PM, up to 5 students per hour.
+      Uses 1 credit.
+    </p>
+
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
+        gap: "12px",
+        marginTop: "16px"
+      }}
+    >
+      {practiceDays().map((d) => {
+        const iso = toISODate(d);
+
+        return (
+          <div
+            key={iso}
+            style={{
+              border: "1px solid rgba(0,0,0,0.12)",
+              borderRadius: "18px",
+              padding: "14px",
+              background: "rgba(255,255,255,0.45)"
+            }}
+          >
+            <p
+              style={{
+                color: "#a8556a",
+                fontSize: "12px",
+                fontWeight: "bold",
+                letterSpacing: "1px",
+                margin: "0 0 4px"
+              }}
+            >
+              {d.toLocaleDateString("en-US", { weekday: "short" })}
+            </p>
+
+            <p style={{ color: "#000000", margin: "0 0 10px", fontWeight: "600" }}>
+              {d.toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric"
+              })}
+            </p>
+
+            {PRACTICE_SLOTS.map((slot) => {
+              const taken = practiceCountFor(iso, slot);
+              const full = taken >= PRACTICE_CAPACITY;
+              const alreadyMine = studentPractice.some(
+                (b) => b.Practice_date === iso && b.Practice_slot === slot
+              );
+
+              return (
+                <button
+                  key={slot}
+                  disabled={full || alreadyMine}
+                  onClick={() => bookPractice(iso, slot, d)}
+                  style={{
+                    width: "100%",
+                    marginBottom: "8px",
+                    padding: "10px",
+                    borderRadius: "12px",
+                    border: "none",
+                    cursor: full || alreadyMine ? "not-allowed" : "pointer",
+                    background: alreadyMine
+                      ? "rgba(200,169,107,0.35)"
+                      : full
+                      ? "rgba(0,0,0,0.08)"
+                      : "linear-gradient(180deg, #fbd7dd 0%, #f2aab8 100%)",
+                    color: full ? "#888" : "#050505",
+                    fontWeight: "600",
+                    fontSize: "13px"
+                  }}
+                >
+                  {slot}
+                  <br />
+                  <span style={{ fontSize: "11px", fontWeight: "normal" }}>
+                    {alreadyMine
+                      ? "Booked"
+                      : full
+                      ? "Full"
+                      : `${taken}/${PRACTICE_CAPACITY} booked`}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        );
+      })}
+    </div>
+
+    {studentPractice.length > 0 && (
+      <div style={{ marginTop: "20px" }}>
+        <p style={goldSmallText}>MY PRACTICE SLOTS</p>
+
+        {studentPractice.map((b) => (
+          <div
+            key={b.id}
+            style={{
+              borderTop: "1px solid rgba(255,255,255,0.3)",
+              paddingTop: "10px",
+              marginTop: "10px"
+            }}
+          >
+            <p style={{ color: "#000000", margin: 0 }}>
+              Studio Practice · {b.Practice_slot}
+            </p>
+            <p style={{ color: "#000000", margin: "4px 0 0" }}>
+              {new Date(b.Practice_date).toLocaleDateString("en-US", {
+                weekday: "long",
+                month: "long",
+                day: "numeric"
+              })}
+            </p>
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
 
   <select
     value={studentView}
