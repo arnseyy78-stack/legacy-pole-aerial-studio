@@ -3832,8 +3832,18 @@ setPage("bookingConfirmed");
         Packages & Pricing
       </h2>
 
-      <p style={{ color: "#c8a96b", fontSize: "18px", marginBottom: "40px" }}>
+      <p style={{ color: "#c8a96b", fontSize: "18px", marginBottom: "10px" }}>
         Choose the package that best suits your pole journey.
+      </p>
+
+      <p
+        style={{
+          color: "#000000",
+          fontSize: "15px",
+          marginBottom: "40px"
+        }}
+      >
+        For additional student, add ₱500.00. Contact the studio for more info.
       </p>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "24px" }}>
@@ -4656,6 +4666,18 @@ setPage("bookingConfirmed");
           <h2 style={{ ...sectionHeading, fontSize: "60px", marginBottom: "10px" }}>
             Packages & Pricing
           </h2>
+
+          <p
+            style={{
+              color: "#000000",
+              fontSize: "15px",
+              margin: 0,
+              maxWidth: "520px"
+            }}
+          >
+            For additional student, add ₱500.00. Contact the studio for more
+            info.
+          </p>
         </div>
 
         <button
