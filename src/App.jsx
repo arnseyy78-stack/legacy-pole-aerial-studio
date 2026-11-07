@@ -3150,15 +3150,14 @@ setPage("bookingConfirmed");
   </>
 )}
         {
-  /* Waitlist */
-  true && (
+  /* Waitlist — only when there is something on it */
+  adminWaitlist.length > 0 && (
   <>
     <div style={{ marginTop: "50px" }}>
           <p style={goldSmallText}>WAITLIST</p>
 
-          {adminWaitlist.length === 0 ? (
-            <p style={{ color: "#000000" }}>No waitlist entries.</p>
-          ) : (
+          {(
+
             adminWaitlist.map((item) => (
               <div key={item.id} style={{
                 borderTop: "1px solid rgba(255,255,255,0.35)",
@@ -3178,15 +3177,13 @@ setPage("bookingConfirmed");
       )}
 
       {
-  /* Practice */
-  true && (
+  /* Practice — only when there are bookings */
+  practiceBookings.length > 0 && (
         <>
           <div style={{ marginTop: "40px" }}>
             <p style={goldSmallText}>STUDIO PRACTICE BOOKINGS</p>
 
-            {practiceBookings.length === 0 ? (
-              <p style={{ color: "#000000" }}>No practice bookings yet.</p>
-            ) : (
+            {(
               Object.entries(
                 practiceBookings.reduce((groups, row) => {
                   const key = `${row.practice_date}|${row.practice_slot}`;
