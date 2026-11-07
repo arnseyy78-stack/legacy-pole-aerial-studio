@@ -1124,7 +1124,10 @@ alert(
     ? `${pkg.name} confirmed. Your pass is active until ${expiryDate.toLocaleDateString()}.`
     : `${pkg.name} confirmed. ${packageCredits} credits added.`
 );
-setPage("chooseClass");
+
+// A Self Studio Practice purchase goes straight to the practice calendar —
+// that is what the pass is for.
+setPage(pkg.name === "Self Studio Practice" ? "practice" : "chooseClass");
 return;
 }
     const studentData =
@@ -2199,13 +2202,6 @@ setPage("adminDashboard");
   {packageType !== "unlimited" && (
     <p style={{ color: "#000000" }}>Use 1 credit per class booking</p>
   )}
-
-  <button
-    onClick={() => setPage("practice")}
-    style={{ ...goldButton, width: "100%", marginTop: "18px" }}
-  >
-    BOOK STUDIO PRACTICE
-  </button>
 
     {studentPractice.length > 0 && (
       <div style={{ marginTop: "20px" }}>
