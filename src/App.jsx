@@ -3363,7 +3363,7 @@ setPage("bookingConfirmed");
 
     const ensure = (key) => {
       if (!byDate[key]) {
-        byDate[key] = { classes: {}, waitlist: [], practice: {} };
+        byDate[key] = { classes: {}, waitlist: [], practice: {}, private: {} };
       }
       return byDate[key];
     };
@@ -3392,6 +3392,19 @@ setPage("bookingConfirmed");
       const slotKey = p.practice_slot;
       if (!day.practice[slotKey]) day.practice[slotKey] = [];
       day.practice[slotKey].push(p);
+    });
+
+    // Private Class uses the same real-date column shape as practice, so
+    // it normalises to the same key and lands in the same date block.
+    privateBookings.forEach((p) => {
+      const d = new Date(`${p.private_date}T00:00:00`);
+      const monthName = d.toLocaleDateString("en-US", { month: "long" });
+      const label = `${monthName}-${d.getDate()}`;
+
+      const day = ensure(label);
+      const slotKey = p.private_slot;
+      if (!day.private[slotKey]) day.private[slotKey] = [];
+      day.private[slotKey].push(p);
     });
 
     const monthOrder = {
@@ -3423,6 +3436,7 @@ setPage("bookingConfirmed");
       const day = byDate[dateKey];
       const classEntries = Object.entries(day.classes);
       const practiceSlots = Object.entries(day.practice);
+      const privateSlots = Object.entries(day.private);
 
       return (
         <div
@@ -3578,6 +3592,59 @@ setPage("bookingConfirmed");
                   >
                     Slots Filled: {rows.length}/{PRACTICE_CAPACITY}
                     {rows.length >= PRACTICE_CAPACITY ? " · FULL" : ""}
+                  </p>
+
+                  {rows.map((student, i) => (
+                    <div key={student.id} style={{ marginBottom: "10px" }}>
+                      <p style={{ color: "#000000", margin: 0 }}>
+                        {i + 1}. {student.student_name}
+                      </p>
+                      <p style={{ color: "#555555", margin: "3px 0 0 18px" }}>
+                        {student.student_email}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* PRIVATE CLASS — only when this date has any */}
+          {privateSlots.length > 0 && (
+            <div
+              style={{
+                borderLeft: "4px solid #c9738a",
+                paddingLeft: "14px",
+                marginBottom: "26px"
+              }}
+            >
+              <p
+                style={{
+                  color: "#8c3d52",
+                  fontSize: "13px",
+                  fontWeight: "bold",
+                  letterSpacing: "3px",
+                  textTransform: "uppercase",
+                  margin: 0
+                }}
+              >
+                Private Class
+              </p>
+
+              {privateSlots.map(([slot, rows]) => (
+                <div key={slot} style={{ marginTop: "10px" }}>
+                  <p style={{ color: "#000000", fontWeight: "600", margin: 0 }}>
+                    {slot}
+                  </p>
+                  <p
+                    style={{
+                      color: "#8c3d52",
+                      fontWeight: "600",
+                      margin: "4px 0 10px"
+                    }}
+                  >
+                    Slots Filled: {rows.length}/{PRIVATE_CAPACITY}
+                    {rows.length >= PRIVATE_CAPACITY ? " · FULL" : ""}
                   </p>
 
                   {rows.map((student, i) => (
