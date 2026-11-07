@@ -870,6 +870,37 @@ function isPrivateBookable(d) {
   return true;
 }
 
+// Maps a private slot label to its 24-hour start hour. Kept next to the
+// other slot helpers so the dropdown and the booking agree on the time.
+const PRIVATE_SLOT_HOURS = {
+  "9:00 AM": 9,
+  "10:00 AM": 10,
+  "1:00 PM": 13,
+  "2:00 PM": 14,
+  "3:00 PM": 15
+};
+
+// True once a slot's start time has gone by. Only meaningful for today —
+// future dates are never past.
+function isPrivateSlotPast(isoDate, slot) {
+  if (!isoDate) return false;
+
+  const hour = PRIVATE_SLOT_HOURS[slot];
+  if (hour === undefined) return false;
+
+  const day = new Date(`${isoDate}T00:00:00`);
+  const slotStart = new Date(
+    day.getFullYear(),
+    day.getMonth(),
+    day.getDate(),
+    hour,
+    0,
+    0
+  );
+
+  return slotStart <= new Date();
+}
+
 function privateCountFor(isoDate, slot) {
   return privateBookings.filter(
     (b) => b.private_date === isoDate && b.private_slot === slot
@@ -4393,6 +4424,7 @@ setPage("bookingConfirmed");
             {PRIVATE_SLOTS.map((slot) => {
               const taken = privateCountFor(privateDate, slot);
               const full = taken >= PRIVATE_CAPACITY;
+              const past = isPrivateSlotPast(privateDate, slot);
               const alreadyMine = studentPrivate.some(
                 (b) =>
                   b.private_date === privateDate && b.private_slot === slot
@@ -4402,10 +4434,16 @@ setPage("bookingConfirmed");
                 <option
                   key={slot}
                   value={slot}
-                  disabled={full || alreadyMine}
+                  disabled={full || alreadyMine || past}
                 >
                   {slot}
-                  {alreadyMine ? " — Booked" : full ? " — Taken" : ""}
+                  {past
+                    ? " — Passed"
+                    : alreadyMine
+                    ? " — Booked"
+                    : full
+                    ? " — Taken"
+                    : ""}
                 </option>
               );
             })}
