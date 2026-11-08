@@ -1426,7 +1426,10 @@ setPage("chooseClass");
     }
 
     const isUnlimited = data.package_type === "unlimited";
+    const studentCredits = Number(data.credits) || 0;
 
+    // If student has remaining credits, their credits must allow them to book
+    // even if package_expiry was not yet set by an external webhook.
     const status = getPackageStatus(data.package_expiry);
 
     if (status !== "active") {
@@ -1435,13 +1438,24 @@ setPage("chooseClass");
         alert(
           "Your package has expired. Please purchase a new package to book a class."
         );
+        setPage("packages");
+        return true;
+      } else if (!isUnlimited && studentCredits > 0) {
+        // Single Pass or credit pack has credits! If package_expiry is missing or not active,
+        // do not block the user with "no active package" — treat as active for 7 days.
+        const fallbackExpiry = new Date();
+        fallbackExpiry.setDate(fallbackExpiry.getDate() + 7);
+        await supabase
+          .from("students")
+          .update({ package_expiry: fallbackExpiry.toISOString(), package_type: data.package_type || "credits" })
+          .eq("email", email);
+        data.package_expiry = fallbackExpiry.toISOString();
       } else {
-        setCredits(Number(data.credits) || 0);
+        setCredits(studentCredits);
         alert("You do not have an active package. Please choose a package first.");
+        setPage("packages");
+        return true;
       }
-
-      setPage("packages");
-      return true;
     }
 
     // The package is active today — but the class being booked may fall
@@ -3887,18 +3901,8 @@ setPage("bookingConfirmed");
         Packages & Pricing
       </h2>
 
-      <p style={{ color: "#c8a96b", fontSize: "18px", marginBottom: "10px" }}>
+      <p style={{ color: "#c8a96b", fontSize: "18px", marginBottom: "40px" }}>
         Choose the package that best suits your pole journey.
-      </p>
-
-      <p
-        style={{
-          color: "#000000",
-          fontSize: "15px",
-          marginBottom: "40px"
-        }}
-      >
-        For additional student, add ₱500.00. Contact the studio for more info.
       </p>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "24px" }}>
@@ -4728,18 +4732,6 @@ setPage("bookingConfirmed");
           <h2 style={{ ...sectionHeading, fontSize: "60px", marginBottom: "10px" }}>
             Packages & Pricing
           </h2>
-
-          <p
-            style={{
-              color: "#000000",
-              fontSize: "15px",
-              margin: 0,
-              maxWidth: "520px"
-            }}
-          >
-            For additional student, add ₱500.00. Contact the studio for more
-            info.
-          </p>
         </div>
 
         <button
