@@ -3909,7 +3909,7 @@ setPage("bookingConfirmed");
         {[
           ["Single Pass", "₱870", "1 class credit · Valid for 7 days", "Perfect for trying your first class."],
           ["1 Week Unlimited", "₱2,600", "Unlimited classes for 7 days", "Best value. Attend as many classes as you like for one week.", "MOST POPULAR"],
-          ["Self Practice", "₱550", "Contact studio for time", "For existing students only."],
+          ["Self Practice", "₱550", "1 practice hour", "For existing students only."],
           ["Private Class", "₱2,500", "One on one coaching.", "Best for achieving your dream tricks."],
         ].map((pkg) => (
           <div
