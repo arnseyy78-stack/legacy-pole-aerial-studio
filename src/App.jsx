@@ -3019,16 +3019,28 @@ if (selectedClassDate <= now) {
 
 const bookingKey =
   `${bookingDate}-${item[1]}`;
-const { data: blockedClass } = await supabase
+
+// maybeSingle() errored (and silently returned null) whenever a date/class
+// pair had more than one block row, so the block was skipped. Fetch a list
+// and test whether it is empty instead.
+const { data: blockedRows, error: blockError } = await supabase
   .from("class_blocks")
   .select("*")
   .eq("booking_date", bookingDate)
   .eq("class_name", item[1])
-  .maybeSingle();
+  .limit(1);
+
+if (blockError) {
+  console.log("class_blocks lookup failed:", blockError);
+}
+
+const blockedClass = (blockedRows || [])[0];
 
 if (blockedClass) {
   alert(
-    `This class is unavailable.\n\nReason: ${blockedClass.reason}`
+    `This class is unavailable.\n\nReason: ${
+      blockedClass.reason || "Blocked by the studio."
+    }`
   );
   return;
 }
