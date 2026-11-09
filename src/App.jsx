@@ -3000,29 +3000,17 @@ const selectedClassDate = new Date(
   0
 );
 
-// Expired / missing packages must stop here, BEFORE any
-// waitlist insert, class_blocks lookup or email goes out.
-// The class date goes in too, so a package that lapses before the
-// class cannot book it.
-if (await guardBookingEligibility(studentData.email, selectedClassDate)) {
-  return;
-}
-
-const now = new Date();
-
-if (selectedClassDate <= now) {
-  alert(
-    "Booking is closed."
-  );
-  return;
-}
-
 const bookingKey =
   `${bookingDate}-${item[1]}`;
 
-// maybeSingle() errored (and silently returned null) whenever a date/class
-// pair had more than one block row, so the block was skipped. Fetch a list
-// and test whether it is empty instead.
+// CLASS BLOCK FIRST. A block is a studio decision, so it must refuse the
+// tap whether or not the student has credits or an active package. This
+// used to sit below the eligibility guard, so a student with no credits
+// was redirected to Packages before the block was ever checked.
+//
+// maybeSingle() also errored (and silently returned null) whenever a
+// date/class pair had more than one block row, so the block was skipped.
+// Fetch a list and test whether it is empty instead.
 const { data: blockedRows, error: blockError } = await supabase
   .from("class_blocks")
   .select("*")
@@ -3042,6 +3030,23 @@ if (blockedClass) {
       blockedClass.reason || "Blocked by the studio."
     }`
   );
+  return;
+}
+
+// Then the schedule check, then eligibility. The class date goes into the
+// guard so a package that lapses before the class cannot book it.
+const now = new Date();
+
+if (selectedClassDate <= now) {
+  alert(
+    "Booking is closed."
+  );
+  return;
+}
+
+// Expired / missing packages must stop here, BEFORE any waitlist insert
+// or email goes out.
+if (await guardBookingEligibility(studentData.email, selectedClassDate)) {
   return;
 }
 const currentBooked =
