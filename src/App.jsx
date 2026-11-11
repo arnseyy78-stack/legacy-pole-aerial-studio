@@ -3855,11 +3855,11 @@ setPage("bookingConfirmed");
   "/ivyhoop2.jpg"
   ],
 [
-  "Friday",
+  "Saturday",
   "6:00 PM",
-  "Aerial Hoop",
-  "Build strength, balance and confidence while learning beginner-friendly spins, hangs and beautiful aerial hoop poses. Wear fitted leggings and a fitted top.",
-  "/ivyhoop2.jpg"
+  "Aerial Hammock",
+  "Flow, stretch and unwind in a soft aerial hammock. Learn gentle poses, inversions and deep stretches with full support. Wear leggings and a fitted top.",
+  "/hammock.png"
   ]
 ].map((cls) => (
           <div
