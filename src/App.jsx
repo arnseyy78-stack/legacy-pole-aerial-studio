@@ -25,6 +25,25 @@ const getClassTime = (className) =>
 useEffect(() => {
   const params = new URLSearchParams(window.location.search);
 
+// Direct links: legacypolestudio.com/classes, /pricing, /gallery, /contact.
+// The matching rewrites live in vercel.json, which serves the app for these
+// paths so this code actually gets a chance to run.
+const pathPages = {
+  classes: "classes",
+  pricing: "pricing",
+  gallery: "gallery",
+  contact: "contact",
+  login: "login"
+};
+
+const pathKey = window.location.pathname
+  .replace(/^\/+|\/+$/g, "")
+  .toLowerCase();
+
+if (pathPages[pathKey]) {
+  setPage(pathPages[pathKey]);
+}
+
 if (params.get("dashboard") === "true") {
   setPage("chooseClass");
 
