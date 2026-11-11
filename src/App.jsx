@@ -3848,9 +3848,9 @@ setPage("bookingConfirmed");
   [
   "Tuesday",
   "6:00 PM",
-  "Aerial Hammock",
-  "Flow, stretch and unwind in a soft aerial hammock. Learn gentle poses, inversions and deep stretches with full support. Wear leggings and a fitted top.",
-  "/hammock.png"
+  "Aerial Silks",
+  "Develop strength, flexibility and confidence while learning beautiful aerial silks techniques. Perfect for beginners and intermediate students.",
+  "/silks2.jpg"
 ],
     [
     "Wednesday",
