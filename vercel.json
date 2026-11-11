@@ -1,0 +1,9 @@
+{
+  "rewrites": [
+    { "source": "/classes", "destination": "/" },
+    { "source": "/pricing", "destination": "/" },
+    { "source": "/gallery", "destination": "/" },
+    { "source": "/contact", "destination": "/" },
+    { "source": "/login", "destination": "/" }
+  ]
+}
