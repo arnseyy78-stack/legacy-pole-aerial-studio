@@ -35,20 +35,32 @@ if (
     const studentEmail = metadata?.studentEmail;
     const packageName = metadata?.packageName;
 
-    const packageCredits =
-      packageName === "Single Pass" ? 1 :
-      packageName === "Class Card" ? 5 :
-      0;
+    // Every card the studio sells. Keep in step with the cards in
+    // src/App.jsx. type "unlimited" is what the app's guard checks to
+    // skip the credit gate; credits 0 is correct for it.
+    const PACKAGES = {
+      "Single Pass":          { credits: 1, days: 7,  type: "credits" },
+      "1 Week Unlimited":     { credits: 0, days: 7,  type: "unlimited" },
+      "Class Card":           { credits: 5, days: 30, type: "credits" },
+      "Self Studio Practice": { credits: 1, days: 7,  type: "credits" },
+      "Private Class":        { credits: 1, days: 7,  type: "credits" }
+    };
+
+    const pkg = PACKAGES[packageName];
 
     console.log("WEBHOOK DEBUG:", {
       eventId,
       eventType,
       studentEmail,
       packageName,
-      packageCredits
+      package: pkg || null
     });
 
-    if (!eventId || !studentEmail || !packageName || packageCredits <= 0) {
+    // Note: no "credits <= 0" test here. 1 Week Unlimited legitimately has
+    // zero credits, and that test was why it was dropped before the write.
+    if (!eventId || !studentEmail || !packageName || !pkg) {
+      console.log("SKIPPED — unknown or missing package:", packageName);
+
       return res.status(200).json({ received: true, skipped: "missing required data" });
     }
 
@@ -88,15 +100,18 @@ if (!students || students.length === 0) {
 }
 
 const student = students[0];
-    const updatedCredits = (Number(student.credits) || 0) + packageCredits;
-    let packageExpiry = student.package_expiry;
 
-if (packageName === "Class Card") {
-  const expiry = new Date();
-  expiry.setDate(expiry.getDate() + 30);
+    // Expiry runs from the purchase, using the package's own validity.
+    const expiry = new Date();
+    expiry.setDate(expiry.getDate() + pkg.days);
 
-  packageExpiry = expiry.toISOString().split("T")[0];
-}
+    // An unlimited pass holds no credits — the expiry is its only limit.
+    const updatedCredits =
+      pkg.type === "unlimited"
+        ? 0
+        : (Number(student.credits) || 0) + pkg.credits;
+
+    const packageExpiry = expiry.toISOString();
     const updateRes = await fetch(
       `${process.env.SUPABASE_URL}/rest/v1/students?email=eq.${encodeURIComponent(studentEmail)}`,
       {
@@ -106,9 +121,10 @@ if (packageName === "Class Card") {
           Prefer: "return=representation"
         },
         body: JSON.stringify({
-  credits: updatedCredits,
-  package_expiry: packageExpiry
-})
+          credits: updatedCredits,
+          package_expiry: packageExpiry,
+          package_type: pkg.type
+        })
       }
     );
 
@@ -135,7 +151,7 @@ return res.status(200).json({
           event_id: eventId,
           student_email: studentEmail,
           package_name: packageName,
-          credits_added: packageCredits
+          credits_added: pkg.credits
         })
       }
     );
@@ -154,7 +170,8 @@ return res.status(200).json({
     console.log("WEBHOOK SUCCESS:", {
       studentEmail,
       packageName,
-      creditsAdded: packageCredits,
+      creditsAdded: pkg.credits,
+      packageType: pkg.type,
       updatedCredits
     });
 
