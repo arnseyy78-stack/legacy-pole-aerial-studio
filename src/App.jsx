@@ -1433,22 +1433,44 @@ setPage("chooseClass");
     const status = getPackageStatus(data.package_expiry);
 
     if (status !== "active") {
+      // A lapsed pass is lapsed. Clear it and send them to buy one — this
+      // applies to unlimited passes too, whose only limit is the expiry.
       if (status === "expired") {
         await clearExpiredPackage(email);
         alert(
-          "Your package has expired. Please purchase a new package to book a class."
+          isUnlimited
+            ? "Your unlimited pass has expired. Please purchase a new pass to book a class."
+            : "Your package has expired. Please purchase a new package to book a class."
         );
         setPage("packages");
         return true;
-      } else if (!isUnlimited && studentCredits > 0) {
-        // Single Pass or credit pack has credits! If package_expiry is missing or not active,
-        // do not block the user with "no active package" — treat as active for 7 days.
+      }
+
+      // No expiry recorded. An unlimited pass must still be live, so if the
+      // expiry is missing the pass is treated as ended — the purchase always
+      // writes one, and the nightly sweep nulls it once it lapses. No
+      // backfill: writing a fresh 7 days here would revive a swept pass.
+      if (isUnlimited) {
+        await clearExpiredPackage(email);
+        alert(
+          "Your unlimited pass has ended. Please purchase a new pass to book a class."
+        );
+        setPage("packages");
+        return true;
+      } else if (studentCredits > 0) {
+        // A credit pack with credits left is usable; give it a fresh window
+        // rather than bouncing a student who has paid.
         const fallbackExpiry = new Date();
         fallbackExpiry.setDate(fallbackExpiry.getDate() + 7);
+
         await supabase
           .from("students")
-          .update({ package_expiry: fallbackExpiry.toISOString(), package_type: data.package_type || "credits" })
+          .update({
+            package_expiry: fallbackExpiry.toISOString(),
+            package_type: data.package_type || "credits"
+          })
           .eq("email", email);
+
         data.package_expiry = fallbackExpiry.toISOString();
       } else {
         setCredits(studentCredits);
