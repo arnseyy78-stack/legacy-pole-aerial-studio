@@ -3576,8 +3576,16 @@ setPage("bookingConfirmed");
     // Practice stores a real date; classes and waitlist store
     // "November-9". Normalise to the SAME key shape, or the two never
     // merge and the sort breaks (Number(undefined) is NaN).
+    // Today at local midnight — anything before this is in the past.
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+
     practiceBookings.forEach((p) => {
       const d = new Date(`${p.practice_date}T00:00:00`);
+
+      // Past sessions drop out of the admin view entirely.
+      if (Number.isNaN(d.getTime()) || d < todayStart) return;
+
       const monthName = d.toLocaleDateString("en-US", { month: "long" });
       const label = `${monthName}-${d.getDate()}`;
 
@@ -3591,6 +3599,10 @@ setPage("bookingConfirmed");
     // it normalises to the same key and lands in the same date block.
     privateBookings.forEach((p) => {
       const d = new Date(`${p.private_date}T00:00:00`);
+
+      // Past sessions drop out of the admin view entirely.
+      if (Number.isNaN(d.getTime()) || d < todayStart) return;
+
       const monthName = d.toLocaleDateString("en-US", { month: "long" });
       const label = `${monthName}-${d.getDate()}`;
 
