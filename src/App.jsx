@@ -91,6 +91,11 @@ async function handlePaymentReturn() {
 
   if (!studentData?.email) return;
 
+  // What did they buy? buyPackage saves this just before checkout.
+  const savedPkg = JSON.parse(
+    localStorage.getItem("legacySelectedPackage") || "{}"
+  );
+
   // Wait for the PayMongo webhook to write the package. Before, this waited
   // a flat 2.5s and then read once — if the webhook was slower, the student
   // landed on a dashboard with no package and could not book the class they
@@ -122,6 +127,21 @@ async function handlePaymentReturn() {
     );
   }
 
+  // Record the purchase day for the scheduling calendars. This used to
+  // happen only in the test bypass, so a real PayMongo buyer arrived at a
+  // fully greyed-out calendar with no window recorded.
+  if (savedPkg.name === "Self Studio Practice") {
+    localStorage.setItem(
+      `legacyPracticeStart_${studentData.email}`,
+      toISODate(new Date())
+    );
+  } else if (savedPkg.name === "Private Class") {
+    localStorage.setItem(
+      `legacyPrivateStart_${studentData.email}`,
+      toISODate(new Date())
+    );
+  }
+
   localStorage.removeItem("legacySelectedPackage");
 
   window.history.replaceState(
@@ -130,9 +150,19 @@ async function handlePaymentReturn() {
     window.location.pathname
   );
 
-  setPage("chooseClass");
-
-  alert("Payment received. Your dashboard has been refreshed.");
+  // Route a paid buyer to the calendar their pass is for. Previously this
+  // always went to the class schedule, so practice buyers never reached
+  // the practice calendar.
+  if (savedPkg.name === "Self Studio Practice") {
+    alert("1 hr added for Studio Self Practice. Please choose date and time.");
+    setPage("practice");
+  } else if (savedPkg.name === "Private Class") {
+    alert("Private Class confirmed. Please select date and time.");
+    setPage("privateClass");
+  } else {
+    alert("Payment received. Your dashboard has been refreshed.");
+    setPage("chooseClass");
+  }
 }
 
 handlePaymentReturn();
@@ -4579,7 +4609,7 @@ setPage("bookingConfirmed");
           <p>✔ Wear short shorts. Do not apply body lotion before class.</p>
         )}
         <p>✔ Bring water and towel.</p>
-        <p>✔ Also bring hold holder, so you can film your progress.</p>
+        <p>✔ Also bring phone holder, so you can film your progress.</p>
         <p>✔ Advise your instructor of any injuries or pregnancy.</p>
 
         <br />
@@ -4842,7 +4872,7 @@ setPage("bookingConfirmed");
             price: "₱550",
             description: "1 practice hour",
             subText: "For registered students only.",
-            amount: 55000,
+            amount: 100,
             credits: 1,
             expiry: "7 Days",
             expiryDays: 7
@@ -4852,7 +4882,7 @@ setPage("bookingConfirmed");
             price: "₱2,500",
             description: "One-hour private coaching",
             subText: "Book a solo session with your instructor. Mon–Sat.",
-            amount: 250000,
+            amount: 100,
             credits: 1,
             expiry: "7 Days",
             expiryDays: 7
