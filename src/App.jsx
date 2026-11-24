@@ -272,6 +272,16 @@ const [credits, setCredits] = useState(0);
 // 5 students per hour, Monday-Saturday.
 const PRACTICE_SLOTS = ["4:00 PM", "5:00 PM"];
 const PRACTICE_CAPACITY = 5;
+
+// Apparatus a student can practise on. Chosen after the time, for both
+// Studio Practice and Private Class.
+const APPARATUS_OPTIONS = [
+  "Pole - Static",
+  "Pole - Spinny",
+  "Silks",
+  "Hoop",
+  "Hammock"
+];
 // ── Private Class ─────────────────────────────────────────────────────
 // Mirrors Studio Practice but 1 student per hour, Mon-Sat only.
 const PRIVATE_SLOTS = [
@@ -286,11 +296,13 @@ const [privateBookings, setPrivateBookings] = useState([]);
 const [studentPrivate, setStudentPrivate] = useState([]);
 const [privateDate, setPrivateDate] = useState("");
 const [privateSlot, setPrivateSlot] = useState("");
+const [privateApparatus, setPrivateApparatus] = useState("");
 const [privateLoading, setPrivateLoading] = useState(false);
 const [practiceBookings, setPracticeBookings] = useState([]);
 const [studentPractice, setStudentPractice] = useState([]);
 const [practiceDate, setPracticeDate] = useState("");
 const [practiceSlot, setPracticeSlot] = useState("");
+const [practiceApparatus, setPracticeApparatus] = useState("");
 const [practiceLoading, setPracticeLoading] = useState(false);
   const [specialClasses, setSpecialClasses] = useState([]);
   const today = new Date();
@@ -659,7 +671,7 @@ function toISODate(d) {
 }
 
 // Book a Studio Practice slot. Costs 1 credit, same as a class.
-async function bookPractice(isoDate, slot, dayObj) {
+async function bookPractice(isoDate, slot, dayObj, apparatus) {
   const studentData =
     JSON.parse(localStorage.getItem("legacyStudent")) || student;
 
@@ -728,7 +740,8 @@ async function bookPractice(isoDate, slot, dayObj) {
         month: "long",
         day: "numeric"
       })}\n` +
-      `Time: ${slot}\n\n` +
+      `Time: ${slot}\n` +
+      `Apparatus: ${apparatus}\n\n` +
       `Do you wish to continue?`
   );
 
@@ -739,7 +752,8 @@ async function bookPractice(isoDate, slot, dayObj) {
       student_name: studentData.fullName,
       student_email: studentData.email,
       practice_date: isoDate,
-      practice_slot: slot
+      practice_slot: slot,
+      apparatus: apparatus
     }
   ]);
 
@@ -957,7 +971,7 @@ function privateCountFor(isoDate, slot) {
 }
 
 // Book a Private Class. 1 student per hour, costs 1 credit.
-async function bookPrivate(isoDate, slot) {
+async function bookPrivate(isoDate, slot, apparatus) {
   const studentData =
     JSON.parse(localStorage.getItem("legacyStudent")) || student;
 
@@ -1031,7 +1045,8 @@ async function bookPrivate(isoDate, slot) {
         month: "long",
         day: "numeric"
       })}\n` +
-      `Time: ${slot}\n\n` +
+      `Time: ${slot}\n` +
+      `Apparatus: ${apparatus}\n\n` +
       `Note: To add another student there will be additional P500.00, ` +
       `please contact the studio.\n\n` +
       `Do you wish to continue?`
@@ -1044,7 +1059,8 @@ async function bookPrivate(isoDate, slot) {
       student_name: studentData.fullName,
       student_email: studentData.email,
       private_date: isoDate,
-      private_slot: slot
+      private_slot: slot,
+      apparatus: apparatus
     }
   ]);
 
@@ -4300,13 +4316,54 @@ setPage("bookingConfirmed");
           </select>
 
           {practiceSlot && (
+            <div style={{ marginTop: "18px" }}>
+              <p style={{ color: "#000000", fontWeight: "600", margin: "0 0 8px" }}>
+                Choose your apparatus
+              </p>
+
+              <select
+                value={practiceApparatus}
+                onChange={(e) => setPracticeApparatus(e.target.value)}
+                style={{
+                  width: "100%",
+                  padding: "16px 46px 16px 20px",
+                  borderRadius: "14px",
+                  border: "1px solid rgba(0,0,0,0.12)",
+                  background: "#ffffff",
+                  color: "#000000",
+                  fontSize: "16px",
+                  fontWeight: "500",
+                  boxSizing: "border-box",
+                  cursor: "pointer",
+                  appearance: "none",
+                  WebkitAppearance: "none",
+                  backgroundImage:
+                    "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M6 9l6 6 6-6' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E\")",
+                  backgroundRepeat: "no-repeat",
+                  backgroundPosition: "right 18px center",
+                  backgroundSize: "20px 20px",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.08)"
+                }}
+              >
+                <option value="">Select apparatus</option>
+                {APPARATUS_OPTIONS.map((a) => (
+                  <option key={a} value={a}>
+                    {a}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          {practiceSlot && practiceApparatus && (
             <button
               disabled={practiceLoading}
               onClick={() =>
                 bookPractice(
                   practiceDate,
                   practiceSlot,
-                  new Date(`${practiceDate}T00:00:00`)
+                  new Date(`${practiceDate}T00:00:00`),
+                  practiceApparatus
                 )
               }
               style={{
@@ -4544,9 +4601,51 @@ setPage("bookingConfirmed");
           </select>
 
           {privateSlot && (
+            <div style={{ marginTop: "18px" }}>
+              <p style={{ color: "#000000", fontWeight: "600", margin: "0 0 8px" }}>
+                Choose your apparatus
+              </p>
+
+              <select
+                value={privateApparatus}
+                onChange={(e) => setPrivateApparatus(e.target.value)}
+                style={{
+                  width: "100%",
+                  padding: "16px 46px 16px 20px",
+                  borderRadius: "14px",
+                  border: "1px solid rgba(0,0,0,0.12)",
+                  background: "#ffffff",
+                  color: "#000000",
+                  fontSize: "16px",
+                  fontWeight: "500",
+                  boxSizing: "border-box",
+                  cursor: "pointer",
+                  appearance: "none",
+                  WebkitAppearance: "none",
+                  backgroundImage:
+                    "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M6 9l6 6 6-6' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E\")",
+                  backgroundRepeat: "no-repeat",
+                  backgroundPosition: "right 18px center",
+                  backgroundSize: "20px 20px",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.08)"
+                }}
+              >
+                <option value="">Select apparatus</option>
+                {APPARATUS_OPTIONS.map((a) => (
+                  <option key={a} value={a}>
+                    {a}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          {privateSlot && privateApparatus && (
             <button
               disabled={privateLoading}
-              onClick={() => bookPrivate(privateDate, privateSlot)}
+              onClick={() =>
+                bookPrivate(privateDate, privateSlot, privateApparatus)
+              }
               style={{
                 ...goldButtonLarge,
                 width: "100%",
@@ -4609,7 +4708,7 @@ setPage("bookingConfirmed");
           <p>✔ Wear short shorts. Do not apply body lotion before class.</p>
         )}
         <p>✔ Bring water and towel.</p>
-        <p>✔ Also bring phone holder, so you can film your progress.</p>
+        <p>✔ Also bring hold holder, so you can film your progress.</p>
         <p>✔ Advise your instructor of any injuries or pregnancy.</p>
 
         <br />
