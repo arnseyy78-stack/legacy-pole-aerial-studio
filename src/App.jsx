@@ -3795,6 +3795,17 @@ setPage("bookingConfirmed");
                       <p style={{ color: "#555555", margin: "3px 0 0 18px" }}>
                         {student.student_email}
                       </p>
+                      {student.apparatus && (
+                        <p
+                          style={{
+                            color: "#8c3d52",
+                            margin: "3px 0 0 18px",
+                            fontWeight: "600"
+                          }}
+                        >
+                          Apparatus: {student.apparatus}
+                        </p>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -3848,6 +3859,17 @@ setPage("bookingConfirmed");
                       <p style={{ color: "#555555", margin: "3px 0 0 18px" }}>
                         {student.student_email}
                       </p>
+                      {student.apparatus && (
+                        <p
+                          style={{
+                            color: "#8c3d52",
+                            margin: "3px 0 0 18px",
+                            fontWeight: "600"
+                          }}
+                        >
+                          Apparatus: {student.apparatus}
+                        </p>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -4708,7 +4730,7 @@ setPage("bookingConfirmed");
           <p>✔ Wear short shorts. Do not apply body lotion before class.</p>
         )}
         <p>✔ Bring water and towel.</p>
-        <p>✔ Also bring hold holder, so you can film your progress.</p>
+        <p>✔ Also bring phone holder, so you can film your progress.</p>
         <p>✔ Advise your instructor of any injuries or pregnancy.</p>
 
         <br />
@@ -4971,7 +4993,7 @@ setPage("bookingConfirmed");
             price: "₱550",
             description: "1 practice hour",
             subText: "For registered students only.",
-            amount: 100,
+            amount: 55000,
             credits: 1,
             expiry: "7 Days",
             expiryDays: 7
@@ -4981,7 +5003,7 @@ setPage("bookingConfirmed");
             price: "₱2,500",
             description: "One-hour private coaching",
             subText: "Book a solo session with your instructor. Mon–Sat.",
-            amount: 100,
+            amount: 250000,
             credits: 1,
             expiry: "7 Days",
             expiryDays: 7
