@@ -4971,7 +4971,7 @@ setPage("bookingConfirmed");
             price: "₱550",
             description: "1 practice hour",
             subText: "For registered students only.",
-            amount: 55000,
+            amount: 100,
             credits: 1,
             expiry: "7 Days",
             expiryDays: 7
@@ -4981,7 +4981,7 @@ setPage("bookingConfirmed");
             price: "₱2,500",
             description: "One-hour private coaching",
             subText: "Book a solo session with your instructor. Mon–Sat.",
-            amount: 250000,
+            amount: 100,
             credits: 1,
             expiry: "7 Days",
             expiryDays: 7
